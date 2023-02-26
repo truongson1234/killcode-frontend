@@ -2,16 +2,16 @@
 // components
 import Navbar from "@/components/layout/Navbar.vue";
 import Footer from "@/components/layout/Footer.vue";
-import LinkAuth from "@/components/ui/LinkAuth.vue";
+import ModalLogin from "@/components/article/ModalLogin.vue";
 </script>
 
 <template>
   <Navbar />
-  <LinkAuth/>
   <div class="wrapper container mb-4 py-3 px-3">
     <router-view />
   </div>
   <Footer />
+  <ModalLogin/>
 </template>
 
 <style scoped>

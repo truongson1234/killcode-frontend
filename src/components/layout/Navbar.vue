@@ -7,9 +7,6 @@
       <div class="navbar__group">
         <ul class="navbar__navigation">
           <li>
-            <router-link :to="{ name: 'Home' }">Trang chủ</router-link>
-          </li>
-          <li>
             <router-link :to="{ name: 'QuestionList' }">Câu hỏi</router-link>
           </li>
           <li>
@@ -25,6 +22,8 @@
             :class="{ active: searchBtn }"
             @click="isActive"
           ></i>
+          <LinkLogin/>
+          <!-- user -->
           <div class="navbar__dropdown dropdown">
             <button
               class="navbar__dropdown-toggle btn btn-secondary dropdown-toggle"
@@ -57,6 +56,7 @@
 <script setup>
 import { ref } from "vue";
 import BtnDarkMode from "@/components/ui/BtnDarkMode.vue";
+import LinkLogin from "@/components/ui/LinkLogin.vue";
 
 var navbarEl = ref(false);
 var searchBtn = ref(false);
@@ -175,7 +175,7 @@ const showMenuRepon = () => {
   width: 100%;
   height: 100%;
   display: flex;
-  background: var(--color-dark-mode);
+  background: var(--color-light-mode);
   align-items: center;
   padding: 0 30px;
   transition: 0.5s ease-in-out;
@@ -190,6 +190,7 @@ const showMenuRepon = () => {
   height: 50px;
   color: #333;
   font-size: 1.25rem;
+  color: var(--color-dark-mode);
   background: var(--color-light-mode);
   border-bottom: 1px solid rgba(0, 0, 0, 0.5);
 }

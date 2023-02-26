@@ -5,10 +5,6 @@ import {
 
 // Home
 import Home from '@/pages/Home.vue'
-// Auth
-import Auth from '@/pages/auth/Index.vue'
-import Login from '@/pages/auth/Login.vue'
-import Register from '@/pages/auth/Register.vue'
 // User
 import User from '@/pages/user/Index.vue'
 import userEdit from '@/pages/user/Edit.vue'
@@ -22,22 +18,6 @@ const routes = [{
         path: '/',
         component: Home,
         name: 'Home',
-    },
-    {
-        path: '/Auth',
-        component: Auth,
-        name: 'Auth',
-        children: [{
-                path: '/login',
-                name: 'authLogin',
-                component: Login
-            },
-            {
-                path: '/register',
-                name: 'authRegister',
-                component: Register
-            }
-        ]
     },
     {
         path: '/user',
