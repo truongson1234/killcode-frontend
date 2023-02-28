@@ -10,7 +10,7 @@
             <router-link :to="{ name: 'QuestionList' }">Câu hỏi</router-link>
           </li>
           <li>
-            <router-link :to="{ name: 'Test' }">Test</router-link>
+            <router-link :to="{ name: 'Editor' }">Viết bài</router-link>
           </li>
           <li>
             <router-link :to="{ name: 'Test' }">Test</router-link>

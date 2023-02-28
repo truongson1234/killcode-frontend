@@ -1,13 +1,13 @@
 <template>
   <div class="home row">
     <div class="col-12 col-md-9">
-      
-      <h3 class="home__tag-name mb-3">Câu hỏi thường gặp</h3>
+      <h3 class="home__tag-name mb-3 text-center">Câu hỏi thường gặp</h3>
       <div class="row">
         <div class="col-12 col-md-6 pb-3" v-for="(data,index) in QuestionsData" :key="index">
           <QuestionItem :data="data"/>
         </div>
       </div>
+      <h3 class="home__tag-name mb-3 text-center">Bài viết nổi bật nổi bật</h3>
     </div>
     <div class="d-none d-md-block col-md-3">
       <p style="color: var(--color-dark-mode);">

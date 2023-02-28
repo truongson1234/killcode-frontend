@@ -19,7 +19,6 @@ import ModalLogin from "@/components/article/ModalLogin.vue";
   color: #000;
   background: var(--color-light-mode);
   border-radius: 4px;
-  overflow: hidden;
 }
 
 </style>

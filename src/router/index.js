@@ -10,7 +10,9 @@ import User from '@/pages/user/Index.vue'
 import userEdit from '@/pages/user/Edit.vue'
 // Posts
 // import ArticleList from '@/pages/posts/ArticleList.vue'
-import QuestionList from '@/pages/posts/QuestionList.vue'
+import QuestionList from '@/pages/q&a/QuestionList.vue'
+// Editor
+import Editor from '@/pages/Editor.vue'
 // Test
 import Test from '@/pages/Test.vue'
 
@@ -33,6 +35,11 @@ const routes = [{
         path: '/question-list',
         component: QuestionList,
         name: 'QuestionList',
+    },
+    {
+        path: '/editor',
+        component: Editor,
+        name: 'Editor',
     },
     {
         path: '/test',

@@ -1,42 +1,45 @@
 <template>
   <div class="question-card p-3">
-    <div class="question-card__tags mb-3">
-      <a href="#" v-for="(data,index) in question.tags" :key="index">
-        {{ data }}
-      </a>
+    <div class="d-flex justify-content-between">
+      <div class="question-card__user mb-3">
+        <div class="question-card__userImage">
+          <img
+            src="https://scontent.fhan4-2.fna.fbcdn.net/v/t1.6435-9/149299062_232989691790324_2796829381264086336_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=xSgUwUshPDIAX_YWlPi&_nc_ht=scontent.fhan4-2.fna&oh=00_AfATcRKgKC6HOtrIudxtwXaQj0z7TlcyK_SPiDv43zMjSA&oe=6421D58C"
+            alt="logo-user"
+          />
+        </div>
+        <div class="question-card__userInfo">
+          <a href="#">
+            {{ question.author }}
+          </a>
+          <span>
+            {{ question.created_at }}
+          </span>
+        </div>
+      </div>
+      <div class="question-card__tags mb-3">
+        <a href="#" v-for="(data, index) in question.tags" :key="index">
+          {{ data }}
+        </a>
+      </div>
     </div>
     <div class="question-card__text mb-3">
       <a href="#">
         {{ question.title }}
       </a>
     </div>
-    <div class="question-card__user mb-3">
-      <div class="question-card__userImage">
-        <img
-          src="https://scontent.fhan4-2.fna.fbcdn.net/v/t1.6435-9/149299062_232989691790324_2796829381264086336_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=xSgUwUshPDIAX_YWlPi&_nc_ht=scontent.fhan4-2.fna&oh=00_AfATcRKgKC6HOtrIudxtwXaQj0z7TlcyK_SPiDv43zMjSA&oe=6421D58C"
-          alt="logo-user"
-        />
-      </div>
-      <div class="question-card__userInfo">
-        <a href="#">
-          {{ question.author }}
-        </a>
-        <span>
-          {{ question.created_at }}
-        </span>
-      </div>
-    </div>
+
     <div class="question-card__overview">
       <p>
-        <i class='bx bxs-star'></i>
+        <i class="bx bxs-star"></i>
         <span>{{ question.overview.rating }}</span>
       </p>
       <p>
-        <i class='bx bxs-comment-dots' ></i>
+        <i class="bx bxs-comment-dots"></i>
         <span>{{ question.overview.reply }}</span>
       </p>
       <p>
-        <i class='bx bxs-file-find' ></i>
+        <i class="bx bxs-file-find"></i>
         <span>{{ question.overview.view }}</span>
       </p>
     </div>
@@ -51,7 +54,6 @@ const props = defineProps({
 });
 
 const question = props.data;
-
 </script>
 
 <style scoped>
@@ -59,19 +61,18 @@ const question = props.data;
   background: var(--color-dark-mode);
   color: var(--color-light-mode);
   border-radius: 4px;
-  box-shadow: 0px 7px 24px rgba(100, 100, 100, 0.4);
 }
-.question-card__tags{
+.question-card__tags {
   display: flex;
-  flex-wrap: wrap;
+  align-items: center;
   gap: 10px;
 }
-.question-card__tags a{
+.question-card__tags a {
   padding: 2px 12px;
   color: var(--color-dark-mode);
   font-weight: 600;
   text-decoration: none;
-  background: #ffc83d;
+  background: var(--color-light-mode);
   border-radius: 4px;
 }
 .question-card__text a {
@@ -130,22 +131,22 @@ const question = props.data;
   font-size: 12px;
   margin-top: 2px;
 }
-.question-card__overview{
+.question-card__overview {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 20px;
 }
-.question-card__overview p{
+.question-card__overview p {
   display: flex;
   justify-content: center;
   align-items: center;
   margin-bottom: 0;
 }
-.question-card__overview i{
+.question-card__overview i {
   margin-right: 3px;
 }
-.question-card__overview span{
+.question-card__overview span {
   font-size: 13px;
   font-weight: bold;
 }
