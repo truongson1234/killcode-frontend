@@ -26,11 +26,11 @@
                             <form @submit.prevent="handleLogin" class="login-form">
                                 <div class="mb-3">
                                     <label for="" class="login-form__label form-label">Email</label>
-                                    <input type="email" name="" class="login-form__input form-control" id="">
+                                    <input type="email" name="" class="login-form__input form-control">
                                 </div>
                                 <div class="mb-3">
                                     <label for="" class="login-form__label form-label">Mật khẩu</label>
-                                    <input type="password" name="" class="login-form__input form-control" id="">
+                                    <input type="password" name="" class="login-form__input form-control">
                                 </div>
                                 <button type="submit" class="login-form__btn btn btn-primary">Submit</button>
                             </form>
@@ -40,11 +40,11 @@
                             <form @submit.prevent="handleRegister" class="login-form">
                                 <div class="mb-3">
                                     <label for="" class="login-form__label form-label">Email</label>
-                                    <input type="email" name="" class="login-form__input form-control" id="">
+                                    <input type="email" name="" class="login-form__input form-control">
                                 </div>
                                 <div class="mb-3">
                                     <label for="" class="login-form__label form-label">Mật khẩu</label>
-                                    <input type="password" name="" class="login-form__input form-control" id="">
+                                    <input type="password" name="" class="login-form__input form-control">
                                 </div>
                                 <button type="submit" class="login-form__btn btn btn-primary">Submit</button>
                             </form>

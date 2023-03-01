@@ -30,6 +30,7 @@ import QuestionItem from '@/components/ui/QuestionItem.vue';
 
 const QuestionsData = ref([
   {
+    id: 1,
     title: "No1 Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni,doloribus?",
     author: 'Sonng Ngu',
     created_at: '26/02/2023',
@@ -45,6 +46,7 @@ const QuestionsData = ref([
     }
   },
   {
+    id: 2,
     title: "No1 Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni,doloribus?",
     author: 'Sonng Ngu',
     created_at: '26/02/2023',
@@ -60,6 +62,7 @@ const QuestionsData = ref([
     }
   },
   {
+    id: 3,
     title: "No1 Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni,doloribus?",
     author: 'Sonng Ngu',
     created_at: '26/02/2023',
@@ -75,6 +78,7 @@ const QuestionsData = ref([
     }
   },
   {
+    id: 4,
     title: "No1 Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni,doloribus?",
     author: 'Sonng Ngu',
     created_at: '26/02/2023',

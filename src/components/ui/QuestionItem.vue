@@ -24,9 +24,9 @@
       </div>
     </div>
     <div class="question-card__text mb-3">
-      <a href="#">
+      <router-link :to="{ name: 'QuestionDetails', params: { id: question.id } }">
         {{ question.title }}
-      </a>
+      </router-link>
     </div>
 
     <div class="question-card__overview">
@@ -79,10 +79,13 @@ const question = props.data;
   font-size: 20px;
   font-family: "Vollkorn", serif;
   font-weight: 400;
-  text-align: justify;
   text-decoration: none;
   color: var(--color-light-mode);
   text-align: left;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .question-card__text a::after {
