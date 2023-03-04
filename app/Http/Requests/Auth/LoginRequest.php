@@ -33,6 +33,19 @@ class LoginRequest extends FormRequest
             'password' => ['required', 'string'],
         ];
     }
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array|string[]
+     */
+    public function messages()
+    {
+        return [
+            'email.required' => 'Vui lòng nhập e-mail của bạn.',
+            'password.required' => 'Vui lòng nhập mật khẩu của bạn.',
+            // 'password.min' => 'Mật khẩu phải chứa ít nhất 8 ký tự.',
+        ];
+    }
 
     /**
      * Attempt to authenticate the request's credentials.
@@ -49,7 +62,7 @@ class LoginRequest extends FormRequest
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'email' => __('auth.failed'),
+                'email' => __('Tài khoản hoặc mật khẩu không chính xác. Vui lòng thử lại!'),
             ]);
         }
 
@@ -65,14 +78,13 @@ class LoginRequest extends FormRequest
      */
     public function ensureIsNotRateLimited()
     {
+
         if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
             return;
         }
 
         event(new Lockout($this));
-
         $seconds = RateLimiter::availableIn($this->throttleKey());
-
         throw ValidationException::withMessages([
             'email' => trans('auth.throttle', [
                 'seconds' => $seconds,
