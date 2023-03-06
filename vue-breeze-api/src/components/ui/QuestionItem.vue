@@ -24,7 +24,7 @@
       </div>
     </div>
     <div class="question-card__text mb-3">
-      <router-link :to="{ name: 'QuestionDetails', params: { id: question.id } }">
+      <router-link :to="{ name: 'QuestionDetail', params: { id: question.id } }">
         {{ question.title }}
       </router-link>
     </div>

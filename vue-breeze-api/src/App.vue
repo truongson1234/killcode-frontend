@@ -1,7 +1,32 @@
 <script setup> 
+  import { useRoute } from 'vue-router';
   // components
   import Navbar from "@/components/layout/Navbar.vue";
   import Footer from "@/components/layout/Footer.vue";
+
+  const router = useRoute();
+  const showNavbar = () => {
+    const list = [
+      'Main',
+      'Login',
+      'Register',
+      'ForgotPassword',
+      'PasswordReset',
+      'SendVerifyEmail',
+    ]
+    return !list.includes(router.name);
+  }
+  const showFooter = () => {
+    const list = [
+      'Main',
+      'Login',
+      'Register',
+      'ForgotPassword',
+      'PasswordReset',
+      'SendVerifyEmail',
+    ]
+    return !list.includes(router.name);
+  }
 </script>
 <template>
   <main class="relative">
@@ -15,11 +40,9 @@
         >
       </div>
     </div>
-    <Navbar />
-    <div class="wrapper container mb-4 py-3 px-3">
-      <router-view />
-    </div>
-    <Footer />
+    <Navbar v-if="showNavbar()" />
+    <router-view />
+    <Footer v-if="showFooter()" />
   </main>
 </template>
 <style scoped>
@@ -29,8 +52,8 @@
   border-radius: 4px;
 }
 #loading {
-  height: 100%;
-  width: 100%;
+  height: 100vh;
+  width: 100vw;
   position: absolute;
   z-index: 1000;
 }

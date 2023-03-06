@@ -33,7 +33,7 @@ export const useAuthStore = defineStore("auth", {
                 console.log(response);
                 await $('#loading').addClass('hidden')
                 this.getUser()
-                this.router.push("/");
+                this.router.push("/home");
                 // window.location.reload()
             } catch (error) {
                 if (error.response.status == 422) {
@@ -63,7 +63,7 @@ export const useAuthStore = defineStore("auth", {
                     confirmButtonText: 'Tiếp tục'
                 }).then(result => {
                     if(result.isConfirmed || result) {
-                        this.router.push("/");
+                        this.router.push("/home");
                     }
                 })
             } catch (error) {

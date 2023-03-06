@@ -1,8 +1,9 @@
 <template>
+  <div class="upper-space"></div>
   <header class="navbar" :class="{ open: navbarEl }">
     <div class="container">
       <router-link class="navbar__logo" :to="{ name: 'Home' }"
-        >Killcode 😎</router-link
+        >Killcode 💻</router-link
       >
       <div class="navbar__group">
         <ul class="navbar__navigation">
@@ -10,20 +11,12 @@
             <router-link :to="{ name: 'QuestionList' }">Câu hỏi</router-link>
           </li>
           <li>
-            <router-link :to="{ name: 'Editor' }">Viết bài</router-link>
-          </li>
-          <li>
-            <router-link :to="{ name: 'Test' }">Test</router-link>
+            <router-link :to="{ name: 'PostsList' }">Bài viết</router-link>
           </li>
         </ul>
         <div class="navbar__group-icon">
-          <i
-            class="navbar__search-btn bx bx-search-alt"
-            :class="{ active: searchBtn }"
-            @click="isActive"
-          ></i>
           <template v-if="!authStore.user">
-            <LinkLogin/>
+            <BtnLogin/>
           </template>
           <template v-else>
             <!-- user -->
@@ -41,6 +34,7 @@
               </button>
               <ul class="navbar__dropdown-menu dropdown-menu" aria-labelledby="dropdownMenuButton1">
                 <li><router-link class="navbar__ dropdown-item" :to="{ name: 'User' }">Hồ sơ</router-link></li>
+                <li><router-link class="navbar__ dropdown-item" :to="{ name: 'PostsCreate' }">Viết bài</router-link></li>
                 <li><BtnDarkMode/></li>
                 <li><button class="navbar__ dropdown-item" href="#" @click="authStore.handleLogout()">Đăng xuất</button></li>
               </ul>
@@ -50,9 +44,6 @@
           <i class="navbar__toggle-menu bx bx-menu" @click="showMenuRepon"></i>
         </div>
       </div>
-      <div class="navbar__search-box" :class="{ active: searchBox }">
-        <input type="text" placeholder="Search here . . ." />
-      </div>
     </div>
   </header>
 </template>
@@ -60,17 +51,11 @@
 <script setup>
 import { ref } from "vue";
 import BtnDarkMode from "@/components/ui/BtnDarkMode.vue";
-import LinkLogin from "@/components/ui/LinkLogin.vue";
+import BtnLogin from "@/components/ui/BtnLogin.vue";
 import { useAuthStore } from '@/stores/auth'
 const authStore = useAuthStore()
 var navbarEl = ref(false);
-var searchBtn = ref(false);
-var searchBox = ref(false);
 
-const isActive = () => {
-  searchBtn.value = !searchBtn.value;
-  searchBox.value = !searchBox.value;
-};
 const showMenuRepon = () => {
   navbarEl.value = !navbarEl.value;
 };
@@ -91,6 +76,10 @@ const showMenuRepon = () => {
   align-items: center;
   box-shadow: 0 15px 15px rgba(0, 0, 0, 0.05);
   z-index: 100;
+}
+.upper-space{
+  padding-bottom: 6rem;
+  background: #dee1e2;
 }
 .navbar .navbar__logo {
   color: var(--color-dark-mode);
@@ -166,38 +155,6 @@ const showMenuRepon = () => {
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
-.navbar .navbar__search-btn {
-  display: block;
-  color: var(--color-dark-mode);
-  font-size: 1.75em;
-  cursor: pointer;
-  z-index: 10;
-}
-.navbar .navbar__search-box {
-  position: absolute;
-  right: -100%;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  background: var(--color-light-mode);
-  align-items: center;
-  padding: 0 30px;
-  transition: 0.5s ease-in-out;
-}
-.navbar .navbar__search-box.active {
-  right: 0;
-}
-.navbar .navbar__search-box input {
-  width: 100%;
-  border: none;
-  outline: none;
-  height: 50px;
-  color: #333;
-  font-size: 1.25rem;
-  color: var(--color-dark-mode);
-  background: var(--color-light-mode);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.5);
 }
 .navbar .navbar__toggle-menu {
   position: relative;

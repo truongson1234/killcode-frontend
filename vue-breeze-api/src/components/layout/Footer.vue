@@ -1,4 +1,5 @@
 <template>
+  <div class="under-space"></div>
   <div class="footer-dark">
     <footer>
       <div class="container">
@@ -43,6 +44,10 @@
 <script setup></script>
 
 <style>
+.under-space{
+  padding-top: 3rem;
+  background: #dee1e2;
+}
 .footer-dark {
   padding:50px 0;
   color:var(--color-dark-mode);
