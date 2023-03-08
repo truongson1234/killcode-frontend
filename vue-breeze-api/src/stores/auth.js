@@ -14,7 +14,7 @@ export const useAuthStore = defineStore("auth", {
     },
     actions: {
         async getToken() {
-            await axios.get("/sanctum/csrf-cookie");
+            await axios.get("/sanctum/csrf-cookie")
         },
         async getUser() {
             await this.getToken();
@@ -46,8 +46,8 @@ export const useAuthStore = defineStore("auth", {
         async handleRegister(data) {
             await $('#loading').removeClass('hidden')
             this.authErrors = [];
-            await this.getToken();
             try {
+                await this.getToken();
                 await axios.post("/register", {
                     name: data.name,
                     email: data.email,
