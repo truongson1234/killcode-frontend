@@ -11,11 +11,15 @@ const form = ref({
 </script>
 <template>
     <!-- component -->
-    <main id="content" role="main" class="w-full max-w-md mx-auto p-6">
+    <div id="content" role="main" class="flex flex-col h-screen bg-gray-100 realative">
+        <!-- BUTTON BACK HOME  -->
+        <router-link :to="{name: 'Home'}" class="absolute top-3.5 left-3.5 py-1 px-2.5 bg-slate-800 rounded-sm hover:bg-slate-700 font-medium text-white text-lg">
+            <i class='bx bxs-home'></i>
+        </router-link>
         <div
-            class="mt-7 bg-white rounded-xl shadow-lg dark:bg-gray-800 dark:border-gray-700"
+            class="grid place-items-center mx-2 my-20 sm:my-auto"
         >
-            <div class="p-4 sm:p-7">
+            <div class="p-6 sm:p-10 bg-white rounded-xl shadow-lg dark:bg-gray-800 dark:border-gray-700">
                 <div class="text-center">
                     <h1
                         class="block text-2xl font-bold text-gray-800 dark:text-white"
@@ -26,14 +30,14 @@ const form = ref({
                         Bạn nhớ mật khẩu của bạn?
                         <router-link
                             :to="{ name: 'Login' }"
-                            class="text-blue-600 decoration-2 hover:underline font-medium"
+                            class="text-blue-600 decoration-2 font-medium"
                         >
                             Đăng nhập tại đây
                         </router-link>
                     </p>
                 </div>
 
-                <div class="mt-5">
+                <div class="mt-4">
                     <form
                         @submit.prevent="
                             authStore.handleForgotPassword(form.email)
@@ -74,7 +78,7 @@ const form = ref({
                             </div>
                             <button
                                 type="submit"
-                                class="py-3 px-4 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800"
+                                class="py-3 px-4 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800 leading-3"
                             >
                                 Đặt lại mật khẩu
                             </button>
@@ -83,5 +87,5 @@ const form = ref({
                 </div>
             </div>
         </div>
-    </main>
+    </div>
 </template>
