@@ -11,7 +11,11 @@
     })
 </script>
 <template>
-    <div class="flex flex-col h-screen bg-gray-100">
+    <div class="flex flex-col h-screen bg-gray-100 realative">
+        <!-- BUTTON BACK HOME  -->
+        <router-link :to="{name: 'Home'}" class="absolute top-3.5 left-3.5 py-1 px-2.5 bg-slate-800 rounded-sm hover:bg-slate-700 font-medium text-white text-lg">
+            <i class='bx bxs-home'></i>
+        </router-link>
         <div class="grid place-items-center mx-2 my-20 sm:my-auto">
             <div class="w-11/12 p-12 sm:w-8/12 md:w-6/12 lg:w-5/12 2xl:w-4/12 
                 px-6 py-10 sm:px-10 sm:py-6 
@@ -27,7 +31,7 @@
                     <input id="email" type="email" name="email" v-model="form.email" placeholder="Địa chỉ e-mail" autocomplete="email"
                         class="block w-full py-2 px-1 mt-1 mb-2
                         text-gray-800 appearance-none 
-                        border-b-2 border-gray-100
+                        border-t-0 border-r-0 border-l-0 border-b-2 border-gray-100
                         focus:text-gray-500 focus:outline-none focus:border-gray-200" />
                     <div v-if="authStore.errors.email">
                         <span class="text-red-400 text-sm p-2 px-0">{{ authStore.errors.email[0] }}</span>
@@ -37,7 +41,7 @@
                     <input id="password" type="password" name="password" v-model="form.password" placeholder="Mật khẩu" autocomplete="current-password"
                         class="block w-full py-2 px-1 mt-1 mb-2
                         text-gray-800 appearance-none 
-                        border-b-2 border-gray-100
+                        border-t-0 border-r-0 border-l-0 border-b-2 border-gray-100 
                         focus:text-gray-500 focus:outline-none focus:border-gray-200" />
                     <div v-if="authStore.errors.password">
                         <span class="text-red-400 text-sm p-2 px-0">{{ authStore.errors.password[0] }}</span>
@@ -52,7 +56,7 @@
 
                     <!-- Another Auth Routes -->
                     <div class="sm:flex sm:flex-wrap mt-8 sm:mb-4 text-sm text-center">
-                        <router-link :to="{name: 'ForgotPassword'}" class="flex-2 underline">
+                        <router-link :to="{name: 'ForgotPassword'}" class="flex-2">
                             Quên mật khẩu?
                         </router-link>
 
@@ -60,7 +64,7 @@
                             hoặc
                         </p>
             
-                        <router-link :to="{ name: 'Register' }" class="flex-2 underline">
+                        <router-link :to="{ name: 'Register' }" class="flex-2">
                             Tạo mới tài khoản?
                         </router-link>
                     </div>
@@ -69,3 +73,8 @@
         </div>
     </div>
 </template>
+<style scoped>
+.focus\:border-gray-200:focus {
+    box-shadow: none;
+}
+</style>
