@@ -43,6 +43,13 @@ const routes = [
         }
     ], name: 'Question',component: () => import ('@/pages/question/Index.vue') },
     { path: '/test', name: 'Test',component: () => import ('@/pages/Test.vue') },
+    { path: '/admin', children: [
+        {
+            path: '',
+            name: 'Dashboard',
+            component: () => import ('@/pages/admin/Dashboard.vue')
+        }
+    ], name: 'Admin',component: () => import ('@/pages/admin/Index.vue') },
 ]
 
 const router = createRouter({

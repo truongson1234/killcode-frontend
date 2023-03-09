@@ -14,7 +14,7 @@ export const useAuthStore = defineStore("auth", {
     },
     actions: {
         async getToken() {
-            await axios.get("/sanctum/csrf-cookie");
+            await axios.get("/sanctum/csrf-cookie")
         },
         async getUser() {
             await this.getToken();
@@ -24,8 +24,8 @@ export const useAuthStore = defineStore("auth", {
         async handleLogin(data) {
             await $('#loading').removeClass('hidden')
             this.authErrors = [];
-            await this.getToken();
             try {
+                await this.getToken();
                 const response = await axios.post("/login", {
                     email: data.email,
                     password: data.password,
@@ -46,8 +46,8 @@ export const useAuthStore = defineStore("auth", {
         async handleRegister(data) {
             await $('#loading').removeClass('hidden')
             this.authErrors = [];
-            await this.getToken();
             try {
+                await this.getToken();
                 await axios.post("/register", {
                     name: data.name,
                     email: data.email,
@@ -81,8 +81,8 @@ export const useAuthStore = defineStore("auth", {
         async handleForgotPassword(email) {
             await $('#loading').removeClass('hidden')
             this.authErrors = [];
-            await this.getToken();
             try {
+                await this.getToken();
                 const response = await axios.post("/forgot-password", {
                     email: email,
                 });
@@ -120,9 +120,6 @@ export const useAuthStore = defineStore("auth", {
                     this.authStatus = null;
                 }
             }
-        },
-        testSweet() {
-            
         }
     },
 });

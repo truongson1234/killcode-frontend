@@ -13,6 +13,7 @@
       'ForgotPassword',
       'PasswordReset',
       'SendVerifyEmail',
+      'Dashboard'
     ]
     return !list.includes(router.name);
   }
@@ -24,6 +25,7 @@
       'ForgotPassword',
       'PasswordReset',
       'SendVerifyEmail',
+      'Dashboard'
     ]
     return !list.includes(router.name);
   }
