@@ -42,7 +42,6 @@ const routes = [
             component: () => import ('@/pages/question/Detail.vue')
         }
     ], name: 'Question',component: () => import ('@/pages/question/Index.vue') },
-    { path: '/editor', name: 'Editor',component: () => import ('@/pages/Editor.vue') },
     { path: '/test', name: 'Test',component: () => import ('@/pages/Test.vue') },
 ]
 
