@@ -16,8 +16,8 @@ window.jQuery = jQuery;
 // bootstrap
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-import Popper from 'popper.js';
-window.Popper = Popper;
+// import Popper from 'popper.js';
+// window.Popper = Popper;
 
 // css
 import '@/assets/css/style.css';

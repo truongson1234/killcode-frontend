@@ -3,12 +3,15 @@
   <header class="navbar" :class="{ open: navbarEl }">
     <div class="container">
       <router-link class="navbar__logo" :to="{ name: 'Home' }"
-        >Killcode 💻</router-link
+        >Killcode</router-link
       >
       <div class="navbar__group">
         <ul class="navbar__navigation">
           <li>
             <router-link :to="{ name: 'QuestionList' }">Câu hỏi</router-link>
+          </li>
+          <li>
+            <router-link :to="{ name: 'Test' }">Test</router-link>
           </li>
           <li>
             <router-link :to="{ name: 'PostsList' }">Bài viết</router-link>

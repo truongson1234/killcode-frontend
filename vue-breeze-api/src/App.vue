@@ -3,7 +3,6 @@
   // components
   import Navbar from "@/components/layout/Navbar.vue";
   import Footer from "@/components/layout/Footer.vue";
-
   const router = useRoute();
   const showNavbar = () => {
     const list = [
@@ -13,7 +12,8 @@
       'ForgotPassword',
       'PasswordReset',
       'SendVerifyEmail',
-      'Dashboard'
+      'Dashboard',
+      'Admin-Roles'
     ]
     return !list.includes(router.name);
   }
@@ -25,7 +25,8 @@
       'ForgotPassword',
       'PasswordReset',
       'SendVerifyEmail',
-      'Dashboard'
+      'Dashboard',
+      'Admin-Roles'
     ]
     return !list.includes(router.name);
   }
@@ -50,19 +51,19 @@
 <style scoped>
 .wrapper{
   color: #000;
-  background: var(--color-light-mode);
+  /* background: var(--color-light-mode); */
   border-radius: 4px;
 }
 #loading {
   height: 100vh;
   width: 100vw;
   position: absolute;
-  z-index: 1000;
+  z-index: 99;
 }
 #loading::after {
   content: '';
   position: absolute;
-  background-color: rgba(0,0,0,0.2);
+  /* background-color: rgba(0,0,0,0.2); */
   height: 100%;
   width: 100%;
 }

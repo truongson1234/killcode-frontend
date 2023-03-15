@@ -55,12 +55,20 @@ const form = ref({
                                         type="email"
                                         id="email"
                                         name="email"
-                                        class="py-2 px-3 block w-full border-2 border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 shadow-sm"
+                                        class="py-2 px-3 block w-full border-2 border-gray-200 rounded-md text-sm focus:border-black shadow-sm"
                                         aria-describedby="email-error"
                                         v-model="form.email"
                                     />
                                 </div>
-                                <div v-if="authStore.errors.email">
+                                <div v-if="(authStore.errors.email && authStore.errors.email[0] == 'The email field is required.')">
+                                    <p
+                                        class="text-xs text-red-600 mt-2"
+                                        id="email-error"
+                                    >
+                                        Vui lòng nhập e-mail của bạn.
+                                    </p>
+                                </div>
+                                <div v-else-if="authStore.errors.email">
                                     <p
                                         class="text-xs text-red-600 mt-2"
                                         id="email-error"
@@ -78,7 +86,7 @@ const form = ref({
                             </div>
                             <button
                                 type="submit"
-                                class="py-3 px-4 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800 leading-3"
+                                class="py-3 px-4 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm hover:bg-gray-700 hover:shadow-none leading-3"
                             >
                                 Đặt lại mật khẩu
                             </button>
