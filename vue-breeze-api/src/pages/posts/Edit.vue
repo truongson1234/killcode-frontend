@@ -5,10 +5,6 @@
 </template>
 
 <script setup>
-import Editor from '@/components/article/AppCreatePost.vue.vue';
+import Editor from '@/components/article/AppEditPost.vue';
 
 </script>
-
-<style lang="scss" scoped>
-
-</style>

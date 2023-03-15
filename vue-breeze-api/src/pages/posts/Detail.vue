@@ -27,7 +27,7 @@ export default {
         fetchData(id) {
             axios.get(`/api/posts/${id}`)
                 .then((response) => {
-                    this.post = response.data;
+                    this.post = response.data.data;
                 })
                 .catch((error) => {
                     console.log(error);

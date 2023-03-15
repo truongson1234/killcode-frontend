@@ -35,7 +35,9 @@ class PostController extends Controller
     {
         $post = Post::findOrFail($id);
 
-        return response()->json($post);
+        return response()->json([
+            'data' => $post
+        ]);
     }
 
     public function store(Request $request)
