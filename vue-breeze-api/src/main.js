@@ -1,10 +1,10 @@
 // import
 import { createApp, markRaw } from 'vue';
 import { createPinia } from 'pinia';
+import CKEditor from '@ckeditor/ckeditor5-vue';
 import router from './router';
 import swal from 'sweetalert2';
 import jQuery from 'jquery';
-
 // component
 import App from '@/App.vue';
 
@@ -36,6 +36,7 @@ pinia.use(({ store }) => {
 
 const app = createApp(App);
 
-app.use(pinia)
-app.use(router)
+app.use(pinia);
+app.use(router);
+app.use(CKEditor)
 app.mount('#app');

@@ -28,3 +28,8 @@ img{
 #app {
   background: #dee1e2;
 }
+.wrapper{
+  color: #000;
+  background: var(--color-light-mode);
+  border-radius: 4px;
+}
