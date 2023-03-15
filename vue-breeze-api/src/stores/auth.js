@@ -17,9 +17,18 @@ export const useAuthStore = defineStore("auth", {
             await axios.get("/sanctum/csrf-cookie")
         },
         async getUser() {
-            await this.getToken();
-            const data = await axios.get("/api/user");
-            this.authUser = data.data;
+            try {
+                await this.getToken();
+                const data = await axios.get("/api/user");
+                if(data.data) {
+                    this.authUser = data.data;
+                }else {
+                    localStorage.removeItem('isAuthenticated')
+                }
+
+            } catch (error) {
+                
+            }
         },
         async handleLogin(data) {
             await $('#loading').removeClass('hidden')
@@ -32,9 +41,8 @@ export const useAuthStore = defineStore("auth", {
                 });
                 console.log(response);
                 await $('#loading').addClass('hidden')
-                this.getUser()
+                localStorage.setItem('isAuthenticated', true)
                 this.router.push("/home");
-                // window.location.reload()
             } catch (error) {
                 if (error.response.status == 422) {
                     await $('#loading').addClass('hidden')
@@ -42,6 +50,9 @@ export const useAuthStore = defineStore("auth", {
                     console.log(this.authErrors);
                 }
             }
+        },
+        async checkAuth() {
+            return localStorage.getItem('isAuthenticated')
         },
         async handleRegister(data) {
             await $('#loading').removeClass('hidden')
@@ -76,6 +87,7 @@ export const useAuthStore = defineStore("auth", {
         },
         async handleLogout() {
             await axios.post("/logout");
+            localStorage.removeItem('isAuthenticated')
             this.authUser = null;
         },
         async handleForgotPassword(email) {

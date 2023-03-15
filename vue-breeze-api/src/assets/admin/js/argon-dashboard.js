@@ -25,8 +25,6 @@ if (isWindows) {
     }
 }
 
-
-
 // when input is focused add focused class for style
 function focused(el) {
     if (el.parentElement.classList.contains("input-group")) {
@@ -48,88 +46,113 @@ function setAttributes(el, options) {
     });
 }
 
-
 // Fixed Plugin
 export function configDOM() {
-  // Verify navbar blur on scroll
-  if (document.getElementById("navbarBlur")) {
-    navbarBlurOnScroll("navbarBlur");
-  }
+    // Verify navbar blur on scroll
+    if (document.getElementById("navbarBlur")) {
+        navbarBlurOnScroll("navbarBlur");
+    }
 
-  // initialization of Tooltips
-  var tooltipTriggerList = [].slice.call(
-    document.querySelectorAll('[data-bs-toggle="tooltip"]')
-  );
-  var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-    return new bootstrap.Tooltip(tooltipTriggerEl);
-  });
-
-  // adding on inputs attributes for calling the focused and defocused functions
-  if (document.querySelectorAll(".input-group").length != 0) {
-    var allInputs = document.querySelectorAll("input.form-control");
-    allInputs.forEach((el) =>
-        setAttributes(el, {
-            onfocus: "focused(this)",
-            onfocusout: "defocused(this)",
-        })
+    // initialization of Tooltips
+    var tooltipTriggerList = [].slice.call(
+        document.querySelectorAll('[data-bs-toggle="tooltip"]')
     );
-  }
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
 
-  if (document.querySelector(".fixed-plugin")) {
-      var fixedPlugin = document.querySelector(".fixed-plugin");
-      var fixedPluginButton = document.querySelector(".fixed-plugin-button");
-      var fixedPluginButtonNav = document.querySelector(
-          ".fixed-plugin-button-nav"
-      );
-      var fixedPluginCard = document.querySelector(".fixed-plugin .card");
-      var fixedPluginCloseButton = document.querySelectorAll(
-          ".fixed-plugin-close-button"
-      );
-      var navbar = document.getElementById("navbarBlur");
-      var buttonNavbarFixed = document.getElementById("navbarFixed");
-  
-      if (fixedPluginButton) {
-          fixedPluginButton.onclick = function () {
-              if (!fixedPlugin.classList.contains("show")) {
-                  fixedPlugin.classList.add("show");
-              } else {
-                  fixedPlugin.classList.remove("show");
-              }
-          };
-      }
-  
-      if (fixedPluginButtonNav) {
-          fixedPluginButtonNav.onclick = function () {
-              if (!fixedPlugin.classList.contains("show")) {
-                  fixedPlugin.classList.add("show");
-              } else {
-                  fixedPlugin.classList.remove("show");
-              }
-          };
-      }
-  
-      fixedPluginCloseButton.forEach(function (el) {
-          el.onclick = function () {
-              fixedPlugin.classList.remove("show");
-          };
-      });
-  
-      document.querySelector("body").onclick = function (e) {
-          if (
-              e.target != fixedPluginButton &&
-              e.target != fixedPluginButtonNav &&
-              e.target.closest(".fixed-plugin .card") != fixedPluginCard
-          ) {
-              fixedPlugin.classList.remove("show");
-          }
-      };
-  
-      if (navbar) {
-          if (navbar.getAttribute("data-scroll") == "true" && buttonNavbarFixed) {
-              buttonNavbarFixed.setAttribute("checked", "true");
-          }
-      }
-  }
+    // adding on inputs attributes for calling the focused and defocused functions
+    if (document.querySelectorAll(".input-group").length != 0) {
+        var allInputs = document.querySelectorAll("input.form-control");
+        allInputs.forEach((el) =>
+            setAttributes(el, {
+                onfocus: "focused(this)",
+                onfocusout: "defocused(this)",
+            })
+        );
+    }
+
+    if (document.querySelector(".fixed-plugin")) {
+        var fixedPlugin = document.querySelector(".fixed-plugin");
+        var fixedPluginButton = document.querySelector(".fixed-plugin-button");
+        var fixedPluginButtonNav = document.querySelector(
+            ".fixed-plugin-button-nav"
+        );
+        var fixedPluginCard = document.querySelector(".fixed-plugin .card");
+        var fixedPluginCloseButton = document.querySelectorAll(
+            ".fixed-plugin-close-button"
+        );
+        var navbar = document.getElementById("navbarBlur");
+        var buttonNavbarFixed = document.getElementById("navbarFixed");
+
+        if (fixedPluginButton) {
+            fixedPluginButton.onclick = function () {
+                if (!fixedPlugin.classList.contains("show")) {
+                    fixedPlugin.classList.add("show");
+                } else {
+                    fixedPlugin.classList.remove("show");
+                }
+            };
+        }
+
+        if (fixedPluginButtonNav) {
+            fixedPluginButtonNav.onclick = function () {
+                if (!fixedPlugin.classList.contains("show")) {
+                    fixedPlugin.classList.add("show");
+                } else {
+                    fixedPlugin.classList.remove("show");
+                }
+            };
+        }
+
+        fixedPluginCloseButton.forEach(function (el) {
+            el.onclick = function () {
+                fixedPlugin.classList.remove("show");
+            };
+        });
+
+        document.querySelector("body").onclick = function (e) {
+            if (
+                e.target != fixedPluginButton &&
+                e.target != fixedPluginButtonNav &&
+                e.target.closest(".fixed-plugin .card") != fixedPluginCard
+            ) {
+                fixedPlugin.classList.remove("show");
+            }
+        };
+
+        if (navbar) {
+            if (
+                navbar.getAttribute("data-scroll") == "true" &&
+                buttonNavbarFixed
+            ) {
+                buttonNavbarFixed.setAttribute("checked", "true");
+            }
+        }
+    }
+    // Resize navbar color depends on configurator active type of sidenav
+
+    // let referenceButtons = document.querySelector("[data-class]");
+    // window.addEventListener("resize", navbarColorOnResize);
+    
+    // function navbarColorOnResize() {
+    //     if (window.innerWidth > 1200) {
+    //         if (
+    //             referenceButtons.classList.contains("active") &&
+    //             referenceButtons.getAttribute("data-class") === "bg-transparent"
+    //         ) {
+    //             sidenav.classList.remove("bg-white");
+    //         } else {
+    //             if (!body.classList.contains("dark-version")) {
+    //                 sidenav.classList.add("bg-white");
+    //             }
+    //         }
+    //     } else {
+    //         sidenav.classList.add("bg-white");
+    //         sidenav.classList.remove("bg-transparent");
+    //     }
+    // }
+    
 }
 
 //Set Sidebar Color
@@ -450,30 +473,6 @@ html.addEventListener("click", function (e) {
         body.classList.remove(className);
     }
 });
-
-// Resize navbar color depends on configurator active type of sidenav
-
-let referenceButtons = document.querySelector("[data-class]");
-
-window.addEventListener("resize", navbarColorOnResize);
-
-function navbarColorOnResize() {
-    if (window.innerWidth > 1200) {
-        if (
-            referenceButtons.classList.contains("active") &&
-            referenceButtons.getAttribute("data-class") === "bg-transparent"
-        ) {
-            sidenav.classList.remove("bg-white");
-        } else {
-            if (!body.classList.contains("dark-version")) {
-                sidenav.classList.add("bg-white");
-            }
-        }
-    } else {
-        sidenav.classList.add("bg-white");
-        sidenav.classList.remove("bg-transparent");
-    }
-}
 
 // Deactivate sidenav type buttons on resize and small screens
 window.addEventListener("resize", sidenavTypeOnResize);

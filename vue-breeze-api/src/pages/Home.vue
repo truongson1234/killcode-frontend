@@ -50,7 +50,11 @@ import QuestionItem from "@/components/ui/QuestionItem.vue";
 import { useAuthStore } from "@/stores/auth";
 const authStore = useAuthStore();
 onMounted(async () => {
+    await $('#loading').removeClass('hidden')
     await authStore.getUser();
+    await setTimeout(() => {
+        $('#loading').addClass('hidden')
+    }, 1000)
 });
 const QuestionsData = ref([
     {

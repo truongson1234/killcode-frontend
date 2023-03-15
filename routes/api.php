@@ -39,6 +39,21 @@ Route::group(['prefix' => 'questions'], function () {
     Route::delete('{id}', 'App\Http\Controllers\QuestionController@destroy');
 });
 
+// roles api
+Route::group(['prefix' => 'roles'], function () {
+    Route::get('', 'App\Http\Controllers\RolesController@index');
+    Route::post('', 'App\Http\Controllers\RolesController@store');
+    Route::delete('{id}', 'App\Http\Controllers\RolesController@destroy');
+    Route::put('{id}', 'App\Http\Controllers\RolesController@update');
+});
+
+Route::group(['prefix' => 'users'], function () {
+    Route::get('', 'App\Http\Controllers\UserController@index');
+    // Route::post('', 'App\Http\Controllers\RolesController@store');
+    // Route::delete('{id}', 'App\Http\Controllers\RolesController@destroy');
+    // Route::put('{id}', 'App\Http\Controllers\RolesController@update');
+});
+
 // tags api
 Route::group(['prefix' => 'tags'], function () {
     Route::post('follow', 'TagController@followTag');
