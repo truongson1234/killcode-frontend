@@ -8,12 +8,26 @@ use App\Models\Post;
 
 class PostController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $posts = Post::all();
+        $currentPage = $request->input('page', 1);
+        $perPage = $request->input('perPage', 3);
+        
+        $paginator = Post::with('user')->paginate($perPage);
+        $posts = collect($paginator->items())
+            ->map(function ($post) {
+                $post->author = [
+                    'name' => $post->user->name,
+                    'email' => $post->user->email,
+                ];
+                unset($post->user);
+                return $post;
+            });
 
         return response()->json([
-            'data' => $posts
+            'currentPage' => $paginator->currentPage(),
+            'totalPages' => $paginator->lastPage(),
+            'data' => $posts->all()
         ]);
     }
 
@@ -21,9 +35,7 @@ class PostController extends Controller
     {
         $post = Post::findOrFail($id);
 
-        return response()->json([
-            'data' => $post
-        ]);
+        return response()->json($post);
     }
 
     public function store(Request $request)

@@ -49,11 +49,6 @@
   </main>
 </template>
 <style scoped>
-.wrapper{
-  color: #000;
-  /* background: var(--color-light-mode); */
-  border-radius: 4px;
-}
 #loading {
   height: 100vh;
   width: 100vw;
