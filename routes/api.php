@@ -56,11 +56,5 @@ Route::group(['prefix' => 'users'], function () {
 
 // tags api
 Route::group(['prefix' => 'tags'], function () {
-    Route::post('follow', 'TagController@followTag');
-    Route::post('unfollow', 'TagController@unfollowTag');
-    Route::get('/', 'TagController@getAllTags');
-    Route::get('{tag_id}', 'TagController@getTag');
-    Route::get('{tag_id}/posts', 'TagController@getTagPosts');
-    Route::get('{tag_id}/users', 'TagController@getTagFollowers');
-    Route::get('{user_id}/user_tags', 'TagController@getUserTags');
+    Route::get('search', 'App\Http\Controllers\TagController@search');
 });

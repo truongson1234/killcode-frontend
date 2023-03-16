@@ -9,37 +9,45 @@ use Illuminate\Http\Request;
 
 class TagController extends Controller
 {
-    // Follow tag
-    public function followTag(Request $request)
+    public function search(Request $request)
     {
-        $user_id = $request->user_id;
-        $tag_id = $request->tag_id;
-        
-        $tag_user = new TagUser();
-        $tag_user->user_id = $user_id;
-        $tag_user->tag_id = $tag_id;
-        $tag_user->save();
-        
-        $tag = Tag::find($tag_id);
-        $tag->followers_count = $tag->followers()->count();
-        
-        return response()->json($tag);
+        $query = $request->input('q');
+        $tags = Tag::where('name', 'LIKE', '%' . $query . '%')->get();
+
+        return response()->json($tags);
     }
 
-    // Unfollow tag
-    public function unfollowTag(Request $request)
-    {
-        $user_id = $request->user_id;
-        $tag_id = $request->tag_id;
+    // // Follow tag
+    // public function followTag(Request $request)
+    // {
+    //     $user_id = $request->user_id;
+    //     $tag_id = $request->tag_id;
         
-        $tag_user = TagUser::where('user_id', $user_id)->where('tag_id', $tag_id)->first();
-        $tag_user->delete();
+    //     $tag_user = new TagUser();
+    //     $tag_user->user_id = $user_id;
+    //     $tag_user->tag_id = $tag_id;
+    //     $tag_user->save();
         
-        $tag = Tag::find($tag_id);
-        $tag->followers_count = $tag->followers()->count();
+    //     $tag = Tag::find($tag_id);
+    //     $tag->followers_count = $tag->followers()->count();
         
-        return response()->json($tag);
-    }
+    //     return response()->json($tag);
+    // }
+
+    // // Unfollow tag
+    // public function unfollowTag(Request $request)
+    // {
+    //     $user_id = $request->user_id;
+    //     $tag_id = $request->tag_id;
+        
+    //     $tag_user = TagUser::where('user_id', $user_id)->where('tag_id', $tag_id)->first();
+    //     $tag_user->delete();
+        
+    //     $tag = Tag::find($tag_id);
+    //     $tag->followers_count = $tag->followers()->count();
+        
+    //     return response()->json($tag);
+    // }
 
     // // Thống kê tags của 1 user
     // public function getUserTags($user_id)
