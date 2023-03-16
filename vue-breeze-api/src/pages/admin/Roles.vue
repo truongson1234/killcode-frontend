@@ -1,8 +1,11 @@
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, onBeforeMount } from "vue";
+import axios from 'axios'
 import { useRolesStore } from "@/stores/roles.js";
 import { initModals } from "flowbite";
+import TagInput from "@/components/ui/TagInput.vue";
 const rolesStore = useRolesStore();
+const roles = [];
 const formAddRole = ref({
     name: "",
 });
@@ -13,12 +16,24 @@ const formEditRole = ref({
 const formEditUserRole = ref({
     id: "",
     name: "",
-    role: [],
+    roles: [],
 });
 const checkValiAddRole = ref(null);
 const checkValiEditRole = ref(null);
+var errorUserRole = ref('')
 const sortKey = ref('')
 const sortOrder = ref(1)
+onBeforeMount(() => {
+    axios
+        .get("/api/roles")
+        .then((response) => {
+            roles = response.data.map((tag) => tag.name);
+            console.log(response.data)
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+})
 onMounted(async () => {
     initModals();
     await rolesStore.getRoles();
@@ -27,6 +42,7 @@ onMounted(async () => {
 const listRoles = computed(() => {
     return rolesStore.listRoles;
 });
+
 const listUsers = computed(() => {
     if (rolesStore.listUsers !== null && typeof rolesStore.listUsers !== 'undefined') {
         return rolesStore.listUsers.sort((a, b) => {
@@ -37,15 +53,58 @@ const listUsers = computed(() => {
             if (a[sortKey.value] > b[sortKey.value]) {
                 return 1 * modifier;
             }
+            if (a[sortKey.value] === null && b[sortKey.value] === null) {
+                return 0;
+            }
+            if (a[sortKey.value] === null) {
+                return modifier * 1;
+            }
+            if (b[sortKey.value] === null) {
+                return modifier * -1;
+            }
             return 0;
         });
     }
 });
+const updatedRole = computed(() => {
+    return formEditUserRole.value.roles
+})
+const isReadonly = computed(() => {
+    const roles = formEditUserRole.value.roles
+    return roles.length > 4 ? true : false
+})
+const updateRole = (async (newRole) => {
+    await rolesStore.handleAddRoleForUser(formEditUserRole.value.id, newRole.id)
+    .then(response => {
+        if(rolesStore.getUserRoleError == 'success!') {
+            formEditUserRole.value.roles.push(newRole)
+            errorUserRole.value = ''
+        }else {
+            errorUserRole.value = rolesStore.getUserRoleError
+        }
+    })
+    .catch(err => {
+
+    })
+})
+const removeRoleUser = (async(user_id, role_id, role) => {
+    await rolesStore.handleRemoveRoleForUser(user_id, role_id)
+    .then(() => {
+        if(rolesStore.getUserRoleError == 'success!') {
+            const index = formEditUserRole.value.roles.indexOf(role);
+            if (index !== -1) {
+                formEditUserRole.value.roles.splice(index, 1);
+            }
+        }
+    })
+    .catch(() => {
+
+    }) 
+})
 const modelValueEditRole = (event) => {
     formEditRole.value.name = event.target.value;
 };
 const deleteRole = (id, name) => {
-    console.log(name);
     Swal.fire({
         title: "",
         text: `Bạn có chắc muốn xóa quyền "${name}" ?`,
@@ -96,7 +155,6 @@ const addRole = (form) => {
     }
 };
 const valiEmptyInput = (name_condition, value) => {
-    console.log(value)
     if(value == '') {
         if(name_condition == 'checkValiEditRole') checkValiEditRole.value = true
         else if(name_condition == 'checkValiAddRole') checkValiAddRole.value = true
@@ -129,6 +187,8 @@ const showModalEditUserRole = (id,name,roles) => {
     formEditUserRole.value.id = id
     formEditUserRole.value.name = name
     formEditUserRole.value.roles = roles
+    errorUserRole.value = ''
+    
     $("#modal-edit-user-role").removeClass("hidden");
 };
 const showModalEditRole = (id, name) => {
@@ -144,12 +204,15 @@ const closeModalEditUserRole = () => {
     $("#modal-edit-user-role").addClass("hidden");
 };
 const formatDateTime = (date_time) => {
-    const date = new Date(date_time);
-    const day = date.getDate().toString().padStart(2, "0");
-    const month = (date.getMonth() + 1).toString().padStart(2, "0");
-    const year = date.getFullYear().toString();
-    const formattedDate = `${day}/${month}/${year}`;
-    return formattedDate;
+    if(date_time != null) {
+        const date = new Date(date_time);
+        const day = date.getDate().toString().padStart(2, "0");
+        const month = (date.getMonth() + 1).toString().padStart(2, "0");
+        const year = date.getFullYear().toString();
+        const formattedDate = `${day}/${month}/${year}`;
+        return formattedDate;
+    }
+    return ''
 };
 const sortTable = (key) => {
     if (sortKey.value === key) {
@@ -180,28 +243,27 @@ const sortIcon = (column) => {
                                 id="table-user">
                                 <thead>
                                     <tr>
-                                        <th @click="sortTable('name')" style="content: normal;"
+                                        <th @click="sortTable('name')"
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 cursor-pointer column-name">
                                             Tên <i :class="sortIcon('name')"></i>
                                         </th>
-                                        <th @click="sortTable('email')" style="content: normal;"
+                                        <th @click="sortTable('email')"
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 cursor-pointer column-email">
                                             E-mail <i
                                                 :class="sortIcon('email')"></i>
 
                                         </th>
-                                        <th @click="sortTable('role_name')" style="content: normal;"
+                                        <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2 cursor-pointer column-role">
-                                            Quyền hạn <i
-                                                :class="sortIcon('role_name')"></i>
+                                            Quyền hạn
                                         </th>
-                                        <th @click="sortTable('email_verified_at')" style="content: normal;"
+                                        <th @click="sortTable('email_verified_at')"
                                             class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 cursor-pointer column-status">
                                             Trạng thái <i
                                                 :class="sortIcon('email_verified_at')"></i>
 
                                         </th>
-                                        <th @click="sortTable('created_at')" style="content: normal;"
+                                        <th @click="sortTable('created_at')"
                                             class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 cursor-pointer column-created-at">
                                             ngày tạo <i
                                                 :class="sortIcon('created_at')"></i>
@@ -241,9 +303,9 @@ const sortIcon = (column) => {
                                         <td>
                                             <span
                                                 class="bg-blue-100 text-blue-800 text-xs font-medium mr-1 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300"
-                                                v-for="role in item.role_name"
-                                                :key="role">
-                                                {{ role }}
+                                                v-for="role in item.role"
+                                                :key="role.id">
+                                                {{ role.name }}
                                             </span>
                                         </td>
                                         <td
@@ -262,7 +324,7 @@ const sortIcon = (column) => {
                                                 }}</span>
                                         </td>
                                         <td class="align-middle">
-                                            <button type="button" @click="showModalEditUserRole(item.id, item.name, item.role_name)"
+                                            <button type="button" @click="showModalEditUserRole(item.id, item.name, item.role)"
                                                 class="px-2 py-1.5 rounded-sm bg-green-600 text-white flex">
                                                 <i
                                                     class="bx bxs-edit self-center justify-self-center"></i>
@@ -296,17 +358,22 @@ const sortIcon = (column) => {
                                                         class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
                                                         Chỉnh sửa quyền của {{ formEditUserRole.name }} :
                                                     </h3>
+                                                    <p class="leading-8">Các quyền hiện tại: 
+                                                        <span v-for="role in updatedRole" :key="role.id" class="inline-flex items-center bg-blue-100 text-blue-800 text-sm font-medium mr-1 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300 ">
+                                                            {{ role.name }} <i class='bx bx-x text-lg pl-1 cursor-pointer' @click="removeRoleUser(formEditUserRole.id, role.id, role)"></i>
+                                                        </span>
+                                                    </p>
                                                     <form class="space-y-6"
                                                         @submit.prevent="">
-                                                        <input type="text"
-                                                            name="name-role"
-                                                            placeholder=""
-                                                            class="py-2 px-3 block w-full border-2 border-gray-200 rounded-md text-sm focus:border-black shadow-sm"
-                                                        />
-                                                        <button type="submit"
-                                                            class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                                            Chỉnh sửa
-                                                        </button>
+                                                        <tag-input
+                                                            :initial-tags="roles"
+                                                            :api-url="'/api/roles/search'"
+                                                            @add-item="updateRole"
+                                                            :is-readonly="isReadonly"
+                                                        ></tag-input>
+                                                        <div v-if="errorUserRole != ''" class="mt-0 mb-0">
+                                                        <span class="text-red-400 text-sm p-2 pt-3 px-0">{{ errorUserRole }}</span>
+                                                    </div>
                                                     </form>
                                                 </div>
                                             </div>
@@ -337,10 +404,6 @@ const sortIcon = (column) => {
                                         </th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Budget
-                                        </th>
-                                        <th
-                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                             Status
                                         </th>
                                         <th
@@ -364,12 +427,6 @@ const sortIcon = (column) => {
                                                 </h6>
                                             </div>
                                         </div>
-                                    </td>
-                                    <td>
-                                        <p
-                                            class="text-sm font-weight-bold mb-0">
-                                            $2,500
-                                        </p>
                                     </td>
                                     <td>
                                         <span

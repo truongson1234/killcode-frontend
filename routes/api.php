@@ -39,24 +39,19 @@ Route::group(['prefix' => 'questions'], function () {
     Route::delete('{id}', 'App\Http\Controllers\QuestionController@destroy');
 });
 
-<<<<<<<<< Temporary merge branch 1
-// tags api
-Route::group(['prefix' => 'tags'], function () {
-    Route::post('follow', 'TagController@followTag');
-    Route::post('unfollow', 'TagController@unfollowTag');
-    Route::get('/', 'TagController@getAllTags');
-    Route::get('{tag_id}', 'TagController@getTag');
-    Route::get('{tag_id}/posts', 'TagController@getTagPosts');
-    Route::get('{tag_id}/users', 'TagController@getTagFollowers');
-    Route::get('{user_id}/user_tags', 'TagController@getUserTags');
-});
-=========
 // roles api
 Route::group(['prefix' => 'roles'], function () {
     Route::get('', 'App\Http\Controllers\RolesController@index');
     Route::post('', 'App\Http\Controllers\RolesController@store');
     Route::delete('{id}', 'App\Http\Controllers\RolesController@destroy');
     Route::put('{id}', 'App\Http\Controllers\RolesController@update');
+    Route::get('search', 'App\Http\Controllers\RolesController@search');
+});
+
+// user roles api
+Route::group(['prefix' => 'user-roles'], function () {
+    Route::post('', 'App\Http\Controllers\UserRole@store');
+    Route::post('{user_id}&{role_id}', 'App\Http\Controllers\UserRole@destroy');
 });
 
 Route::group(['prefix' => 'users'], function () {
@@ -65,7 +60,6 @@ Route::group(['prefix' => 'users'], function () {
     // Route::delete('{id}', 'App\Http\Controllers\RolesController@destroy');
     // Route::put('{id}', 'App\Http\Controllers\RolesController@update');
 });
->>>>>>>>> Temporary merge branch 2
 
 // tags api
 Route::group(['prefix' => 'tags'], function () {

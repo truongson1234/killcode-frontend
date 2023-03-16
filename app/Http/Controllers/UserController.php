@@ -23,13 +23,16 @@ class UserController extends Controller
             $userRoles = DB::table('user_roles')
                 ->leftJoin('users', 'users.id', '=', 'user_roles.user_id')
                 ->leftJoin('roles', 'roles.id', '=', 'user_roles.role_id')
-                ->select('users.name', 'roles.name as role_name')
+                ->select('users.name', 'roles.name as role_name', 'roles.id as role_id')
                 ->where('users.id', $item->id)
                 ->get();
             foreach ($userRoles as $userRole) {
-                $roles[] = $userRole->role_name;
+                $roles[] = [
+                    'name' => $userRole->role_name,
+                    'id' => $userRole->role_id
+                ] ;
             }
-            $item->role_name = $roles;
+            $item->role = $roles;
         }
         return response()->json([
             'data' => $users,

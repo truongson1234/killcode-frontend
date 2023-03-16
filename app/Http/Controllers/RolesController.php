@@ -20,6 +20,14 @@ class RolesController extends Controller
         ]);
     }
 
+    public function search(Request $request)
+    {
+        $query = $request->input('q');
+        $tags = Roles::where('name', 'LIKE', '%' . $query . '%')->get();
+
+        return response()->json($tags);
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -55,6 +63,7 @@ class RolesController extends Controller
             'data' => $role
         ], 201);
     }
+
 
     /**
      * Display the specified resource.
