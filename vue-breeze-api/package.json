@@ -19,6 +19,7 @@
     "@ckeditor/ckeditor5-vue": "^4.0.1",
     "@ckeditor/vite-plugin-ckeditor5": "^0.1.1",
     "@headlessui/vue": "^1.7.12",
+    "@hennge/vue3-pagination": "^1.0.17",
     "@heroicons/vue": "^2.0.16",
     "@tinymce/tinymce-vue": "^4.0.7",
     "@vueuse/core": "^9.13.0",
@@ -33,8 +34,7 @@
     "popper.js": "^1.16.1",
     "sweetalert2": "^11.7.3",
     "vue": "^3.2.45",
-    "vue-router": "^4.1.6",
-    "vuejs-paginate": "^2.1.0"
+    "vue-router": "^4.1.6"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.0.0",

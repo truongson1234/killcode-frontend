@@ -1,70 +1,94 @@
 <template>
   <div>
-    <table>
+    <table class="table">
       <thead>
         <tr>
+          <th>ID</th>
           <th>Name</th>
-          <th>Email</th>
-          <th>Phone</th>
+          <th>Age</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(user, index) in paginatedUsers" :key="index">
-          <td>{{ user.name }}</td>
-          <td>{{ user.email }}</td>
-          <td>{{ user.phone }}</td>
+        <tr v-for="(item, index) in displayedItems" :key="index">
+          <td>{{ item.id }}</td>
+          <td>{{ item.name }}</td>
+          <td>{{ item.age }}</td>
         </tr>
       </tbody>
     </table>
-
-    <paginate :page-count="pageCount" :click-handler="changePage"
-      :prev-text="'Prev'" :next-text="'Next'" :container-class="'pagination'"
-      :page-class="'page-item'" :page-link-class="'page-link'"
-      :prev-class="'page-item'" :prev-link-class="'page-link'"
-      :next-class="'page-item'" :next-link-class="'page-link'"></paginate>
+    <v-pagination
+      v-model="page"
+      :pages="totalPages"
+      :range-size="1"
+      active-color="#DCEDFF"
+      @update:modelValue="onPageChanged"
+    />
   </div>
 </template>
 
 <script>
-import Paginate from 'vuejs-paginate';
+import VPagination from "@hennge/vue3-pagination";
+import "@hennge/vue3-pagination/dist/vue3-pagination.css";
 
 export default {
   components: {
-    Paginate,
+    VPagination,
   },
   data() {
     return {
-      users: [
-        { name: 'Alice', email: 'alice@example.com', phone: '555-1234' },
-        { name: 'Bob', email: 'bob@example.com', phone: '555-5678' },
-        { name: 'Charlie', email: 'charlie@example.com', phone: '555-9012' },
-        { name: 'David', email: 'david@example.com', phone: '555-3456' },
-        { name: 'Emily', email: 'emily@example.com', phone: '555-7890' },
-        { name: 'Frank', email: 'frank@example.com', phone: '555-2345' },
-        { name: 'Grace', email: 'grace@example.com', phone: '555-6789' },
-        { name: 'Henry', email: 'henry@example.com', phone: '555-0123' },
-        { name: 'Isabella', email: 'isabella@example.com', phone: '555-4567' },
-        { name: 'Jacob', email: 'jacob@example.com', phone: '555-8901' },
+      items: [
+        { id: 1, name: "John", age: 23 },
+        { id: 2, name: "Jane", age: 27 },
+        { id: 3, name: "Tom", age: 21 },
+        { id: 4, name: "Mary", age: 29 },
+        { id: 5, name: "Peter", age: 31 },
+        { id: 6, name: "Lucy", age: 25 },
+        { id: 7, name: "Mike", age: 19 },
+        { id: 8, name: "Lisa", age: 33 },
+        { id: 9, name: "David", age: 37 },
+        { id: 10, name: "Amy", age: 28 }
       ],
       currentPage: 1,
-      pageSize: 3,
+      page:1,
+      itemsPerPage: 1,
     };
   },
   computed: {
-    pageCount() {
-      return Math.ceil(this.users.length / this.pageSize);
+    // Compute the total number of pages
+    totalPages() {
+      return Math.ceil(this.items.length / this.itemsPerPage);
     },
-    paginatedUsers() {
-      const start = (this.currentPage - 1) * this.pageSize;
-      const end = start + this.pageSize;
-      return this.users.slice(start, end)
-    }
+    // Compute the items to show on the current page
+    displayedItems() {
+      const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+      const endIndex = startIndex + this.itemsPerPage;
+      return this.items.slice(startIndex, endIndex);
+    },
   },
   methods: {
-    changePage(page) {
+    onPageChanged(page) {
       this.currentPage = page;
     },
   },
-
-}
+};
 </script>
+
+<style>
+/* Table style */
+.table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.table td,
+.table th {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.table th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+</style>

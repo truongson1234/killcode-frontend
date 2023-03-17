@@ -4,6 +4,10 @@ import axios from 'axios'
 import { useRolesStore } from "@/stores/roles.js";
 import { initModals } from "flowbite";
 import TagInput from "@/components/ui/TagInput.vue";
+import VPagination from "@hennge/vue3-pagination";
+import "@hennge/vue3-pagination/dist/vue3-pagination.css";
+import "@/assets/admin/css/pagination-styles.css";
+import { start } from "@popperjs/core";
 const rolesStore = useRolesStore();
 const roles = [];
 const formAddRole = ref({
@@ -23,6 +27,9 @@ const checkValiEditRole = ref(null);
 var errorUserRole = ref('')
 const sortKey = ref('')
 const sortOrder = ref(1)
+const currentPage = ref(1)
+const pageRole = ref(1), pageUser = ref(1)
+const itemsPerPageRole = ref(2), itemsPerPageUser = ref(5)
 onBeforeMount(() => {
     axios
         .get("/api/roles")
@@ -66,6 +73,33 @@ const listUsers = computed(() => {
         });
     }
 });
+const totalPagesRole = computed(() => {
+    if(rolesStore.listRoles != null) {
+        return Math.ceil(rolesStore.listRoles.length / itemsPerPageRole.value);
+    }
+}) 
+const totalPagesUser = computed(() => {
+    if(rolesStore.listUsers != null) {
+        return Math.ceil(rolesStore.listUsers.length / itemsPerPageUser.value);
+    }
+}) 
+const displayedItemsRole = computed(() => {
+    const startIndex = (currentPage.value - 1) * itemsPerPageRole.value;
+    const endIndex = startIndex + itemsPerPageRole.value;
+    if(rolesStore.listRoles != null) {
+        return rolesStore.listRoles.slice(startIndex, endIndex);
+    }
+}) 
+const displayedItemsUser = computed(() => {
+    const startIndex = (currentPage.value - 1) * itemsPerPageUser.value;
+    const endIndex = startIndex + itemsPerPageUser.value;
+    if(rolesStore.listUsers != null) {
+        return rolesStore.listUsers.slice(startIndex, endIndex);
+    }
+}) 
+const onPageChanged = (page) => {
+    currentPage.value = page;
+}
 const updatedRole = computed(() => {
     return formEditUserRole.value.roles
 })
@@ -273,7 +307,7 @@ const sortIcon = (column) => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="item in listUsers" :key="item.id">
+                                    <tr v-for="item in displayedItemsUser" :key="item.id">
                                         <td>
                                             <div class="d-flex px-2 py-1">
                                                 <div>
@@ -383,6 +417,16 @@ const sortIcon = (column) => {
                             </table>
                         </div>
                     </div>
+                    <div v-if="listUsers != null && listUsers.length > itemsPerPageUser">
+                        <v-pagination
+                        v-model="pageUser"
+                        :pages="totalPagesUser"
+                        :range-size="1"
+                        active-color="#0074FF"
+                        class="my-3 pl-2"
+                        @update:modelValue="onPageChanged"
+                        />
+                    </div>
                 </div>
             </div>
         </div>
@@ -413,7 +457,7 @@ const sortIcon = (column) => {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="item in listRoles" :key="item.name">
+                                <tr v-for="item in displayedItemsRole" :key="item.name">
                                     <td>
                                         <div class="d-flex px-2">
                                             <div>
@@ -518,6 +562,16 @@ const sortIcon = (column) => {
                             </tbody>
                         </table>
                     </div>
+                </div>
+                <div v-if="listRoles != null && listRoles.length > itemsPerPageRole">
+                    <v-pagination
+                    v-model="pageRole"
+                    :pages="totalPagesRole"
+                    :range-size="1"
+                    active-color="#0074FF"
+                    class="my-3 pl-2"
+                    @update:modelValue="onPageChanged"
+                    />
                 </div>
             </div>
         </div>
@@ -1034,5 +1088,8 @@ const sortIcon = (column) => {
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.2);
+}
+.hennge-pagination-custom button.Page-active{
+  color: #fff!important;
 }
 </style>

@@ -14,7 +14,7 @@ class RolesController extends Controller
      */
     public function index()
     {
-        $roles = Roles::all();
+        $roles = Roles::orderByDesc('created_at')->get();
         return response()->json([
             'data' => $roles
         ]);

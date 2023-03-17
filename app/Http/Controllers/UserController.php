@@ -17,7 +17,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::all();
+        $users = User::orderByDesc('created_at')->get();
         foreach ($users as $item) {
             $roles = [];
             $userRoles = DB::table('user_roles')
