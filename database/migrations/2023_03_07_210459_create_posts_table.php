@@ -19,7 +19,6 @@ class CreatePostsTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->string('title');
             $table->text('body');
-            $table->json('tags')->nullable();
             $table->integer('views')->default(0);
             $table->integer('likes')->default(0);
             $table->timestamps();

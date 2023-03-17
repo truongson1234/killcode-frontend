@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Post;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
 
 class PostController extends Controller
 {
@@ -13,13 +15,14 @@ class PostController extends Controller
         $currentPage = $request->input('page', 1);
         $perPage = $request->input('perPage', 3);
         
-        $paginator = Post::with('user')->paginate($perPage);
+        $paginator = Post::with(['user', 'tags'])->paginate($perPage);
         $posts = collect($paginator->items())
             ->map(function ($post) {
                 $post->author = [
                     'name' => $post->user->name,
                     'email' => $post->user->email,
                 ];
+                $post->tags = $post->tags;
                 unset($post->user);
                 return $post;
             });
@@ -48,10 +51,15 @@ class PostController extends Controller
         $post->user_id = $request->input('user_id');
         $post->title = $request->input('title');
         $post->body = $request->input('body');
-        $post->tags = $request->input('tags');
         $post->views = $request->input('views');
         $post->likes = $request->input('likes');
         $post->save();
+
+        // Lấy danh sách các tag từ request
+        $tagIds = $request->input('tag_ids');
+
+        // Đính kèm các tag vào bài viết
+        $post->tags()->attach($tagIds);
 
         // Return created post data
         return response()->json([
@@ -76,6 +84,6 @@ class PostController extends Controller
         $post = Post::findOrFail($id);
         $post->delete();
 
-        return response()->json(null, 204);
+        return response()->json(['message' => 'Delete post successfully.'], 204);
     }
 }

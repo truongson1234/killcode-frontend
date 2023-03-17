@@ -61,12 +61,14 @@ export default {
             // Add new tag
             this.tags.push({ name: this.newTag });
             this.newTag = "";
+            this.emitTagsUpdated()
         },
         removeTag(tag) {
             const index = this.tags.indexOf(tag);
             if (index !== -1) {
                 this.tags.splice(index, 1);
             }
+            this.emitTagsUpdated()
         },
         searchTags() {
             if (this.newTag === "") {
@@ -106,7 +108,11 @@ export default {
             this.tags.push({ name: tag.name });
             this.newTag = "";
             this.showAutocomplete = false;
+            this.emitTagsUpdated()
         },
+        emitTagsUpdated() {
+            this.$emit('tags-updated', this.tags.map(tag => tag.name))
+        }
     },
 };
 </script>

@@ -3,14 +3,15 @@
         <tag-input
             :initial-tags="tags"
             :api-url="'/api/tags/search'"
+            @tags-updated="selectedTags = $event"
         ></tag-input>
+        <div>Selected tags: {{ selectedTags }}</div>
     </div>
 </template>
 
 <script>
 import axios from "axios";
 import TagInput from "@/components/ui/TagInput.vue";
-
 export default {
     components: {
         TagInput,
@@ -18,18 +19,9 @@ export default {
     data() {
         return {
             tags: [],
+            apiUrl: '/api/tags/search',
+            selectedTags: [],
         };
-    },
-    created() {
-        // Get initial tags from server
-        axios
-            .get("/api/tags")
-            .then((response) => {
-                this.tags = response.data.map((tag) => tag.name);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
     },
 };
 </script>
