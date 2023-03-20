@@ -14,10 +14,18 @@ class RolesController extends Controller
      */
     public function index()
     {
-        $roles = Roles::all();
+        $roles = Roles::orderByDesc('created_at')->get();
         return response()->json([
             'data' => $roles
         ]);
+    }
+
+    public function search(Request $request)
+    {
+        $query = $request->input('q');
+        $tags = Roles::where('name', 'LIKE', '%' . $query . '%')->get();
+
+        return response()->json($tags);
     }
 
     /**
@@ -55,6 +63,7 @@ class RolesController extends Controller
             'data' => $role
         ], 201);
     }
+
 
     /**
      * Display the specified resource.

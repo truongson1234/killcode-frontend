@@ -1,5 +1,7 @@
 <script setup> 
+  import { onMounted } from 'vue'
   import { useRoute } from 'vue-router';
+  import { useAuthStore } from "@/stores/auth";
   // components
   import Navbar from "@/components/layout/Navbar.vue";
   import Footer from "@/components/layout/Footer.vue";
@@ -30,6 +32,12 @@
     ]
     return !list.includes(router.name);
   }
+  const auth = useAuthStore();
+
+  
+  onMounted(async () => {
+      await auth.getToken();
+  });
 </script>
 <template>
   <main class="relative">
@@ -49,14 +57,11 @@
   </main>
 </template>
 <style scoped>
-<<<<<<< HEAD
-=======
 .wrapper{
   color: #000;
   /* background: var(--color-light-mode); */
   border-radius: 4px;
 }
->>>>>>> 9f7b871dd300de59b0e112419475c276443606d3
 #loading {
   height: 100vh;
   width: 100vw;

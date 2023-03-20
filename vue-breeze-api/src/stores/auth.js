@@ -18,7 +18,7 @@ export const useAuthStore = defineStore("auth", {
         },
         async getUser() {
             try {
-                await this.getToken();
+                // await this.getToken();
                 const data = await axios.get("/api/user");
                 if(data.data) {
                     this.authUser = data.data;
@@ -34,7 +34,7 @@ export const useAuthStore = defineStore("auth", {
             await $('#loading').removeClass('hidden')
             this.authErrors = [];
             try {
-                await this.getToken();
+                // await this.getToken();
                 const response = await axios.post("/login", {
                     email: data.email,
                     password: data.password,
@@ -58,7 +58,7 @@ export const useAuthStore = defineStore("auth", {
             await $('#loading').removeClass('hidden')
             this.authErrors = [];
             try {
-                await this.getToken();
+                // await this.getToken();
                 await axios.post("/register", {
                     name: data.name,
                     email: data.email,
@@ -94,7 +94,7 @@ export const useAuthStore = defineStore("auth", {
             await $('#loading').removeClass('hidden')
             this.authErrors = [];
             try {
-                await this.getToken();
+                // await this.getToken();
                 const response = await axios.post("/forgot-password", {
                     email: email,
                 });

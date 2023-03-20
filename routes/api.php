@@ -55,6 +55,13 @@ Route::group(['prefix' => 'roles'], function () {
     Route::post('', 'App\Http\Controllers\RolesController@store');
     Route::delete('{id}', 'App\Http\Controllers\RolesController@destroy');
     Route::put('{id}', 'App\Http\Controllers\RolesController@update');
+    Route::get('search', 'App\Http\Controllers\RolesController@search');
+});
+
+// user roles api
+Route::group(['prefix' => 'user-roles'], function () {
+    Route::post('', 'App\Http\Controllers\UserRole@store');
+    Route::post('{user_id}&{role_id}', 'App\Http\Controllers\UserRole@destroy');
 });
 
 Route::group(['prefix' => 'users'], function () {

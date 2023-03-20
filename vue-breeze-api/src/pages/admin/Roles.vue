@@ -1,8 +1,15 @@
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, onBeforeMount } from "vue";
+import axios from 'axios'
 import { useRolesStore } from "@/stores/roles.js";
 import { initModals } from "flowbite";
+import TagInput from "@/components/ui/TagInput.vue";
+import VPagination from "@hennge/vue3-pagination";
+import "@hennge/vue3-pagination/dist/vue3-pagination.css";
+import "@/assets/admin/css/pagination-styles.css";
+import { start } from "@popperjs/core";
 const rolesStore = useRolesStore();
+const roles = [];
 const formAddRole = ref({
     name: "",
 });
@@ -10,18 +17,39 @@ const formEditRole = ref({
     id: "",
     name: "",
 });
+const formEditUserRole = ref({
+    id: "",
+    name: "",
+    roles: [],
+});
 const checkValiAddRole = ref(null);
-const sortKey = ref('name')
+const checkValiEditRole = ref(null);
+var errorUserRole = ref('')
+const sortKey = ref('')
 const sortOrder = ref(1)
+const currentPage = ref(1)
+const pageRole = ref(1), pageUser = ref(1)
+const itemsPerPageRole = ref(2), itemsPerPageUser = ref(5)
+onBeforeMount(() => {
+    axios
+        .get("/api/roles")
+        .then((response) => {
+            roles = response.data.map((tag) => tag.name);
+            console.log(response.data)
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+})
 onMounted(async () => {
     initModals();
     await rolesStore.getRoles();
     await rolesStore.getUsers();
-
 });
 const listRoles = computed(() => {
     return rolesStore.listRoles;
 });
+
 const listUsers = computed(() => {
     if (rolesStore.listUsers !== null && typeof rolesStore.listUsers !== 'undefined') {
         return rolesStore.listUsers.sort((a, b) => {
@@ -32,15 +60,85 @@ const listUsers = computed(() => {
             if (a[sortKey.value] > b[sortKey.value]) {
                 return 1 * modifier;
             }
+            if (a[sortKey.value] === null && b[sortKey.value] === null) {
+                return 0;
+            }
+            if (a[sortKey.value] === null) {
+                return modifier * 1;
+            }
+            if (b[sortKey.value] === null) {
+                return modifier * -1;
+            }
             return 0;
         });
     }
 });
+const totalPagesRole = computed(() => {
+    if(rolesStore.listRoles != null) {
+        return Math.ceil(rolesStore.listRoles.length / itemsPerPageRole.value);
+    }
+}) 
+const totalPagesUser = computed(() => {
+    if(rolesStore.listUsers != null) {
+        return Math.ceil(rolesStore.listUsers.length / itemsPerPageUser.value);
+    }
+}) 
+const displayedItemsRole = computed(() => {
+    const startIndex = (currentPage.value - 1) * itemsPerPageRole.value;
+    const endIndex = startIndex + itemsPerPageRole.value;
+    if(rolesStore.listRoles != null) {
+        return rolesStore.listRoles.slice(startIndex, endIndex);
+    }
+}) 
+const displayedItemsUser = computed(() => {
+    const startIndex = (currentPage.value - 1) * itemsPerPageUser.value;
+    const endIndex = startIndex + itemsPerPageUser.value;
+    if(rolesStore.listUsers != null) {
+        return rolesStore.listUsers.slice(startIndex, endIndex);
+    }
+}) 
+const onPageChanged = (page) => {
+    currentPage.value = page;
+}
+const updatedRole = computed(() => {
+    return formEditUserRole.value.roles
+})
+const isReadonly = computed(() => {
+    const roles = formEditUserRole.value.roles
+    return roles.length > 4 ? true : false
+})
+const updateRole = (async (newRole) => {
+    await rolesStore.handleAddRoleForUser(formEditUserRole.value.id, newRole.id)
+    .then(response => {
+        if(rolesStore.getUserRoleError == 'success!') {
+            formEditUserRole.value.roles.push(newRole)
+            errorUserRole.value = ''
+        }else {
+            errorUserRole.value = rolesStore.getUserRoleError
+        }
+    })
+    .catch(err => {
+
+    })
+})
+const removeRoleUser = (async(user_id, role_id, role) => {
+    await rolesStore.handleRemoveRoleForUser(user_id, role_id)
+    .then(() => {
+        if(rolesStore.getUserRoleError == 'success!') {
+            const index = formEditUserRole.value.roles.indexOf(role);
+            if (index !== -1) {
+                formEditUserRole.value.roles.splice(index, 1);
+            }
+        }
+    })
+    .catch(() => {
+
+    }) 
+})
 const modelValueEditRole = (event) => {
     formEditRole.value.name = event.target.value;
 };
 const deleteRole = (id, name) => {
-    console.log(name);
     Swal.fire({
         title: "",
         text: `Bạn có chắc muốn xóa quyền "${name}" ?`,
@@ -90,40 +188,65 @@ const addRole = (form) => {
         checkValiAddRole.value = true;
     }
 };
+const valiEmptyInput = (name_condition, value) => {
+    if(value == '') {
+        if(name_condition == 'checkValiEditRole') checkValiEditRole.value = true
+        else if(name_condition == 'checkValiAddRole') checkValiAddRole.value = true
+    }else {
+        checkValiEditRole.value = false
+        checkValiAddRole.value = false
+    }
+}
 const editRole = (id, form) => {
-    console.log(id, form);
-    rolesStore
-        .handleEditRole(id, form)
-        .then((response) => {
-            if (rolesStore.getRoleErrors != "update success!") {
-                Swal.fire({
-                    title: "",
-                    text: `${rolesStore.getRoleErrors}`,
-                    icon: "warning",
-                    confirmButtonColor: "#3085d6",
-                    confirmButtonText: "Đóng",
-                });
-            }
-            $("#modal-edit-role").addClass("hidden");
-            rolesStore.getUsers();
-        })
-        .catch((error) => { });
+    if(form.name != '') {
+        rolesStore
+            .handleEditRole(id, form)
+            .then((response) => {
+                if (rolesStore.getRoleErrors != "update success!") {
+                    Swal.fire({
+                        title: "",
+                        text: `${rolesStore.getRoleErrors}`,
+                        icon: "warning",
+                        confirmButtonColor: "#3085d6",
+                        confirmButtonText: "Đóng",
+                    });
+                }
+                $("#modal-edit-role").addClass("hidden");
+                rolesStore.getUsers();
+            })
+            .catch((error) => { });
+    }
+};
+const showModalEditUserRole = (id,name,roles) => {
+    formEditUserRole.value.id = id
+    formEditUserRole.value.name = name
+    formEditUserRole.value.roles = roles
+    errorUserRole.value = ''
+    
+    $("#modal-edit-user-role").removeClass("hidden");
 };
 const showModalEditRole = (id, name) => {
     formEditRole.value.id = id;
     formEditRole.value.name = name;
     $("#modal-edit-role").removeClass("hidden");
+    checkValiEditRole.value = false
 };
 const closeModalEditRole = () => {
     $("#modal-edit-role").addClass("hidden");
 };
+const closeModalEditUserRole = () => {
+    $("#modal-edit-user-role").addClass("hidden");
+};
 const formatDateTime = (date_time) => {
-    const date = new Date(date_time);
-    const day = date.getDate().toString().padStart(2, "0");
-    const month = (date.getMonth() + 1).toString().padStart(2, "0");
-    const year = date.getFullYear().toString();
-    const formattedDate = `${day}/${month}/${year}`;
-    return formattedDate;
+    if(date_time != null) {
+        const date = new Date(date_time);
+        const day = date.getDate().toString().padStart(2, "0");
+        const month = (date.getMonth() + 1).toString().padStart(2, "0");
+        const year = date.getFullYear().toString();
+        const formattedDate = `${day}/${month}/${year}`;
+        return formattedDate;
+    }
+    return ''
 };
 const sortTable = (key) => {
     if (sortKey.value === key) {
@@ -132,6 +255,12 @@ const sortTable = (key) => {
         sortKey.value = key;
         sortOrder.value = 1;
     }
+}
+const sortIcon = (column) => {
+    if (sortKey.value === column) {
+        return sortOrder.value === 1 ? 'bx bxs-up-arrow' : 'bx bxs-down-arrow';
+    }
+    return 'bx bxs-sort-alt';
 }
 </script>
 <template>
@@ -149,33 +278,36 @@ const sortTable = (key) => {
                                 <thead>
                                     <tr>
                                         <th @click="sortTable('name')"
-                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 cursor-pointer">
-                                            Tên
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 cursor-pointer column-name">
+                                            Tên <i :class="sortIcon('name')"></i>
                                         </th>
                                         <th @click="sortTable('email')"
-                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 cursor-pointer">
-                                            E-mail
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 cursor-pointer column-email">
+                                            E-mail <i
+                                                :class="sortIcon('email')"></i>
 
                                         </th>
-                                        <th @click="sortTable('role_name')"
-                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2 cursor-pointer">
+                                        <th
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2 cursor-pointer column-role">
                                             Quyền hạn
                                         </th>
-                                        <th @click="sortTable('status')"
-                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 cursor-pointer">
-                                            Trạng thái
+                                        <th @click="sortTable('email_verified_at')"
+                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 cursor-pointer column-status">
+                                            Trạng thái <i
+                                                :class="sortIcon('email_verified_at')"></i>
 
                                         </th>
                                         <th @click="sortTable('created_at')"
-                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 cursor-pointer">
-                                            ngày tạo
+                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 cursor-pointer column-created-at">
+                                            ngày tạo <i
+                                                :class="sortIcon('created_at')"></i>
 
                                         </th>
                                         <th class="text-secondary opacity-7"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="item in listUsers" :key="item.id">
+                                    <tr v-for="item in displayedItemsUser" :key="item.id">
                                         <td>
                                             <div class="d-flex px-2 py-1">
                                                 <div>
@@ -188,10 +320,6 @@ const sortTable = (key) => {
                                                     <h6 class="mb-0 text-sm">
                                                         {{ item.name }}
                                                     </h6>
-                                                    <!-- <p
-                                                                class="text-xs text-secondary mb-0">
-                                                                {{ item.email }}
-                                                            </p> -->
                                                 </div>
                                             </div>
                                         </td>
@@ -207,18 +335,19 @@ const sortTable = (key) => {
                                             </div>
                                         </td>
                                         <td>
-                                            <p
-                                                class="text-xs font-weight-bold mb-0 text-uppercase">
-                                                {{ item.role_name }}
-                                            </p>
-                                            <p class="text-xs text-secondary mb-0">
-                                                Organization
-                                            </p>
+                                            <span
+                                                class="bg-blue-100 text-blue-800 text-xs font-medium mr-1 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300"
+                                                v-for="role in item.role"
+                                                :key="role.id">
+                                                {{ role.name }}
+                                            </span>
                                         </td>
                                         <td
                                             class="align-middle text-center text-sm">
-                                            <span
-                                                class="badge badge-sm bg-gradient-success">Online</span>
+                                            <span v-if="item.email_verified_at != null"
+                                                class="badge badge-sm bg-gradient-success">Đã xác thực</span>
+                                            <span v-else
+                                                class="badge badge-sm bg-gradient-secondary">Chưa xác thực</span>
                                         </td>
                                         <td class="align-middle text-center">
                                             <span
@@ -229,17 +358,74 @@ const sortTable = (key) => {
                                                 }}</span>
                                         </td>
                                         <td class="align-middle">
-                                            <a href="javascript:;"
-                                                class="text-secondary font-weight-bold text-xs"
-                                                data-toggle="tooltip"
-                                                data-original-title="Edit user">
-                                                Edit
-                                            </a>
+                                            <button type="button" @click="showModalEditUserRole(item.id, item.name, item.role)"
+                                                class="px-2 py-1.5 rounded-sm bg-green-600 text-white flex">
+                                                <i
+                                                    class="bx bxs-edit self-center justify-self-center"></i>
+                                            </button>
                                         </td>
                                     </tr>
+                                    <div id="modal-edit-user-role"
+                                        class="hidden fixed top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] md:h-full">
+                                        <div class="backdrop-modal-edit-role absolute z-10"
+                                            @click="closeModalEditUserRole()"></div>
+                                        <div class="relative h-full border-0">
+                                            <div class="absolute bg-white rounded-lg shadow z-20"
+                                                style="
+                                                        top: 50%;
+                                                        left: 50%;
+                                                        transform: translate(
+                                                            -50%,
+                                                            -50%
+                                                        );
+                                                    ">
+                                                <button type="button"
+                                                    class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
+                                                    @click="
+                                                        closeModalEditUserRole()
+                                                    ">
+                                                    <i class="bx bx-x text-xl"></i>
+                                                </button>
+                                                <div class="px-4 py-4 lg:px-5"
+                                                    style="width: 450px">
+                                                    <h3
+                                                        class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
+                                                        Chỉnh sửa quyền của {{ formEditUserRole.name }} :
+                                                    </h3>
+                                                    <p class="leading-8">Các quyền hiện tại: 
+                                                        <span v-for="role in updatedRole" :key="role.id" class="inline-flex items-center bg-blue-100 text-blue-800 text-sm font-medium mr-1 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300 ">
+                                                            {{ role.name }} <i class='bx bx-x text-lg pl-1 cursor-pointer' @click="removeRoleUser(formEditUserRole.id, role.id, role)"></i>
+                                                        </span>
+                                                    </p>
+                                                    <form class="space-y-6"
+                                                        @submit.prevent="">
+                                                        <tag-input
+                                                            :initial-tags="roles"
+                                                            :api-url="'/api/roles/search'"
+                                                            @add-item="updateRole"
+                                                            :is-readonly="isReadonly"
+                                                        ></tag-input>
+                                                        <div v-if="errorUserRole != ''" class="mt-0 mb-0">
+                                                        <span class="text-red-400 text-sm p-2 pt-3 px-0">{{ errorUserRole }}</span>
+                                                    </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </tbody>
                             </table>
                         </div>
+                    </div>
+                    <div v-if="listUsers != null && listUsers.length > itemsPerPageUser">
+                        <v-pagination
+                        v-model="pageUser"
+                        :pages="totalPagesUser"
+                        :range-size="1"
+                        active-color="#0074FF"
+                        class="my-3 pl-2"
+                        @update:modelValue="onPageChanged"
+                        />
                     </div>
                 </div>
             </div>
@@ -262,20 +448,16 @@ const sortTable = (key) => {
                                         </th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Budget
-                                        </th>
-                                        <th
-                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                             Status
                                         </th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                             Khác
                                         </th>
-                                    </tr>
-                                </thead>
+                                </tr>
+                            </thead>
                             <tbody>
-                                <tr v-for="item in listRoles" :key="item.name">
+                                <tr v-for="item in displayedItemsRole" :key="item.name">
                                     <td>
                                         <div class="d-flex px-2">
                                             <div>
@@ -289,12 +471,6 @@ const sortTable = (key) => {
                                                 </h6>
                                             </div>
                                         </div>
-                                    </td>
-                                    <td>
-                                        <p
-                                            class="text-sm font-weight-bold mb-0">
-                                            $2,500
-                                        </p>
                                     </td>
                                     <td>
                                         <span
@@ -364,15 +540,18 @@ const sortTable = (key) => {
                                                         name="name-role"
                                                         placeholder=""
                                                         class="py-2 px-3 block w-full border-2 border-gray-200 rounded-md text-sm focus:border-black shadow-sm"
-                                                        :value="
+                                                        v-model="
                                                             formEditRole.name
                                                         " @blur="
-    modelValueEditRole(
-        $event
-    )
-" />
+                                                            modelValueEditRole(
+                                                                $event
+                                                            )
+                                                        " @keyup="valiEmptyInput('checkValiEditRole', formEditRole.name)"/>
+                                                    <div v-if="checkValiEditRole" class="mt-0 mb-0">
+                                                        <span class="text-red-400 text-sm p-2 pt-3 px-0">Không được để trống tên quyền!</span>
+                                                    </div>
                                                     <button type="submit"
-                                                        class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                                        class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mt-3">
                                                         Chỉnh sửa
                                                     </button>
                                                 </form>
@@ -384,8 +563,19 @@ const sortTable = (key) => {
                         </table>
                     </div>
                 </div>
+                <div v-if="listRoles != null && listRoles.length > itemsPerPageRole">
+                    <v-pagination
+                    v-model="pageRole"
+                    :pages="totalPagesRole"
+                    :range-size="1"
+                    active-color="#0074FF"
+                    class="my-3 pl-2"
+                    @update:modelValue="onPageChanged"
+                    />
+                </div>
             </div>
         </div>
+
         <div class="col-4">
             <div class="card mb-4">
                 <div class="card-header pb-0">
@@ -396,6 +586,7 @@ const sortTable = (key) => {
                         <form @submit.prevent="addRole(formAddRole)">
                             <input id="text_role" type="text" name="name"
                                 v-model="formAddRole.name"
+                                @keyup="valiEmptyInput('checkValiAddRole', formAddRole.name)"
                                 placeholder="Nhập tên quyền..."
                                 class="block w-full py-2 px-1 mt-1 mb-2 text-gray-800 appearance-none border-t-0 border-r-0 border-l-0 border-b-2 border-gray-100 focus:text-gray-500 focus:outline-none focus:border-gray-200 :focus:ring-0" />
                             <div v-if="checkValiAddRole">
@@ -739,150 +930,150 @@ const sortTable = (key) => {
                                                 <div>
                                                                 <img
                                                                             src="@/assets/admin/img/small-logos/logo-webdev.svg"
-                                                                                class="avatar avatar-sm rounded-circle me-2"
-                                                                                alt="webdev"
-                                                                            />
-                                                                        </div>
-                                                                        <div class="my-auto">
-                                                                            <h6
-                                                                                    class="mb-0 text-sm"
-                                                                                    >
-                                                                                        Webdev
-                                                                                    </h6>
-                                                                                        </div>
-                                                                                        </div>
-                                                                                    </td>
-                                                                                    <td>
-                                                                                        <p
-                                                                                            class="text-sm font-weight-bold mb-0"
-                                                                                        >
-                                                                                                $14,000
-                                                                                            </p>
-                                                                                        </td>
-                                                                                        <td>
-                                                                                            <span
-                                                                                                class="text-xs font-weight-bold"
-                                                                                                    >working</span
-                                                                                                >
-                                                                                            </td>
-                                                                                            <td
-                                                                                                class="align-middle text-center"
-                                                                                            >
-                                                                                                <div
-                                                                                                    class="d-flex align-items-center justify-content-center"
-                                                                                                >
-                                                                                                    <span
-                                                                                                        class="me-2 text-xs font-weight-bold"
-                                                                                                        >80%</span
-                                                                                                    >
-                                                                                                    <div>
-                                                                                                        <div
-                                                                                                            class="progress"
-                                                                                                        >
-                                                                                                            <div
-                                                                                                                class="progress-bar bg-gradient-info"
-                                                                                                                role="progressbar"
-                                                                                                                aria-valuenow="80"
-                                                                                                                aria-valuemin="0"
-                                                                                                                    aria-valuemax="80"
-                                                                                                                    style="
-                                                                                                                                                    width: 80%;
-                                                                                                                                                    "
-                                                                                                                                                ></div>
-                                                                                                                                            </div>
-                                                                                                                                        </div>
-                                                                                                                                    </div>
-                                                                                                                                </td>
-                                                                                                                                <td class="align-middle">
-                                                                                                                                    <button
-                                                                                                                                        class="btn btn-link text-secondary mb-0"
-                                                                                                                                        aria-haspopup="true"
-                                                                                                                                        aria-expanded="false"
-                                                                                                                                    >
-                                                                                                                                        <i
-                                                                                                                                            class="fa fa-ellipsis-v text-xs"
-                                                                                                                                        ></i>
-                                                                                                                                    </button>
-                                                                                                                                </td>
-                                                                                                                            </tr>
-                                                                                                                            <tr>
-                                                                                                                                <td>
-                                                                                                                                    <div class="d-flex px-2">
-                                                                                                                                        <div>
-                                                                                                                                            <img
-                                                                                                                                                src="@/assets/admin/img/small-logos/logo-xd.svg"
-                                                                                                                                                class="avatar avatar-sm rounded-circle me-2"
-                                                                                                                                                alt="xd"
-                                                                                                                                            />
-                                                                                                                                        </div>
-                                                                                                                                        <div class="my-auto">
-                                                                                                                                            <h6
-                                                                                                                                                class="mb-0 text-sm"
-                                                                                                                                            >
-                                                                                                                                                Adobe XD
-                                                                                                                                                                                                        </h6>
-                                                                                                                                                                                                    </div>
-                                                                                                                                                                                                </div>
-                                                                                                                                                                                            </td>
-                                                                                                                                                                                            <td>
-                                                                                                                                                                                                <p
-                                                                                                                                                                                                    class="text-sm font-weight-bold mb-0"
-                                                                                                                                                                                                >
-                                                                                                                                                                                                    $2,300
-                                                                                                                                                                                                </p>
-                                                                                                                                                                                            </td>
-                                                                                                                                                                                            <td>
-                                                                                                                                                                                                <span
-                                                                                                                                                                                                    class="text-xs font-weight-bold"
-                                                                                                                                                                                                    >done</span
-                                                                                                                                                                                                >
-                                                                                                                                                                                            </td>
-                                                                                                                                                                                            <td
-                                                                                                                                                                                                class="align-middle text-center"
-                                                                                                                                                                                            >
-                                                                                                                                                                                                <div
-                                                                                                                                                                                                    class="d-flex align-items-center justify-content-center"
-                                                                                                                                                                                                >
-                                                                                                                                                                                                    <span
-                                                                                                                                                                                                        class="me-2 text-xs font-weight-bold"
-                                                                                                                                                                                                        >100%</span
-                                                                                                                                                                                                    >
-                                                                                                                                                                                                    <div>
-                                                                                                                                                                                                        <div
-                                                                                                                                                                                                            class="progress"
-                                                                                                                                                                                                        >
-                                                                                                                                                                                                            <div
-                                                                                                                                                                                                                class="progress-bar bg-gradient-success"
-                                                                                                                                                                                                                role="progressbar"
-                                                                                                                                                                                                                aria-valuenow="100"
-                                                                                                                                                                                                                aria-valuemin="0"
-                                                                                                                                                                                                                aria-valuemax="100"
-                                                                                                                                                                                                                style="
-                                                                                                                                                                                                                    width: 100%;
-                                                                                                                                                                                                                "
-                                                                                                                                                                                                            ></div>
-                                                                                                                                                                                                        </div>
-                                                                                                                                                                                                    </div>
-                                                                                                                                                                                                </div>
-                                                                                                                                                                                            </td>
-                                                                                                                                                                                            <td class="align-middle">
-                                                                                                                                                                                                <button
-                                                                                                                                                                                                    class="btn btn-link text-secondary mb-0"
-                                                                                                                                                                                                    aria-haspopup="true"
-                                                                                                                                                                                                    aria-expanded="false"
-                                                                                                                                                                                                >
-                                                                                                                                                                                                    <i
-                                                                                                                                                                                                        class="fa fa-ellipsis-v text-xs"
-                                                                                                                                                                                                    ></i>
-                                                                                                                                                                                                </button>
-                                                                                                                                                                                            </td>
-                                                                                                                                                                                        </tr>
-                                                                                                                                                                                </tbody>
-                                                                                                                                                                            </table>
-                                                                                                                                                                        </div>
+                                                                                    class="avatar avatar-sm rounded-circle me-2"
+                                                                                    alt="webdev"
+                                                                                    />
+                                                                                            </div>
+                                                                                                <div class="my-auto">
+                                                                                                    <h6
+                                                                                                            class="mb-0 text-sm"
+                                                                                                            >
+                                                                                                                Webdev
+                                                                                                            </h6>
+                                                                                                                </div>
+                                                                                                                </div>
+                                                                                                            </td>
+                                                                                                            <td>
+                                                                                                                <p
+                                                                                                                    class="text-sm font-weight-bold mb-0"
+                                                                                                                >
+                                                                                                                        $14,000
+                                                                                                                    </p>
+                                                                                                                </td>
+                                                                                                                <td>
+                                                                                                                    <span
+                                                                                                                        class="text-xs font-weight-bold"
+                                                                                                                            >working</span
+                                                                                                                        >
+                                                                                                                    </td>
+                                                                                                                    <td
+                                                                                                                        class="align-middle text-center"
+                                                                                                                    >
+                                                                                                                        <div
+                                                                                                                            class="d-flex align-items-center justify-content-center"
+                                                                                                                        >
+                                                                                                                            <span
+                                                                                                                                class="me-2 text-xs font-weight-bold"
+                                                                                                                                >80%</span
+                                                                                                                            >
+                                                                                                                            <div>
+                                                                                                                                <div
+                                                                                                                                    class="progress"
+                                                                                                                                >
+                                                                                                                                    <div
+                                                                                                                                        class="progress-bar bg-gradient-info"
+                                                                                                                                        role="progressbar"
+                                                                                                                                        aria-valuenow="80"
+                                                                                                                                        aria-valuemin="0"
+                                                                                                                                            aria-valuemax="80"
+                                                                                                                                            style="
+                                                                                                                                                                            width: 80%;
+                                                                                                                                                                            "
+                                                                                                                                                                        ></div>
+                                                                                                                                                                    </div>
                                                                                                                                                                 </div>
                                                                                                                                                             </div>
-                                                                                                                                                        </div> -->
+                                                                                                                                                        </td>
+                                                                                                                                                        <td class="align-middle">
+                                                                                                                                                            <button
+                                                                                                                                                                class="btn btn-link text-secondary mb-0"
+                                                                                                                                                                aria-haspopup="true"
+                                                                                                                                                                aria-expanded="false"
+                                                                                                                                                            >
+                                                                                                                                                                <i
+                                                                                                                                                                    class="fa fa-ellipsis-v text-xs"
+                                                                                                                                                                ></i>
+                                                                                                                                                            </button>
+                                                                                                                                                        </td>
+                                                                                                                                                    </tr>
+                                                                                                                                                    <tr>
+                                                                                                                                                        <td>
+                                                                                                                                                            <div class="d-flex px-2">
+                                                                                                                                                                <div>
+                                                                                                                                                                    <img
+                                                                                                                                                                        src="@/assets/admin/img/small-logos/logo-xd.svg"
+                                                                                                                                                                        class="avatar avatar-sm rounded-circle me-2"
+                                                                                                                                                                        alt="xd"
+                                                                                                                                                                    />
+                                                                                                                                                                </div>
+                                                                                                                                                                <div class="my-auto">
+                                                                                                                                                                    <h6
+                                                                                                                                                                        class="mb-0 text-sm"
+                                                                                                                                                                    >
+                                                                                                                                                                        Adobe XD
+                                                                                                                                                                                                                                </h6>
+                                                                                                                                                                                                                            </div>
+                                                                                                                                                                                                                        </div>
+                                                                                                                                                                                                                    </td>
+                                                                                                                                                                                                                    <td>
+                                                                                                                                                                                                                        <p
+                                                                                                                                                                                                                            class="text-sm font-weight-bold mb-0"
+                                                                                                                                                                                                                        >
+                                                                                                                                                                                                                            $2,300
+                                                                                                                                                                                                                        </p>
+                                                                                                                                                                                                                    </td>
+                                                                                                                                                                                                                    <td>
+                                                                                                                                                                                                                        <span
+                                                                                                                                                                                                                            class="text-xs font-weight-bold"
+                                                                                                                                                                                                                            >done</span
+                                                                                                                                                                                                                        >
+                                                                                                                                                                                                                    </td>
+                                                                                                                                                                                                                    <td
+                                                                                                                                                                                                                        class="align-middle text-center"
+                                                                                                                                                                                                                    >
+                                                                                                                                                                                                                        <div
+                                                                                                                                                                                                                            class="d-flex align-items-center justify-content-center"
+                                                                                                                                                                                                                        >
+                                                                                                                                                                                                                            <span
+                                                                                                                                                                                                                                class="me-2 text-xs font-weight-bold"
+                                                                                                                                                                                                                                >100%</span
+                                                                                                                                                                                                                            >
+                                                                                                                                                                                                                            <div>
+                                                                                                                                                                                                                                <div
+                                                                                                                                                                                                                                    class="progress"
+                                                                                                                                                                                                                                >
+                                                                                                                                                                                                                                    <div
+                                                                                                                                                                                                                                        class="progress-bar bg-gradient-success"
+                                                                                                                                                                                                                                        role="progressbar"
+                                                                                                                                                                                                                                        aria-valuenow="100"
+                                                                                                                                                                                                                                        aria-valuemin="0"
+                                                                                                                                                                                                                                        aria-valuemax="100"
+                                                                                                                                                                                                                                        style="
+                                                                                                                                                                                                                                            width: 100%;
+                                                                                                                                                                                                                                        "
+                                                                                                                                                                                                                                    ></div>
+                                                                                                                                                                                                                                </div>
+                                                                                                                                                                                                                            </div>
+                                                                                                                                                                                                                        </div>
+                                                                                                                                                                                                                    </td>
+                                                                                                                                                                                                                    <td class="align-middle">
+                                                                                                                                                                                                                        <button
+                                                                                                                                                                                                                            class="btn btn-link text-secondary mb-0"
+                                                                                                                                                                                                                            aria-haspopup="true"
+                                                                                                                                                                                                                            aria-expanded="false"
+                                                                                                                                                                                                                        >
+                                                                                                                                                                                                                            <i
+                                                                                                                                                                                                                                class="fa fa-ellipsis-v text-xs"
+                                                                                                                                                                                                                            ></i>
+                                                                                                                                                                                                                        </button>
+                                                                                                                                                                                                                    </td>
+                                                                                                                                                                                                                </tr>
+                                                                                                                                                                                                        </tbody>
+                                                                                                                                                                                                    </table>
+                                                                                                                                                                                                </div>
+                                                                                                                                                                                        </div>
+                                                                                                                                                                                    </div>
+                                                                                                                                                                                </div> -->
         </div>
     </div>
 </template>
@@ -897,5 +1088,8 @@ const sortTable = (key) => {
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.2);
+}
+.hennge-pagination-custom button.Page-active{
+  color: #fff!important;
 }
 </style>

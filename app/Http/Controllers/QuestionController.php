@@ -30,8 +30,8 @@ class QuestionController extends Controller
     {
         // Create question data in database
         $question = new Question();
-        // $question->user_id = auth()->user()->id;
-        $question->user_id = $request->input('user_id');
+        $question->user_id = auth()->user()->id;
+        // $question->user_id = $request->input('user_id');
         $question->title = $request->input('title');
         $question->body = $request->input('body');
         $question->tags = $request->input('tags');

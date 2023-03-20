@@ -14,15 +14,14 @@ class PostController extends Controller
     {
         $currentPage = $request->input('page', 1);
         $perPage = $request->input('perPage', 3);
-        
-        $paginator = Post::with(['user', 'tags'])->paginate($perPage);
+
+        $paginator = Post::with('user')->paginate($perPage);
         $posts = collect($paginator->items())
             ->map(function ($post) {
                 $post->author = [
                     'name' => $post->user->name,
                     'email' => $post->user->email,
                 ];
-                $post->tags = $post->tags;
                 unset($post->user);
                 return $post;
             });
@@ -47,8 +46,8 @@ class PostController extends Controller
     {
         // Create post data in database
         $post = new Post();
-        // $post->user_id = auth()->user()->id;
-        $post->user_id = $request->input('user_id');
+        $post->user_id = auth()->user()->id;
+        // $post->user_id = $request->input('user_id');
         $post->title = $request->input('title');
         $post->body = $request->input('body');
         $post->views = $request->input('views');

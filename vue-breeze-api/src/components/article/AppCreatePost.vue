@@ -34,7 +34,6 @@
 <script setup>
 import axios from "axios";
 import { onMounted, ref } from "vue";
-import { useAuthStore } from "@/stores/auth";
 // plugins ckeditor
 import ClassicEditor from "@ckeditor/ckeditor5-editor-classic/src/classiceditor";
 import EssentialsPlugin from "@ckeditor/ckeditor5-essentials/src/essentials";
@@ -59,9 +58,8 @@ const editorConfig = {
     },
 };
 
-const auth = useAuthStore();
 const payload = ref({
-        user_id: null,
+        // user_id: null,
         title: "",
         body: "",
         tags: ["tagname1", "tagname2", "tagname3"],
@@ -69,10 +67,6 @@ const payload = ref({
         likes: 0,
     })
 
-onMounted(async () => {
-    await auth.getUser();
-    payload.value.user_id = auth.user.id
-});
 
 const handleCreated = (payload) => {
     axios.post("/api/posts", payload).then((response) => {

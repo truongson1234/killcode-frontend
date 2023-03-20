@@ -17,21 +17,25 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::all();
-        $nameRole = [];
-        foreach($users as $item) {
-            $role = $item->userRoles;
+        $users = User::orderByDesc('created_at')->get();
+        foreach ($users as $item) {
+            $roles = [];
             $userRoles = DB::table('user_roles')
-                ->join('users', 'users.id', '=', 'user_roles.user_id')
-                ->join('roles', 'roles.id', '=', 'user_roles.role_id')
-                ->select('users.name', 'roles.name as role_name')
+                ->leftJoin('users', 'users.id', '=', 'user_roles.user_id')
+                ->leftJoin('roles', 'roles.id', '=', 'user_roles.role_id')
+                ->select('users.name', 'roles.name as role_name', 'roles.id as role_id')
                 ->where('users.id', $item->id)
                 ->get();
-            $item->role_name = $userRoles[0]->role_name;
+            foreach ($userRoles as $userRole) {
+                $roles[] = [
+                    'name' => $userRole->role_name,
+                    'id' => $userRole->role_id
+                ] ;
+            }
+            $item->role = $roles;
         }
         return response()->json([
             'data' => $users,
-            'name' => $nameRole,
         ]);
     }
 

@@ -8,6 +8,7 @@ export const useRolesStore = defineStore("roles", {
         authErrors: [],
         roleErrors: [],
         authStatus: null,
+        userRoleError: ''
     }),
     getters: {
         listRoles: (state) => state.roles,
@@ -15,6 +16,7 @@ export const useRolesStore = defineStore("roles", {
         errors: (state) => state.authErrors,
         getRoleErrors: (state) => state.roleErrors,
         status: (state) => state.authStatus,
+        getUserRoleError: (state) => state.userRoleError,
     },
     actions: {
         async getRoles() {
@@ -74,6 +76,43 @@ export const useRolesStore = defineStore("roles", {
                     if (error.response.status === 422) {
                         // Xóa thất bại vì có ràng buộc
                         this.roleErrors = error.response.data.error;
+                        console.log(error.response.data.error);
+                    } else {
+                        // Lỗi server khác
+                        console.error(error);
+                    }
+                });
+        },
+        async handleAddRoleForUser(user_id, role_id) {
+            await axios
+                .post(`/api/user-roles`, {
+                    user_id: user_id,
+                    role_id: role_id,
+                })
+                .then((response) => {
+                    this.userRoleError = "success!";
+                })
+                .catch((error) => {
+                    if (error.response.status === 422) {
+                        // Xóa thất bại vì có ràng buộc
+                        this.userRoleError = error.response.data.error;
+                        console.log(error.response.data.error);
+                    } else {
+                        // Lỗi server khác
+                        console.error(error);
+                    }
+                });
+        },
+        async handleRemoveRoleForUser(user_id, role_id) {
+            await axios
+                .post(`/api/user-roles/${user_id}&${role_id}`)
+                .then((response) => {
+                    this.userRoleError = "success!";
+                })
+                .catch((error) => {
+                    if (error.response.status === 422) {
+                        // Xóa thất bại vì có ràng buộc
+                        this.userRoleError = error.response.data.error;
                         console.log(error.response.data.error);
                     } else {
                         // Lỗi server khác
