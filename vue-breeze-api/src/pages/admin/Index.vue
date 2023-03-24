@@ -21,8 +21,8 @@ onMounted(() => {
 })
 </script>
 <template>
-    <body class="g-sidenav-show  bg-gray-100">
-        <div class="min-height-300 bg-primary position-absolute w-100"></div>
+    <body class="g-sidenav-show abow-container bg-gray-100">
+        <div class="min-height-300 under-container bg-primary position-absolute w-100"></div>
         <Sidebar />
         <main class="main-content position-relative border-radius-lg ">
             <Navbar />

@@ -3,12 +3,12 @@
         <input
             v-model="newTag"
             @input="searchTags"
-            placeholder="Nhập tên quyền cần thêm..."
+            :placeholder="placeholder"
             class="py-2 px-3 block w-full border-2 border-gray-200 rounded-md text-sm focus:border-black"
             :readonly="isReadonly"
             :style="isReadonly ? ['background: rgba(0,0,0,0.1)', 'pointer-events: none'] : ''"
         />
-        <ul v-if="showAutocomplete" class="border-t-2 border-l-2 border-r-2 rounded-md mt-1">
+        <ul v-if="autocomplete != false" class="border-t-2 border-l-2 border-r-2 rounded-md mt-1">
             <li
                 class="cursor-pointer hover:bg-gray-100 px-2 py-2 border-b-2"
                 v-for="tag in matchingTags"
@@ -28,7 +28,7 @@
 
 <script>
 import axios from "axios";
-
+import { watchEffect } from "vue";
 export default {
     name: "TagInput",
     props: {
@@ -44,33 +44,31 @@ export default {
             type: Boolean,
             default: "",
         },
+        placeholder: {
+            type: String,
+            default: "Nhập tên quyền cần thêm...",
+        },
+    },
+    setup(props) {
+        watchEffect(() => {
+        });
     },
     data() {
         return {
-            tags: [],
             newTag: "",
             matchingTags: [],
-            showAutocomplete: false,
+            showAutocomplete: true,
         };
     },
-    created() {
-        this.tags = this.initialTags.map((tag) => ({ name: tag }));
-    },
-    methods: {
-        addTag() {
-            // Check for duplicates
-            const existingTag = this.tags.find(
-                (tag) => tag.name.toLowerCase() === this.newTag.toLowerCase()
-            );
-            if (existingTag) {
-                this.newTag = "";
-                return;
-            }
-
-            // Add new tag
-            this.tags.push({ name: this.newTag });
-            this.newTag = "";
+    computed: {
+        tags() {
+            return this.initialTags
         },
+        autocomplete() {
+            return this.showAutocomplete
+        }
+    },  
+    methods: {
         removeTag(tag) {
             const index = this.tags.indexOf(tag);
             if (index !== -1) {
@@ -88,8 +86,7 @@ export default {
                 .get(this.apiUrl + "?q=" + this.newTag)
                 .then((response) => {
                     this.matchingTags = response.data.filter((tag) => {
-                        // Exclude tags that already exist
-                        return !this.tags.some(
+                        return this.initialTags.map(
                             (t) =>
                                 t.name.toLowerCase() === tag.name.toLowerCase()
                         );
@@ -101,21 +98,20 @@ export default {
                 });
         },
         addTagFromAutocomplete(tag) {
-            // Check for duplicates
+            this.$emit('add-item', {name: tag.name, id: tag.id})
             const existingTag = this.tags.find(
                 (t) => t.name.toLowerCase() === tag.name.toLowerCase()
             );
             if (existingTag) {
                 this.newTag = "";
                 this.showAutocomplete = false;
+                console.log(this.showAutocomplete)
                 return;
             }
 
             // Add new tag
-            this.tags.push({ name: tag.name });
             this.newTag = "";
             this.showAutocomplete = false;
-            this.$emit('add-item', {name: tag.name, id: tag.id})
         }
     },
 };

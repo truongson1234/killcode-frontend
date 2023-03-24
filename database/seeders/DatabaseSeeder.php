@@ -14,34 +14,35 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
-        \App\Models\User::factory()->create([
-            'name' => 'Khai Nguyenx',
-            'email' => 'khainguyenx@gmail.com'
-        ]);
-        $roles = [
-            [
-                'name' => 'admin',
-                'created_at' => now(),
-            ],
-            [
-                'name' => 'user',
-                'created_at' => now(),
-            ]
-        ];
+        // \App\Models\User::factory()->create([
+        //     'name' => 'Khai Nguyenx',
+        //     'email' => 'khainguyenx@gmail.com'
+        // ]);
+        // $roles = [
+        //     [
+        //         'name' => 'admin',
+        //         'created_at' => now(),
+        //     ],
+        //     [
+        //         'name' => 'user',
+        //         'created_at' => now(),
+        //     ]
+        // ];
 
-        DB::table('roles')->insert($roles);
-        DB::table('user_roles')->insert([
-            'user_id' => 1,
-            'role_id' => 1
-        ]);
-        for ($i = 0; $i < 10; $i++) {
-            $name = Str::random(10); // Generate a random name
-            $slug = Str::slug($name); // Generate a slug from the name
-            DB::table('tags')->insert([
-                'name' => $name,
-                'slug' => $slug,
-            ]);
-        }
+        // DB::table('roles')->insert($roles);
+        // DB::table('user_roles')->insert([
+        //     'user_id' => 1,
+        //     'role_id' => 1
+        // ]);
+        // for ($i = 0; $i < 10; $i++) {
+        //     $name = Str::random(10); // Generate a random name
+        //     $slug = Str::slug($name); // Generate a slug from the name
+        //     DB::table('tags')->insert([
+        //         'name' => $name,
+        //         'slug' => $slug,
+        //     ]);
+        // }
+        $this->call(RoleSeeder::class);
+        $this->call(AdminSeeder::class);
     }
 }

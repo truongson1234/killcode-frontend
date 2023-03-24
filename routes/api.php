@@ -2,7 +2,9 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\PermissionController;
+use App\Http\Controllers\UserController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -39,13 +41,33 @@ Route::group(['prefix' => 'questions'], function () {
     Route::delete('{id}', 'App\Http\Controllers\QuestionController@destroy');
 });
 
-// roles api
+
+Route::middleware(['auth', 'role:admin'])->name('admin.')->prefix('admin')->group(function() {
+});
 Route::group(['prefix' => 'roles'], function () {
-    Route::get('', 'App\Http\Controllers\RolesController@index');
-    Route::post('', 'App\Http\Controllers\RolesController@store');
-    Route::delete('{id}', 'App\Http\Controllers\RolesController@destroy');
-    Route::put('{id}', 'App\Http\Controllers\RolesController@update');
-    Route::get('search', 'App\Http\Controllers\RolesController@search');
+    Route::get('', [RoleController::class, 'index']);
+    Route::put('{id}', [RoleController::class, 'update']);
+    Route::post('', [RoleController::class, 'store']);
+    Route::delete('{id_role}', [RoleController::class, 'destroy']);
+    Route::get('search', [RoleController::class, 'search']);
+    // Gán quyền cho vai trò 
+    Route::get('{id_role}/permissions', [RoleController::class, 'getPermissionOfRole']);
+    Route::post('{id_role}/permissions', [RoleController::class, 'givePermission']);
+    Route::delete('{role_id}/permissions/{permission_id}', [RoleController::class, 'revokePermission']);
+
+});
+Route::group(['prefix' => 'permissions'], function () {
+    Route::get('', [PermissionController::class, 'index']);
+    Route::post('', [PermissionController::class, 'store']);
+    Route::put('{id}', [PermissionController::class, 'update']);
+    Route::delete('{id_permission}', [PermissionController::class, 'destroy']);
+    Route::get('search', [PermissionController::class, 'search']);
+    Route::get('{id_permission}/roles', [PermissionController::class, 'getRoleOfPermission']);
+
+    Route::post('{permission_id}/roles', [PermissionController::class, 'asignRole']);
+    Route::delete('{permission_id}/roles/{role_id}', [PermissionController::class, 'removeRole']);
+
+
 });
 
 // user roles api
@@ -55,10 +77,13 @@ Route::group(['prefix' => 'user-roles'], function () {
 });
 
 Route::group(['prefix' => 'users'], function () {
-    Route::get('', 'App\Http\Controllers\UserController@index');
-    // Route::post('', 'App\Http\Controllers\RolesController@store');
-    // Route::delete('{id}', 'App\Http\Controllers\RolesController@destroy');
-    // Route::put('{id}', 'App\Http\Controllers\RolesController@update');
+    Route::get('', [UserController::class, 'index']);
+    Route::get('{user_id}', [UserController::class, 'show']);
+    Route::post('{user_id}/roles', [UserController::class, 'asignRole']);
+    Route::delete('{user_id}/roles/{role_id}', [UserController::class, 'removeRole']);
+    Route::post('{user_id}/permissions', [UserController::class, 'givePermission']);
+    Route::delete('{user_id}/permissions/{permission_id}', [UserController::class, 'revokePermission']);
+
 });
 
 // tags api

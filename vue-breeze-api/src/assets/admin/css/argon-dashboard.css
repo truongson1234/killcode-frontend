@@ -10623,6 +10623,9 @@ fieldset:disabled .btn {
   background-color: transparent !important;
 }
 
+.bg-dark-mode-container {
+  background-color: #1C2C69 !important;
+}
 .bg-gray-100 {
   background-color: #f8f9fa !important;
 }

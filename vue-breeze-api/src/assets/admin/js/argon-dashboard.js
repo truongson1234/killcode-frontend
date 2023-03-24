@@ -645,6 +645,8 @@ export function darkMode(el) {
     const secondary = document.querySelectorAll(".text-secondary");
     const bg_gray_100 = document.querySelectorAll(".bg-gray-100");
     const bg_gray_600 = document.querySelectorAll(".bg-gray-600");
+    const bg_dark_mode_container = document.querySelectorAll(".abow-container");
+    const bg_dark_mode_under_container = document.querySelectorAll(".under-container");
     const btn_text_dark = document.querySelectorAll(
         ".btn.btn-link.text-dark, .btn .ni.text-dark"
     );
@@ -732,7 +734,13 @@ export function darkMode(el) {
         for (var i = 0; i < bg_gray_100.length; i++) {
             if (bg_gray_100[i].classList.contains("bg-gray-100")) {
                 bg_gray_100[i].classList.remove("bg-gray-100");
-                bg_gray_100[i].classList.add("bg-gray-600");
+                bg_gray_100[i].classList.add("bg-dark-mode-container");
+            }
+        }
+        for (var i = 0; i < bg_dark_mode_under_container.length; i++) {
+            if (bg_dark_mode_under_container[i].classList.contains("bg-primary")) {
+                bg_dark_mode_under_container[i].classList.remove("bg-primary");
+                bg_dark_mode_under_container[i].classList.add("bg-dark-mode-container");
             }
         }
         for (var i = 0; i < btn_text_dark.length; i++) {
@@ -823,6 +831,18 @@ export function darkMode(el) {
             if (bg_gray_600[i].classList.contains("bg-gray-600")) {
                 bg_gray_600[i].classList.remove("bg-gray-600");
                 bg_gray_600[i].classList.add("bg-gray-100");
+            }
+        }
+        for (var i = 0; i < bg_dark_mode_container.length; i++) {
+            if (bg_dark_mode_container[i].classList.contains("bg-dark-mode-container")) {
+                bg_dark_mode_container[i].classList.remove("bg-dark-mode-container");
+                bg_dark_mode_container[i].classList.add("bg-gray-100");
+            }
+        }
+        for (var i = 0; i < bg_dark_mode_under_container.length; i++) {
+            if (bg_dark_mode_under_container[i].classList.contains("bg-dark-mode-container")) {
+                bg_dark_mode_under_container[i].classList.remove("bg-dark-mode-container");
+                bg_dark_mode_under_container[i].classList.add("bg-primary");
             }
         }
         for (var i = 0; i < svg.length; i++) {
