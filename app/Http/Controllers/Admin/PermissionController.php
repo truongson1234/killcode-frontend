@@ -113,8 +113,13 @@ class PermissionController extends Controller
     {
         try {
             $permission = Permission::findOrFail($id);
+            if ($permission->roles()->count() > 0) {
+                return response()->json(['error' => 'Quyền này đang được gán cho một hoặc nhiều vai trò khác. Không thể xóa!'], 422);
+            }
+            if ($permission->users()->count() > 0) {
+                return response()->json(['error' => 'Quyền này đang được gán riêng cho một hoặc nhiều người dùng khác. Không thể xóa!'], 422);
+            }
             $permission->delete();
-    
             return response()->json(null, 204);
         } catch (QueryException $exception) {
             return response()->json(['error' => 'Không thể xóa quyền này vì có dữ liệu liên quan!'], 422);

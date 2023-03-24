@@ -4,6 +4,8 @@ import axios from "axios";
 export const useAuthStore = defineStore("auth", {
     state: () => ({
         authUser: null,
+        authRoles: null,
+        authPermissions: null,
         authErrors: [],
         authStatus: null,
     }),
@@ -11,6 +13,8 @@ export const useAuthStore = defineStore("auth", {
         user: (state) => state.authUser,
         errors: (state) => state.authErrors,
         status: (state) => state.authStatus,
+        getAuthRoles: (state) => state.authRoles,
+        getAuthPermissions: (state) => state.authPermissions,
     },
     actions: {
         async getToken() {
@@ -21,13 +25,13 @@ export const useAuthStore = defineStore("auth", {
                 await this.getToken();
                 const data = await axios.get("/api/user");
                 if(data.data) {
-                    this.authUser = data.data;
+                    this.authUser = data.data.user;
+                    this.authRoles = data.data.roles;
                 }else {
-                    localStorage.removeItem('isAuthenticated')
                 }
-
-            } catch (error) {
                 
+            } catch (error) {
+                localStorage.removeItem('isAuthenticated')
             }
         },
         async handleLogin(data) {
@@ -40,7 +44,7 @@ export const useAuthStore = defineStore("auth", {
                     password: data.password,
                 });
                 console.log(response);
-                await $('#loading').addClass('hidden')
+                $('#loading').addClass('hidden')
                 localStorage.setItem('isAuthenticated', true)
                 this.router.push("/home");
             } catch (error) {
@@ -51,9 +55,7 @@ export const useAuthStore = defineStore("auth", {
                 }
             }
         },
-        async checkAuth() {
-            return localStorage.getItem('isAuthenticated')
-        },
+
         async handleRegister(data) {
             await $('#loading').removeClass('hidden')
             this.authErrors = [];
@@ -68,6 +70,7 @@ export const useAuthStore = defineStore("auth", {
                 // await axios.post("/email/verification-notification");
                 // this.router.push("/send-verify-email");
                 await $('#loading').addClass('hidden')
+                localStorage.setItem('isAuthenticated', true)
                 await Swal.fire({
                     icon: 'success',
                     title: 'Đăng ký tài khoản thành công!',

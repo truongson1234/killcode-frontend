@@ -1,19 +1,21 @@
 import { createRouter, createWebHistory } from "vue-router";
-import { getActivePinia } from "pinia";
 import { useAuthStore } from "@/stores/auth";
 const requireAuth = async (to, from, next) => {
     const authStore = useAuthStore();
-    const status = await authStore.checkAuth()
-    console.log('GET AUTH STATUS', status)
-    if (status) {
-        next();
-    } else {
-        next("/login");
+    await authStore.getUser()
+    const roles = authStore.getAuthRoles
+    // console.log(roles, 'roles')
+    if(roles == null) {
+        next('login')
+    }
+    else if (roles.indexOf('admin') == -1) {
+        next('/authenticated');
+    }else {
+        next()
     }
 };
 const checkLogin = async (to, frorm, next) => {
-    const authStore = useAuthStore();
-    const status = await authStore.checkAuth()
+    const status = localStorage.getItem('isAuthenticated')
     // console.log('GET AUTH STATUS', status)
     if (!status) {
         next();
@@ -27,30 +29,35 @@ const routes = [
         name: "Login",
         component: () => import("@/pages/auth/Login.vue"),
         beforeEnter: checkLogin,
+        meta: { showHeader: false, showFooter: false }
     },
     {
         path: "/register",
         name: "Register",
         component: () => import("@/pages/auth/Register.vue"),
         beforeEnter: checkLogin,
+        meta: { showHeader: false, showFooter: false }
     },
     {
         path: "/forgot_password",
         name: "ForgotPassword",
         component: () => import("@/pages/auth/ForgotPassword.vue"),
         beforeEnter: checkLogin,
+        meta: { showHeader: false, showFooter: false }
     },
     {
         path: "/password-reset/:token",
         name: "PasswordReset",
         component: () => import("@/pages/auth/PasswordReset.vue"),
         beforeEnter: checkLogin,
+        meta: { showHeader: false, showFooter: false }
     },
     {
         path: "/send-verify-email",
         name: "SendVerifyEmail",
         component: () => import("@/pages/auth/SendVerifyEmail.vue"),
         beforeEnter: checkLogin,
+        meta: { showHeader: false, showFooter: false }
     },
     { path: "/", name: "Main", component: () => import("@/pages/Main.vue") },
     {
@@ -136,7 +143,20 @@ const routes = [
         name: "Admin",
         component: () => import("@/pages/admin/Index.vue"),
         beforeEnter: requireAuth,
+        meta: { showHeader: false, showFooter: false }
     },
+    {
+        path: "/authenticated",
+        name: "Authenticated",
+        component: () => import("@/pages/errors/Authenticated.vue"),
+        meta: { showHeader: false, showFooter: false }
+    },
+    { 
+        path: '/:catchAll(.*)',
+        name: "NotFound",
+        component: () => import("@/pages/errors/404.vue"),
+        meta: { showHeader: false, showFooter: false }
+    }
 ];
 
 const router = createRouter({

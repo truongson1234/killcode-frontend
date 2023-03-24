@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Illuminate\Database\QueryException;
 class RoleController extends Controller
 {
     /**
@@ -113,11 +114,16 @@ class RoleController extends Controller
     {
         try {
             $role = Role::findOrFail($id);
+            if ($role->users()->count() > 0) {
+                return response()->json(['error' => 'Vai trò này đang được gán cho một hoặc nhiều người dùng khác. Không thể xóa!'], 422);
+            }
+            // if ($role->permissions()->count() > 0) {
+            //     return response()->json(['error' => 'Vai trò này hiện đang liên quan đến một hoặc nhiều quyền khác. Không thể xóa!'], 422);
+            // }
             $role->delete();
-    
             return response()->json(null, 204);
         } catch (QueryException $exception) {
-            return response()->json(['error' => 'Không thể xóa vai trò này vì có dữ liệu liên quan!'], 422);
+            return response()->json(['error' => 'Lỗi!'], 422);
         }
     }
 

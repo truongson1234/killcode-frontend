@@ -163,7 +163,6 @@ export const useRolesStore = defineStore("roles", {
             .then(response => {
                 this.detailUser.roles = response.data.user_role
                 this.detailUser.permissions = response.data.user_permission
-                console.log(this.getDetailUser)
             })
             .catch(error => {
                 console.log(error)
