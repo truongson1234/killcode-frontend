@@ -1,11 +1,42 @@
 <script setup>
-    import { ref, watch, computed } from 'vue';
+    import { ref, watch, computed, onMounted } from 'vue';
     import { useRoute } from 'vue-router';
     const route = useRoute();
     const routeName = ref(route.name);
     watch(route, (to, from) => {
         routeName.value = to.name;
     });
+    onMounted(() => {
+        // Toggle Sidenav
+        const iconNavbarSidenav = document.getElementById("iconNavbarSidenav");
+        const iconSidenav = document.getElementById("iconSidenav");
+        const sidenav = document.getElementById("sidenav-main");
+        let body = document.getElementsByTagName("body")[1];
+        let className = "g-sidenav-pinned";
+
+        if (iconNavbarSidenav) {
+            iconNavbarSidenav.addEventListener("click", toggleSidenav);
+        }
+
+        if (iconSidenav) {
+            iconSidenav.addEventListener("click", toggleSidenav);
+        }
+
+        function toggleSidenav() {
+            if (body.classList.contains(className)) {
+                body.classList.remove(className);
+                setTimeout(function () {
+                    sidenav.classList.remove("bg-white");
+                }, 100);
+                sidenav.classList.remove("bg-transparent");
+            } else {
+                body.classList.add(className);
+                sidenav.classList.add("bg-white");
+                sidenav.classList.remove("bg-transparent");
+                iconSidenav.classList.remove("d-none");
+            }
+        }
+    }) 
     const namePage = computed(() => {
         if (routeName.value === 'Dashboard') return 'Dashboard';
         else if (routeName.value === 'Admin-Roles') return 'Quyền hạn'

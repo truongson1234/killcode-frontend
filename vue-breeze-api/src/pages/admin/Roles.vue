@@ -66,10 +66,10 @@
                                             <div class="d-flex px-2 py-1">
                                                 <div
                                                     class="d-flex flex-column justify-content-center">
-                                                    <p
+                                                    <span
                                                         class="text-secondary text-xs font-weight-bold mb-0">
                                                         {{ item.email }}
-                                                    </p>
+                                                    </span>
                                                 </div>
                                             </div>
                                         </td>

@@ -134,7 +134,7 @@ export function configDOM() {
 
     // let referenceButtons = document.querySelector("[data-class]");
     // window.addEventListener("resize", navbarColorOnResize);
-    
+
     // function navbarColorOnResize() {
     //     if (window.innerWidth > 1200) {
     //         if (
@@ -152,7 +152,6 @@ export function configDOM() {
     //         sidenav.classList.remove("bg-transparent");
     //     }
     // }
-    
 }
 
 //Set Sidebar Color
@@ -437,15 +436,16 @@ function debounce(func, wait, immediate) {
 const iconNavbarSidenav = document.getElementById("iconNavbarSidenav");
 const iconSidenav = document.getElementById("iconSidenav");
 const sidenav = document.getElementById("sidenav-main");
-let body = document.getElementsByTagName("body")[0];
+let body = document.getElementsByTagName("body")[1];
 let className = "g-sidenav-pinned";
 
 if (iconNavbarSidenav) {
-    iconNavbarSidenav.addEventListener("click", toggleSidenav);
+    console.log("dudududdu");
+    iconNavbarSidenav.addEventListener("click", toggleSidenav());
 }
 
 if (iconSidenav) {
-    iconSidenav.addEventListener("click", toggleSidenav);
+    iconSidenav.addEventListener("click", toggleSidenav());
 }
 
 function toggleSidenav() {
@@ -641,12 +641,14 @@ export function darkMode(el) {
     const text_span_white = document.querySelectorAll("span.text-white");
     const text_strong = document.querySelectorAll("strong.text-dark");
     const text_strong_white = document.querySelectorAll("strong.text-white");
+    const th_white = document.querySelectorAll("th.text-white");
     const text_nav_link = document.querySelectorAll("a.nav-link.text-dark");
     const secondary = document.querySelectorAll(".text-secondary");
     const bg_gray_100 = document.querySelectorAll(".bg-gray-100");
     const bg_gray_600 = document.querySelectorAll(".bg-gray-600");
     const bg_dark_mode_container = document.querySelectorAll(".abow-container");
-    const bg_dark_mode_under_container = document.querySelectorAll(".under-container");
+    const bg_dark_mode_under_container =
+        document.querySelectorAll(".under-container");
     const btn_text_dark = document.querySelectorAll(
         ".btn.btn-link.text-dark, .btn .ni.text-dark"
     );
@@ -738,9 +740,13 @@ export function darkMode(el) {
             }
         }
         for (var i = 0; i < bg_dark_mode_under_container.length; i++) {
-            if (bg_dark_mode_under_container[i].classList.contains("bg-primary")) {
+            if (
+                bg_dark_mode_under_container[i].classList.contains("bg-primary")
+            ) {
                 bg_dark_mode_under_container[i].classList.remove("bg-primary");
-                bg_dark_mode_under_container[i].classList.add("bg-dark-mode-container");
+                bg_dark_mode_under_container[i].classList.add(
+                    "bg-dark-mode-container"
+                );
             }
         }
         for (var i = 0; i < btn_text_dark.length; i++) {
@@ -814,6 +820,12 @@ export function darkMode(el) {
                 text_span_white[i].classList.add("text-dark");
             }
         }
+        for (var i = 0; i < th_white.length; i++) {
+            if (th_white[i].classList.contains("text-white")) {
+                th_white[i].classList.remove("text-white");
+                th_white[i].classList.add("text-dark");
+            }
+        }
         for (var i = 0; i < text_strong_white.length; i++) {
             if (text_strong_white[i].classList.contains("text-white")) {
                 text_strong_white[i].classList.remove("text-white");
@@ -824,7 +836,8 @@ export function darkMode(el) {
             if (secondary[i].classList.contains("text-white")) {
                 secondary[i].classList.remove("text-white");
                 secondary[i].classList.remove("opacity-8");
-                secondary[i].classList.add("text-dark");
+                secondary[i].classList.add("text-secondary");
+                // secondary[i].classList.add("text-dark");
             }
         }
         for (var i = 0; i < bg_gray_600.length; i++) {
@@ -834,14 +847,26 @@ export function darkMode(el) {
             }
         }
         for (var i = 0; i < bg_dark_mode_container.length; i++) {
-            if (bg_dark_mode_container[i].classList.contains("bg-dark-mode-container")) {
-                bg_dark_mode_container[i].classList.remove("bg-dark-mode-container");
+            if (
+                bg_dark_mode_container[i].classList.contains(
+                    "bg-dark-mode-container"
+                )
+            ) {
+                bg_dark_mode_container[i].classList.remove(
+                    "bg-dark-mode-container"
+                );
                 bg_dark_mode_container[i].classList.add("bg-gray-100");
             }
         }
         for (var i = 0; i < bg_dark_mode_under_container.length; i++) {
-            if (bg_dark_mode_under_container[i].classList.contains("bg-dark-mode-container")) {
-                bg_dark_mode_under_container[i].classList.remove("bg-dark-mode-container");
+            if (
+                bg_dark_mode_under_container[i].classList.contains(
+                    "bg-dark-mode-container"
+                )
+            ) {
+                bg_dark_mode_under_container[i].classList.remove(
+                    "bg-dark-mode-container"
+                );
                 bg_dark_mode_under_container[i].classList.add("bg-primary");
             }
         }
