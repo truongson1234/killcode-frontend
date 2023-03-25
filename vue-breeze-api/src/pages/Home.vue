@@ -14,11 +14,8 @@
                     <div v-else>
                         <h1>Go and Login</h1>
                     </div>
-                    <div
-                        class="col-12 col-md-6 pb-3"
-                        v-for="(data, index) in QuestionsData"
-                        :key="index"
-                    >
+                    <div class="col-12 col-md-6 pb-3"
+                        v-for="(data, index) in QuestionsData" :key="index">
                         <QuestionItem :data="data" />
                     </div>
                 </div>
@@ -55,6 +52,7 @@ onMounted(async () => {
     await setTimeout(() => {
         $('#loading').addClass('hidden')
     }, 1000)
+
 });
 const QuestionsData = ref([
     {

@@ -436,7 +436,7 @@ function debounce(func, wait, immediate) {
 const iconNavbarSidenav = document.getElementById("iconNavbarSidenav");
 const iconSidenav = document.getElementById("iconSidenav");
 const sidenav = document.getElementById("sidenav-main");
-let body = document.getElementsByTagName("body")[1];
+let body = document.getElementsByTagName("body")[0];
 let className = "g-sidenav-pinned";
 
 if (iconNavbarSidenav) {
