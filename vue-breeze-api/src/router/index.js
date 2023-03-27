@@ -1,14 +1,19 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
+import UserLayout from "@/pages/Index.vue";
+import AdminLayout from "@/pages/admin/Index.vue";
+import ErrorLayout from "@/pages/auth/Index.vue";
+import AuthLayout from "@/pages/errors/Index.vue";
+
 const requireAuth = async (to, from, next) => {
     const authStore = useAuthStore();
     await authStore.getUser();
     const roles = authStore.getAuthRoles;
     // console.log(roles, 'roles')
     if (roles == null) {
-        next("login");
+        next("auth/login");
     } else if (roles.indexOf("admin") == -1) {
-        next("/authenticated");
+        next("error/authenticated");
     } else {
         next();
     }
@@ -23,111 +28,137 @@ const checkLogin = async (to, frorm, next) => {
     }
 };
 const routes = [
+    //! ROUTES AUTH
     {
-        path: "/login",
-        name: "Login",
-        component: () => import("@/pages/auth/Login.vue"),
-        beforeEnter: checkLogin,
-        meta: { showHeader: false, showFooter: false, isAdmin: false },
-    },
-    {
-        path: "/register",
-        name: "Register",
-        component: () => import("@/pages/auth/Register.vue"),
-        beforeEnter: checkLogin,
-        meta: { showHeader: false, showFooter: false, isAdmin: false },
-    },
-    {
-        path: "/forgot_password",
-        name: "ForgotPassword",
-        component: () => import("@/pages/auth/ForgotPassword.vue"),
-        beforeEnter: checkLogin,
-        meta: { showHeader: false, showFooter: false, isAdmin: false },
-    },
-    {
-        path: "/password-reset/:token",
-        name: "PasswordReset",
-        component: () => import("@/pages/auth/PasswordReset.vue"),
-        beforeEnter: checkLogin,
-        meta: { showHeader: false, showFooter: false, isAdmin: false },
-    },
-    {
-        path: "/send-verify-email",
-        name: "SendVerifyEmail",
-        component: () => import("@/pages/auth/SendVerifyEmail.vue"),
-        beforeEnter: checkLogin,
-        meta: { showHeader: false, showFooter: false, isAdmin: false },
-    },
-    { path: "/", name: "Main", component: () => import("@/pages/Main.vue") },
-    {
-        path: "/home",
-        name: "Home",
-        component: () => import("@/pages/Home.vue"),
-        beforeRouteEnter(to, from, next) {
-            window.location.reload();
+        path: "/auth",
+        components: {
+            default: AuthLayout,
+            other: AuthLayout,
         },
-    },
-    {
-        path: "/user",
         children: [
             {
-                path: ":edit",
-                name: "userEdit",
-                component: () => import("@/pages/user/Edit.vue"),
+                path: "login",
+                name: "Login",
+                component: () => import("@/pages/auth/Login.vue"),
+                meta: { showHeader: false, showFooter: false, isAdmin: false },
+            },
+            {
+                path: "register",
+                name: "Register",
+                component: () => import("@/pages/auth/Register.vue"),
+                meta: { showHeader: false, showFooter: false, isAdmin: false },
+            },
+            {
+                path: "forgot_password",
+                name: "ForgotPassword",
+                component: () => import("@/pages/auth/ForgotPassword.vue"),
+                meta: { showHeader: false, showFooter: false, isAdmin: false },
+            },
+            {
+                path: "password-reset/:token",
+                name: "PasswordReset",
+                component: () => import("@/pages/auth/PasswordReset.vue"),
+                meta: { showHeader: false, showFooter: false, isAdmin: false },
+            },
+            {
+                path: "send-verify-email",
+                name: "SendVerifyEmail",
+                component: () => import("@/pages/auth/SendVerifyEmail.vue"),
+                meta: { showHeader: false, showFooter: false, isAdmin: false },
             },
         ],
-        name: "User",
-        component: () => import("@/pages/user/Index.vue"),
+        beforeEnter: checkLogin,
     },
+
+    //! ROUTE USER
     {
-        path: "/posts",
+        path: "/",
+        components: {
+            default: UserLayout,
+            user: UserLayout,
+        },
         children: [
             {
                 path: "",
-                name: "PostsList",
-                component: () => import("@/pages/posts/List.vue"),
+                name: "Main",
+                component: () => import("@/pages/Main.vue"),
+                meta: { showFooter: false, showNavBar: false },
             },
             {
-                path: "/create-posts",
-                name: "PostsCreate",
-                component: () => import("@/pages/posts/Create.vue"),
+                path: "home",
+                name: "Home",
+                component: () => import("@/pages/Home.vue"),
+                meta: { showFooter: true, showNavBar: true },
+            },
+
+            {
+                path: "test",
+                name: "Test",
+                component: () => import("@/pages/Test.vue"),
+                meta: { showFooter: true, showNavBar: true },
             },
             {
-                path: "/edit-posts/:id",
-                name: "PostsEdit",
-                component: () => import("@/pages/posts/Edit.vue"),
+                path: "question",
+                name: "Question",
+                children: [
+                    {
+                        path: "",
+                        name: "QuestionList",
+                        component: () => import("@/pages/question/List.vue"),
+                    },
+                    {
+                        path: "question-detail/:id",
+                        name: "QuestionDetail",
+                        component: () => import("@/pages/question/Detail.vue"),
+                    },
+                ],
+                component: () => import("@/pages/question/Index.vue"),
+                meta: { showFooter: true, showNavBar: true },
             },
             {
-                path: "/posts-detail/:id",
-                name: "PostsDetail",
-                component: () => import("@/pages/posts/Detail.vue"),
+                path: "posts",
+                name: "Posts",
+                children: [
+                    {
+                        path: "",
+                        name: "PostsList",
+                        component: () => import("@/pages/posts/List.vue"),
+                    },
+                    {
+                        path: "/create-posts",
+                        name: "PostsCreate",
+                        component: () => import("@/pages/posts/Create.vue"),
+                    },
+                    {
+                        path: "/edit-posts/:id",
+                        name: "PostsEdit",
+                        component: () => import("@/pages/posts/Edit.vue"),
+                    },
+                    {
+                        path: "/posts-detail/:id",
+                        name: "PostsDetail",
+                        component: () => import("@/pages/posts/Detail.vue"),
+                    },
+                ],
+                component: () => import("@/pages/posts/Index.vue"),
+                meta: { showFooter: true, showNavBar: true },
+            },
+            {
+                path: "user",
+                children: [
+                    {
+                        path: ":edit",
+                        name: "userEdit",
+                        component: () => import("@/pages/user/Edit.vue"),
+                    },
+                ],
+                name: "User",
+                component: () => import("@/pages/user/Index.vue"),
             },
         ],
-        name: "Posts",
-        component: () => import("@/pages/posts/Index.vue"),
     },
-    {
-        path: "/question",
-        children: [
-            {
-                path: "",
-                name: "QuestionList",
-                component: () => import("@/pages/question/List.vue"),
-            },
-            {
-                path: "/question-detail/:id",
-                name: "QuestionDetail",
-                component: () => import("@/pages/question/Detail.vue"),
-            },
-        ],
-        name: "Question",
-        component: () => import("@/pages/question/Index.vue"),
-    },
-    {
-        path: "/test",
-        name: "Test",
-        component: () => import("@/pages/Test.vue"),
-    },
+
+    //! ROUTES ADMIN
     {
         path: "/admin",
         children: [
@@ -148,21 +179,35 @@ const routes = [
             },
         ],
         name: "Admin",
-        component: () => import("@/pages/admin/Index.vue"),
+        components: {
+            default: AdminLayout,
+            admin: AdminLayout,
+        },
         beforeEnter: requireAuth,
-        meta: { showHeader: false, showFooter: false, isAdmin: true },
     },
+
+    //! ROUTES ERRORS
     {
-        path: "/authenticated",
-        name: "Authenticated",
-        component: () => import("@/pages/errors/Authenticated.vue"),
-        meta: { showHeader: false, showFooter: false, isAdmin: false },
+        path: "/error",
+        components: {
+            default: ErrorLayout,
+            other: ErrorLayout,
+        },
+        children: [
+            {
+                path: "authenticated",
+                name: "Authenticated",
+                component: () => import("@/pages/errors/Authenticated.vue"),
+            },
+        ],
     },
     {
         path: "/:catchAll(.*)",
         name: "NotFound",
-        component: () => import("@/pages/errors/404.vue"),
-        meta: { showHeader: false, showFooter: false, isAdmin: false },
+        components: {
+            default: () => import("@/pages/errors/404.vue"),
+            other: () => import("@/pages/errors/404.vue"),
+        },
     },
 ];
 

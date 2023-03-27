@@ -25,13 +25,14 @@
         function toggleSidenav() {
             if (body.classList.contains(className)) {
                 body.classList.remove(className);
-                setTimeout(function () {
-                    sidenav.classList.remove("bg-white");
-                }, 100);
+                sidenav.classList.remove("bg-white");
                 sidenav.classList.remove("bg-transparent");
             } else {
+                console.log('o day ne')
                 body.classList.add(className);
-                sidenav.classList.add("bg-white");
+                if(!body.classList.contains('dark-version')){
+                    sidenav.classList.add("bg-white");
+                }
                 sidenav.classList.remove("bg-transparent");
                 iconSidenav.classList.remove("d-none");
             }

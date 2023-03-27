@@ -6,10 +6,10 @@
                     Câu hỏi thường gặp
                 </h3>
                 <div class="row">
-                    <div v-if="authStore.user">
-                        <h1>{{ authStore.user.name }}</h1>
-                        <h1>{{ authStore.user.email }}</h1>
-                        <h1>{{ authStore.user.email_verified_at }}</h1>
+                    <div v-if="authStore.getInfoUser">
+                        <h1>{{ authStore.getInfoUser.name }}</h1>
+                        <h1>{{ authStore.getInfoUser.email }}</h1>
+                        <h1>{{ authStore.getInfoUser.email_verified_at }}</h1>
                     </div>
                     <div v-else>
                         <h1>Go and Login</h1>
@@ -45,14 +45,11 @@
 import { ref, onMounted } from "vue";
 import QuestionItem from "@/components/ui/QuestionItem.vue";
 import { useAuthStore } from "@/stores/auth";
+import { pageLoading, pageLoaded } from "@/assets/js/app.js"
 const authStore = useAuthStore();
 onMounted(async () => {
-    await $('#loading').removeClass('hidden')
-    await authStore.getUser();
-    await setTimeout(() => {
-        $('#loading').addClass('hidden')
-    }, 1000)
-
+    pageLoading()
+    pageLoaded(1000)
 });
 const QuestionsData = ref([
     {

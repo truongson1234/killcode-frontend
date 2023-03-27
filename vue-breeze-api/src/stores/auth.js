@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import axios from "axios";
+import { pageLoading, pageLoaded } from "@/assets/js/app.js"
 
 export const useAuthStore = defineStore("auth", {
     state: () => ({
@@ -10,7 +11,7 @@ export const useAuthStore = defineStore("auth", {
         authStatus: null,
     }),
     getters: {
-        user: (state) => state.authUser,
+        getInfoUser: (state) => state.authUser,
         errors: (state) => state.authErrors,
         status: (state) => state.authStatus,
         getAuthRoles: (state) => state.authRoles,
@@ -22,7 +23,6 @@ export const useAuthStore = defineStore("auth", {
         },
         async getUser() {
             try {
-                await this.getToken();
                 const data = await axios.get("/api/user");
                 if(data.data) {
                     this.authUser = data.data.user;
@@ -35,21 +35,20 @@ export const useAuthStore = defineStore("auth", {
             }
         },
         async handleLogin(data) {
-            await $('#loading').removeClass('hidden')
+            pageLoading()
             this.authErrors = [];
             try {
-                await this.getToken();
-                const response = await axios.post("/login", {
+                await axios.post("/login", {
                     email: data.email,
                     password: data.password,
                 });
-                console.log(response);
-                $('#loading').addClass('hidden')
+                await this.getUser()
+                pageLoaded()
                 localStorage.setItem('isAuthenticated', true)
                 this.router.push("/home");
             } catch (error) {
                 if (error.response.status == 422) {
-                    await $('#loading').addClass('hidden')
+                    pageLoaded()
                     this.authErrors = error.response.data.errors;
                     console.log(this.authErrors);
                 }
@@ -57,10 +56,9 @@ export const useAuthStore = defineStore("auth", {
         },
 
         async handleRegister(data) {
-            await $('#loading').removeClass('hidden')
+            pageLoading()
             this.authErrors = [];
             try {
-                await this.getToken();
                 await axios.post("/register", {
                     name: data.name,
                     email: data.email,
@@ -69,8 +67,9 @@ export const useAuthStore = defineStore("auth", {
                 });
                 // await axios.post("/email/verification-notification");
                 // this.router.push("/send-verify-email");
-                await $('#loading').addClass('hidden')
+                pageLoaded()
                 localStorage.setItem('isAuthenticated', true)
+                await this.getUser()
                 await Swal.fire({
                     icon: 'success',
                     title: 'Đăng ký tài khoản thành công!',
@@ -82,7 +81,7 @@ export const useAuthStore = defineStore("auth", {
                 })
             } catch (error) {
                 if (error.response.status == 422) {
-                    await $('#loading').addClass('hidden')
+                    pageLoaded()
                     this.authErrors = error.response.data.errors;
                     console.log(this.authErrors);
                 }
@@ -94,29 +93,28 @@ export const useAuthStore = defineStore("auth", {
             this.authUser = null;
         },
         async handleForgotPassword(email) {
-            await $('#loading').removeClass('hidden')
+            pageLoading()
             this.authErrors = [];
             try {
-                await this.getToken();
                 const response = await axios.post("/forgot-password", {
                     email: email,
                 });
                 this.authStatus = response.data.status;
-                await $('#loading').addClass('hidden')
+                pageLoaded()
             } catch (error) {
                 if (error.response.status == 422) {
-                    await $('#loading').addClass('hidden')
+                    pageLoaded()
                     this.authErrors = error.response.data.errors;
                     this.authStatus = null;
                 }
             }
         },
         async handleResetPassword(resetData) {
-            await $('#loading').removeClass('hidden')
+            pageLoading()
             this.authErrors = [];
             try {
                 const response = await axios.post("/reset-password", resetData);
-                await $('#loading').addClass('hidden')
+                pageLoaded()
                 await Swal.fire({
                     icon: 'success',
                     title: 'Đổi mật khẩu thành công!',
@@ -130,7 +128,7 @@ export const useAuthStore = defineStore("auth", {
             } catch (error) {
                 console.log(error.response);
                 if (error.response.status == 422) {
-                    await $('#loading').addClass('hidden')
+                    pageLoaded()
                     this.authErrors = error.response.data.errors;
                     this.authStatus = null;
                 }
