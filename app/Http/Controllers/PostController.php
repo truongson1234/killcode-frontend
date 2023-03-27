@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Post;
+use App\Events\NewNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -60,9 +61,18 @@ class PostController extends Controller
         // Đính kèm các tag vào bài viết
         $post->tags()->attach($tagIds);
 
+        $notification = new Notification();
+        $notification->user_id = auth()->user()->id;
+        $notification->message = 'Bạn có một bài viết mới!';
+        $notification->save();
+
+        event(new NewNotification($notification));
+
         // Return created post data
         return response()->json([
-            'data' => $post
+            'data' => $post,
+            'status' => 1,
+            'message' => 'Tạo thành công.'
         ], 201);
     }
 
@@ -74,7 +84,9 @@ class PostController extends Controller
 
         // Return updated post data
         return response()->json([
-            'data' => $post
+            'data' => $post,
+            'status' => 1,
+            'message' => 'Cập nhật thành công.'
         ]);
     }
 
@@ -83,6 +95,9 @@ class PostController extends Controller
         $post = Post::findOrFail($id);
         $post->delete();
 
-        return response()->json(['message' => 'Delete post successfully.'], 204);
+        return response()->json([
+            'status' => 1,
+            'message' => 'Delete post successfully.'
+        ], 204);
     }
 }

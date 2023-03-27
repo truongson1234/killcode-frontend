@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Tag;
+use App\Models\FollowedTag;
 use Illuminate\Http\Request;
 
 class FollowedTagController extends Controller
@@ -10,40 +12,69 @@ class FollowedTagController extends Controller
     // Lấy danh sách các thẻ đã được theo dõi của một người dùng
     public function index(Request $request)
     {
-        $userId = $request->input('user_id');
-        $tagId = $request->input('tag_id');
+        // $userId = $request->input('user_id');
+        $currentPage = $request->input('page', 1);
+        $perPage = $request->input('perPage', 3);
 
-        $followedTags = FollowedTag::where('user_id', $userId)->with('tag')->get();
+        $paginator = Tag::with(['followers' => function ($query) { 
+            $query->where('user_id', auth()->user()->id); 
+        }]) 
+            ->withCount('followers') 
+            ->orderBy('created_at', 'desc') 
+            ->paginate($perPage);
 
-        return response()->json($followedTags);
+        $tags = $paginator->map(function ($tag) { 
+            $tag->is_following = $tag->followers->isNotEmpty();
+
+            unset($tag->followers); 
+            return $tag; 
+        });
+
+        return response()->json([
+            'currentPage' => $paginator->currentPage(),
+            'totalPages' => $paginator->lastPage(),
+            'data' => $tags,
+        ],200);
     }
 
     // Theo dõi một thẻ mới
     public function store(Request $request)
     {
-        $tagId = $request->input('user_id');
+        $userId = auth()->user()->id;
         $tagId = $request->input('tag_id');
+        
+        if (!FollowedTag::where('user_id', $userId)->where('tag_id', $tagId)->exists()) {
+            $followedTag = new FollowedTag;
+            $followedTag->user_id = $userId;
+            $followedTag->tag_id = $tagId;
+            $followedTag->save();
+    
+            return response()->json([
+                'data' => $followedTag,
+                'status' => 1,
+                'message' => 'Follow thành công.'
+            ],200);
+        }
 
-        $tag = Tag::findOrFail($tagId);
-
-        $followedTag = new FollowedTag;
-        $followedTag->user_id = $userId;
-        $followedTag->tag_id = $tagId;
-        $followedTag->save();
-
-        return response()->json($followedTag);
+        return response()->json([
+            'status' => 0,
+            'message' => 'Bạn đã follow trước đó rồi.'
+        ],404);
     }
 
     // Bỏ theo dõi một thẻ
     public function destroy(Request $request)
     {
-        $tagId = $request->input('user_id');
+        $userId = auth()->user()->id;
         $tagId = $request->input('tag_id');
 
         $followedTag = FollowedTag::where('user_id', $userId)->where('tag_id', $tagId)->firstOrFail();
         $followedTag->delete();
 
-        return response()->json(['message' => 'Unfollowed tag successfully.']);
+        return response()->json([
+            'status' => 1,
+            'message' => 'Bỏ theo dõi thành công.'
+        ]);
     }
 
     // Kiểm tra một thẻ đã được theo dõi hay chưa

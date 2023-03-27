@@ -9,8 +9,6 @@ class FollowedTag extends Model
 {
     use HasFactory;
 
-    protected $table = 'followed_tags';
-
     protected $fillable = ['user_id', 'tag_id'];
 
     public function user()

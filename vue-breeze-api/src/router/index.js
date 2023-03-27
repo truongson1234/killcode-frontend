@@ -71,6 +71,23 @@ const routes = [
         component: () => import("@/pages/user/Index.vue"),
     },
     {
+        path: "/tags",
+        children: [
+            {
+                path: "",
+                name: "TagsList",
+                component: () => import("@/pages/tags/List.vue"),
+            },
+            {
+                path: "/tags-detail/:id",
+                name: "TagsDetail",
+                component: () => import("@/pages/tags/Detail.vue"),
+            },
+        ],
+        name: "Tags",
+        component: () => import("@/pages/tags/Index.vue"),
+    },
+    {
         path: "/posts",
         children: [
             {

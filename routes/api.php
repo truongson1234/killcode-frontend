@@ -21,10 +21,13 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 // Get user by id
 Route::group(['prefix' => 'users'], function () {
     Route::get('{id}', 'App\Http\Controllers\UserController@show');
-    Route::get('{user}/followed-tags', 'App\Http\Controllers\FollowedTagController@index');
-    Route::post('{user}/followed-tags', 'App\Http\Controllers\FollowedTagController@store');
-    Route::delete('{user}/followed-tags/{tag}', 'App\Http\Controllers\FollowedTagController@destroy');
-    Route::get('{user}/followed-tags/{tag}', 'App\Http\Controllers\FollowedTagController@show');
+});
+
+// followed-tags api
+Route::group(['prefix' => 'followed-tags'], function () {
+    Route::get('', 'App\Http\Controllers\FollowedTagController@index');
+    Route::post('', 'App\Http\Controllers\FollowedTagController@store');
+    Route::delete('', 'App\Http\Controllers\FollowedTagController@destroy');
 });
 
 // posts api
