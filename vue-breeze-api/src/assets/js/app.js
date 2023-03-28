@@ -4,7 +4,6 @@ export const pageLoading = () => {
         overflow: "hidden",
         height: "100%",
     });
-    console.log('khon nan', $("#loading"))
 };
 export const pageLoaded = (time = 0) => {
     setTimeout(() => {

@@ -27,6 +27,8 @@ export const useAuthStore = defineStore("auth", {
                 if(data.data) {
                     this.authUser = data.data.user;
                     this.authRoles = data.data.roles;
+                    this.authPermissions = data.data.permissions;
+                    console.log(data.data)
                 }else {
                 }
                 

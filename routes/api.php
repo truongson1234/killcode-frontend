@@ -19,9 +19,11 @@ use App\Http\Controllers\UserController;
     Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
         $user = $request->user();
         $roles = $user->getRoleNames();
+        $permissions = $user->getPermissionNames();
         return [
             'user' => $user,
             'roles' => $roles,
+            'permissions' => $permissions,
         ];
     });
 

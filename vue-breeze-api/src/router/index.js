@@ -98,6 +98,12 @@ const routes = [
                 meta: { showFooter: true, showNavBar: true },
             },
             {
+                path: "profile",
+                name: "Profile",
+                component: () => import("@/pages/user/Profile.vue"),
+                meta: { showFooter: true, showNavBar: false },
+            },
+            {
                 path: "question",
                 name: "Question",
                 children: [
@@ -172,11 +178,7 @@ const routes = [
                 name: "AdminRoles",
                 component: () => import("@/pages/admin/Roles.vue"),
             },
-            {
-                path: "profile-card",
-                name: "ProfileCard",
-                component: () => import("@/pages/admin/ProfileCard.vue"),
-            },
+            
         ],
         name: "Admin",
         components: {

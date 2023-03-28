@@ -1,174 +1,169 @@
 <template>
-  <div class="row">
-    <div class="col-md-12">
-      <div id="content" class="content content-full-width">
-        <!-- begin profile -->
-        <div class="profile">
-          <div class="profile-header">
-            <!-- BEGIN profile-header-cover -->
-            <div class="profile-header-cover"></div>
-            <!-- BEGIN profile-header-content -->
-            <div class="profile-header-content">
-              <!-- BEGIN profile-header-img -->
-              <div class="profile-header-img">
-                <img
-                  src="https://scontent.fhan4-2.fna.fbcdn.net/v/t1.6435-9/149299062_232989691790324_2796829381264086336_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=xSgUwUshPDIAX_YWlPi&_nc_ht=scontent.fhan4-2.fna&oh=00_AfATcRKgKC6HOtrIudxtwXaQj0z7TlcyK_SPiDv43zMjSA&oe=6421D58C"
-                  alt=""
-                />
-              </div>
-              <!-- BEGIN profile-header-info -->
-              <div class="profile-header-info">
-                <h4 class="m-t-10 m-b-5">Sonng Ngu</h4>
-                <p class="m-b-10">UXUI + Frontend Developer</p>
-                <a href="#" class="btn btn-sm btn-primary mb-2">Follow me</a>
-              </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div id="content" class="content content-full-width">
+                <!-- begin profile -->
+                <div class="profile">
+                    <div class="profile-header">
+                        <div class="profile-header-cover bg-white"></div>
+                        <div class="profile-header-content">
+                            <div class="profile-header-img">
+                                <img src="https://scontent.fhan4-2.fna.fbcdn.net/v/t1.6435-9/149299062_232989691790324_2796829381264086336_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=xSgUwUshPDIAX_YWlPi&_nc_ht=scontent.fhan4-2.fna&oh=00_AfATcRKgKC6HOtrIudxtwXaQj0z7TlcyK_SPiDv43zMjSA&oe=6421D58C"
+                                    alt="" />
+                            </div>
+                            <!-- BEGIN profile-header-info -->
+                            <div class="profile-header-info">
+                                <h4 class="m-t-10 m-b-5">Sonng Ngu</h4>
+                                <p class="m-b-10">UXUI + Frontend Developer</p>
+                                <a href="#"
+                                    class="btn btn-sm btn-primary mb-2">Follow
+                                    me</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="profile-header-tab nav nav-tabs" id="nav-tab"
+                        role="tablist">
+                        <button class="nav-link active" id="nav-post-tab"
+                            data-bs-toggle="tab" data-bs-target="#nav-post"
+                            type="button" role="tab" aria-controls="nav-post"
+                            aria-selected="true">Bài viết</button>
+                        <button class="nav-link" id="nav-question-tab"
+                            data-bs-toggle="tab" data-bs-target="#nav-question"
+                            type="button" role="tab" aria-controls="nav-question"
+                            aria-selected="false">Câu hỏi</button>
+                    </div>
+                </div>
+                <!-- begin profile-content -->
+                <div class="profile-content">
+                    <div class="tab-content p-0">
+                        <!-- begin #profile-post tab -->
+                        <div class="tab-pane fade show active" id="nav-post"
+                            role="tabpanel" aria-labelledby="nav-post-tab">
+                            <!-- begin timeline -->
+                            <ul class="timeline">
+                                <li>
+                                    <!-- begin timeline-time -->
+                                    <div class="timeline-time">
+                                        <span class="date">today</span>
+                                        <span class="time">04:20</span>
+                                    </div>
+                                    <!-- begin timeline-icon -->
+                                    <div class="timeline-icon">
+                                        <a href="javascript:;">&nbsp;</a>
+                                    </div>
+                                    <!-- begin timeline-body -->
+                                    <div class="timeline-body">
+                                        <div class="timeline-header">
+                                            <span class="userimage"><img
+                                                    src="https://scontent.fhan4-2.fna.fbcdn.net/v/t1.6435-9/149299062_232989691790324_2796829381264086336_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=xSgUwUshPDIAX_YWlPi&_nc_ht=scontent.fhan4-2.fna&oh=00_AfATcRKgKC6HOtrIudxtwXaQj0z7TlcyK_SPiDv43zMjSA&oe=6421D58C"
+                                                    alt="" /></span>
+                                            <span class="username"><a
+                                                    href="javascript:;">Sonng
+                                                    Ngu</a> <small></small></span>
+                                            <span class="pull-right text-muted">18
+                                                Views</span>
+                                        </div>
+                                        <div class="timeline-content">
+                                            <p>
+                                                Lorem ipsum dolor sit amet,
+                                                consectetur adipiscing elit.
+                                                Nunc faucibus turpis quis tincidunt
+                                                luctus. Nam sagittis
+                                                dui in nunc consequat, in imperdiet
+                                                nunc sagittis.
+                                            </p>
+                                        </div>
+                                        <div class="timeline-likes">
+                                            <div class="stats-right">
+                                                <span class="stats-text">259
+                                                    Shares</span>
+                                                <span class="stats-text">21
+                                                    Comments</span>
+                                            </div>
+                                            <div class="stats">
+                                                <span
+                                                    class="fa-stack fa-fw stats-icon">
+                                                    <i
+                                                        class="fa fa-circle fa-stack-2x text-danger"></i>
+                                                    <i
+                                                        class="fa fa-heart fa-stack-1x fa-inverse t-plus-1"></i>
+                                                </span>
+                                                <span
+                                                    class="fa-stack fa-fw stats-icon">
+                                                    <i
+                                                        class="fa fa-circle fa-stack-2x text-primary"></i>
+                                                    <i
+                                                        class="fa fa-thumbs-up fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                                <span
+                                                    class="stats-total">4.3k</span>
+                                            </div>
+                                        </div>
+                                        <div class="timeline-footer">
+                                            <a href="javascript:;"
+                                                class="m-r-15 text-inverse-lighter"><i
+                                                    class="fa fa-thumbs-up fa-fw fa-lg m-r-3"></i>
+                                                Like</a>
+                                            <a href="javascript:;"
+                                                class="m-r-15 text-inverse-lighter"><i
+                                                    class="fa fa-comments fa-fw fa-lg m-r-3"></i>
+                                                Comment</a>
+                                            <a href="javascript:;"
+                                                class="m-r-15 text-inverse-lighter"><i
+                                                    class="fa fa-share fa-fw fa-lg m-r-3"></i>
+                                                Share</a>
+                                        </div>
+                                        <div class="timeline-comment-box">
+                                            <div class="user">
+                                                <img
+                                                    src="https://scontent.fhan4-2.fna.fbcdn.net/v/t1.6435-9/149299062_232989691790324_2796829381264086336_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=xSgUwUshPDIAX_YWlPi&_nc_ht=scontent.fhan4-2.fna&oh=00_AfATcRKgKC6HOtrIudxtwXaQj0z7TlcyK_SPiDv43zMjSA&oe=6421D58C" />
+                                            </div>
+                                            <div class="input">
+                                                <form action="">
+                                                    <h4 class="text-light">Đây là
+                                                        phần bình luận!</h4>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- end timeline-body -->
+                                </li>
+                                <li>
+                                    <!-- begin timeline-icon -->
+                                    <div class="timeline-icon">
+                                        <a href="javascript:;">&nbsp;</a>
+                                    </div>
+                                    <!-- begin timeline-body -->
+                                    <div class="timeline-body">Loading...</div>
+                                    <!-- begin timeline-body -->
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="tab-pane fade show active" id="nav-question"
+                            role="tabpanel" aria-labelledby="nav-question-tab">
+                            <h2>adu</h2>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <!-- BEGIN profile-header-tab -->
-            <ul class="profile-header-tab nav nav-tabs">
-              <li class="nav-item">
-                <a
-                  href=""
-                  class="nav-link_ active show"
-                  >TEST</a
-                >
-              </li>
-              <li class="nav-item">
-                <a
-                  href=""
-                  class="nav-link_"
-                  >TEST</a
-                >
-              </li>
-              <li class="nav-item">
-                <a
-                  href=""
-                  class="nav-link_"
-                  >TEST</a
-                >
-              </li>
-            </ul>
-          </div>
         </div>
-        <!-- begin profile-content -->
-        <div class="profile-content">
-          <!-- begin tab-content -->
-          <div class="tab-content p-0">
-            <!-- begin #profile-post tab -->
-            <div class="tab-pane fade active show" id="profile-post">
-              <!-- begin timeline -->
-              <ul class="timeline">
-                <li>
-                  <!-- begin timeline-time -->
-                  <div class="timeline-time">
-                    <span class="date">today</span>
-                    <span class="time">04:20</span>
-                  </div>
-                  <!-- begin timeline-icon -->
-                  <div class="timeline-icon">
-                    <a href="javascript:;">&nbsp;</a>
-                  </div>
-                  <!-- begin timeline-body -->
-                  <div class="timeline-body">
-                    <div class="timeline-header">
-                      <span class="userimage"
-                        ><img
-                          src="https://scontent.fhan4-2.fna.fbcdn.net/v/t1.6435-9/149299062_232989691790324_2796829381264086336_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=xSgUwUshPDIAX_YWlPi&_nc_ht=scontent.fhan4-2.fna&oh=00_AfATcRKgKC6HOtrIudxtwXaQj0z7TlcyK_SPiDv43zMjSA&oe=6421D58C"
-                          alt=""
-                      /></span>
-                      <span class="username"
-                        ><a href="javascript:;">Sonng Ngu</a> <small></small
-                      ></span>
-                      <span class="pull-right text-muted">18 Views</span>
-                    </div>
-                    <div class="timeline-content">
-                      <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                        Nunc faucibus turpis quis tincidunt luctus. Nam sagittis
-                        dui in nunc consequat, in imperdiet nunc sagittis.
-                      </p>
-                    </div>
-                    <div class="timeline-likes">
-                      <div class="stats-right">
-                        <span class="stats-text">259 Shares</span>
-                        <span class="stats-text">21 Comments</span>
-                      </div>
-                      <div class="stats">
-                        <span class="fa-stack fa-fw stats-icon">
-                          <i class="fa fa-circle fa-stack-2x text-danger"></i>
-                          <i
-                            class="fa fa-heart fa-stack-1x fa-inverse t-plus-1"
-                          ></i>
-                        </span>
-                        <span class="fa-stack fa-fw stats-icon">
-                          <i class="fa fa-circle fa-stack-2x text-primary"></i>
-                          <i class="fa fa-thumbs-up fa-stack-1x fa-inverse"></i>
-                        </span>
-                        <span class="stats-total">4.3k</span>
-                      </div>
-                    </div>
-                    <div class="timeline-footer">
-                      <a href="javascript:;" class="m-r-15 text-inverse-lighter"
-                        ><i class="fa fa-thumbs-up fa-fw fa-lg m-r-3"></i>
-                        Like</a
-                      >
-                      <a href="javascript:;" class="m-r-15 text-inverse-lighter"
-                        ><i class="fa fa-comments fa-fw fa-lg m-r-3"></i>
-                        Comment</a
-                      >
-                      <a href="javascript:;" class="m-r-15 text-inverse-lighter"
-                        ><i class="fa fa-share fa-fw fa-lg m-r-3"></i> Share</a
-                      >
-                    </div>
-                    <div class="timeline-comment-box">
-                      <div class="user">
-                        <img
-                          src="https://scontent.fhan4-2.fna.fbcdn.net/v/t1.6435-9/149299062_232989691790324_2796829381264086336_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=xSgUwUshPDIAX_YWlPi&_nc_ht=scontent.fhan4-2.fna&oh=00_AfATcRKgKC6HOtrIudxtwXaQj0z7TlcyK_SPiDv43zMjSA&oe=6421D58C"
-                        />
-                      </div>
-                      <div class="input">
-                        <form action="">
-                            <h4 class="text-light">Đây là phần bình luận!</h4>
-                        </form>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end timeline-body -->
-                </li>
-                <li>
-                  <!-- begin timeline-icon -->
-                  <div class="timeline-icon">
-                    <a href="javascript:;">&nbsp;</a>
-                  </div>
-                  <!-- begin timeline-body -->
-                  <div class="timeline-body">Loading...</div>
-                  <!-- begin timeline-body -->
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
-  </div>
 </template>
 
 <script setup></script>
 
 <style scoped>
-.content{
+.content {
     border-radius: 4px;
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
+
 .profile-header {
     position: relative;
     overflow: hidden
 }
 
 .profile-header .profile-header-cover {
-    background-image: linear-gradient(135deg, #ece5fe 0%, #d2fdf4 100%);
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
     border-radius: 4px;
     position: absolute;
     left: 0;
@@ -292,7 +287,7 @@
 .t-plus-7,
 .t-plus-8,
 .t-plus-9 {
-    position: relative!important
+    position: relative !important
 }
 
 .profile-header .profile-header-tab {
@@ -308,7 +303,7 @@
 
 .text-ellipsis,
 .text-nowrap {
-    white-space: nowrap!important
+    white-space: nowrap !important
 }
 
 .profile-header .profile-header-tab>li {
@@ -388,7 +383,7 @@
 }
 
 .table.table-profile>thead>tr>th {
-    border-bottom: none!important
+    border-bottom: none !important
 }
 
 .table.table-profile>thead>tr>th h4 {
@@ -425,7 +420,7 @@
 }
 
 .table.table-profile>tbody>tr.divider>td {
-    padding: 0!important;
+    padding: 0 !important;
     height: 10px
 }
 
@@ -533,27 +528,37 @@ body.flat-black {
 }
 
 .bg-white {
-    background-color: var(--color-light-mode)!important;
+    background-color: var(--color-light-mode) !important;
 }
+
 .p-10 {
-    padding: 10px!important;
+    padding: 10px !important;
 }
+
 .media.media-xs .media-object {
     width: 32px;
 }
+
 .m-b-2 {
-    margin-bottom: 2px!important;
+    margin-bottom: 2px !important;
 }
-.media>.media-left, .media>.pull-left {
+
+.media>.media-left,
+.media>.pull-left {
     padding-right: 15px;
 }
-.media-body, .media-left, .media-right {
+
+.media-body,
+.media-left,
+.media-right {
     display: table-cell;
     vertical-align: top;
 }
+
 select.form-control:not([size]):not([multiple]) {
     height: 34px;
 }
+
 .form-control.input-inline {
     display: inline;
     width: auto;
@@ -786,6 +791,4 @@ select.form-control:not([size]):not([multiple]) {
     font-size: 21px;
     font-weight: 300;
     line-height: 1.4;
-}
-
-</style>
+}</style>
