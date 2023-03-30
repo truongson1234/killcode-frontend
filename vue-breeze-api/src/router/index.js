@@ -20,7 +20,7 @@ const requireAuth = async (to, from, next) => {
 };
 const checkLogin = (to, frorm, next) => {
     const status = localStorage.getItem("isAuthenticated");
-    if (status) {
+    if (!status) {
         next();
     } else {
         next("/home");
@@ -121,6 +121,34 @@ const routes = [
                 meta: { showFooter: true, showNavBar: true },
             },
             {
+                path: "tags",
+                name: "Tags",
+                children: [
+                    {
+                        path: "",
+                        name: "TagsList",
+                        component: () => import("@/pages/tags/List.vue"),
+                    },
+                    {
+                        path: "/create-tags",
+                        name: "TagsCreate",
+                        component: () => import("@/pages/tags/Create.vue"),
+                    },
+                    // {
+                    //     path: "/edit-tags/:id",
+                    //     name: "TagsEdit",
+                    //     component: () => import("@/pages/tags/Edit.vue"),
+                    // },
+                    {
+                        path: "/tags-detail/:id",
+                        name: "TagsDetail",
+                        component: () => import("@/pages/tags/Detail.vue"),
+                    },
+                ],
+                component: () => import("@/pages/tags/Index.vue"),
+                meta: { showFooter: true, showNavBar: true },
+            },
+            {
                 path: "posts",
                 name: "Posts",
                 children: [
@@ -160,7 +188,6 @@ const routes = [
                 name: "User",
                 component: () => import("@/pages/user/Index.vue"),
                 meta: { showFooter: true, showNavBar: true },
-                beforeEnter: checkLogin
             },
         ],
     },
