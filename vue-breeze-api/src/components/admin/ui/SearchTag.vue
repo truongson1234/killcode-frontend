@@ -4,7 +4,7 @@
             v-model="newTag"
             @input="searchTags"
             :placeholder="placeholder"
-            class="py-2 px-3 block w-full border-2 border-gray-200 rounded-md text-sm focus:border-black"
+            class="inpt-search-tag py-2 px-3 block w-full border-2 border-gray-200 rounded-md text-sm focus:border-black"
             :readonly="isReadonly"
             :style="isReadonly ? ['background: rgba(0,0,0,0.1)', 'pointer-events: none'] : ''"
         />
@@ -18,17 +18,12 @@
                 {{ tag.name }}
             </li>
         </ul>
-        <!-- <div v-for="tag in tags" :key="tag.id">
-            <span  class="bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">
-                {{ tag.name }} <span @click="removeTag(tag)"><i class='bx bx-x'></i></span>
-            </span>
-        </div> -->
     </div>
 </template>
 
 <script>
-import axios from "axios";
 import { watchEffect } from "vue";
+import axios from "axios";
 export default {
     name: "TagInput",
     props: {
@@ -47,15 +42,11 @@ export default {
         placeholder: {
             type: String,
             default: "Nhập tên quyền cần thêm...",
-        },
-    },
-    setup(props) {
-        watchEffect(() => {
-        });
+        }
     },
     data() {
         return {
-            newTag: "",
+            newTag: '',
             matchingTags: [],
             showAutocomplete: true,
         };
@@ -66,30 +57,9 @@ export default {
         },
         autocomplete() {
             return this.showAutocomplete
-        }
+        },
     },  
     methods: {
-        addTag() {
-            // Check for duplicates
-            const existingTag = this.tags.find(
-                (tag) => tag.name.toLowerCase() === this.newTag.toLowerCase()
-            );
-            if (existingTag) {
-                this.newTag = "";
-                return;
-            }
-
-            // Add new tag
-            this.tags.push({ name: this.newTag });
-            this.newTag = "";
-        },
-        removeTag(tag) {
-            const index = this.tags.indexOf(tag);
-            if (index !== -1) {
-                this.tags.splice(index, 1);
-            }
-            this.emitTagsUpdated()
-        },
         searchTags() {
             if (this.newTag === "") {
                 this.matchingTags = [];
@@ -127,7 +97,6 @@ export default {
             // Add new tag
             this.newTag = "";
             this.showAutocomplete = false;
-            this.$emit('add-item', {name: tag.name, id: tag.id})
         }
     },
 };

@@ -1,174 +1,482 @@
 <template>
-  <div class="row">
-    <div class="col-md-12">
-      <div id="content" class="content content-full-width">
-        <!-- begin profile -->
-        <div class="profile">
-          <div class="profile-header">
-            <!-- BEGIN profile-header-cover -->
-            <div class="profile-header-cover"></div>
-            <!-- BEGIN profile-header-content -->
-            <div class="profile-header-content">
-              <!-- BEGIN profile-header-img -->
-              <div class="profile-header-img">
-                <img
-                  src="https://scontent.fhan4-2.fna.fbcdn.net/v/t1.6435-9/149299062_232989691790324_2796829381264086336_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=xSgUwUshPDIAX_YWlPi&_nc_ht=scontent.fhan4-2.fna&oh=00_AfATcRKgKC6HOtrIudxtwXaQj0z7TlcyK_SPiDv43zMjSA&oe=6421D58C"
-                  alt=""
-                />
-              </div>
-              <!-- BEGIN profile-header-info -->
-              <div class="profile-header-info">
-                <h4 class="m-t-10 m-b-5">Sonng Ngu</h4>
-                <p class="m-b-10">UXUI + Frontend Developer</p>
-                <a href="#" class="btn btn-sm btn-primary mb-2">Follow me</a>
-              </div>
+    <div class="wrapper">
+        <div class="row">
+            <div class="col-md-12">
+                <div id="content" class="content content-full-width">
+                    <!-- begin profile -->
+                    <div class="profile">
+                        <div class="profile-header">
+                            <div class="profile-header-content">
+                                <div class="profile-header-img">
+                                    <img :src="inforUser.avatar" alt="" />
+                                </div>
+                                <!-- BEGIN profile-header-info -->
+                                <div
+                                    class="profile-header-info flex justify-between">
+                                    <div>
+
+                                        <h4 class="m-t-10 m-b-5">{{ inforUser.name
+                                        }}</h4>
+                                        <p class="inline-block mt-1 ">
+                                            {{ inforUser.email }}</p>
+                                    </div>
+                                    <div>
+                                        <!-- <a href="#"
+                                            class="btn btn-sm btn-primary mb-2 inline-flex items-center text-base">
+                                            <i class='bx bx-user-plus  pr-1'></i>
+                                            <span>Theo dõi</span>
+                                        </a> -->
+                                        <button
+                                            @click="showModalEditProfile(inforUser.id, inforUser.name, inforUser.email)"
+                                            class="btn btn-sm btn-secondary mb-2 inline-flex items-center text-base">
+                                            <i class='bx bxs-pencil pr-1'></i>
+                                            <span>Chỉnh sửa thông tin cá nhân</span>
+                                        </button>
+                                        <div id="modal-edit-user-role"
+                                            class="hidden fixed top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] md:h-full">
+                                            <div @click="closeModalEditProfile()"
+                                                class="backdrop-modal-edit-role absolute z-10">
+                                            </div>
+                                            <div class="relative h-full border-0">
+                                                <div class="absolute bg-white rounded-lg shadow z-20"
+                                                    style="
+                                                                                top: 50%;
+                                                                                left: 50%;
+                                                                                transform: translate(
+                                                                                    -50%,
+                                                                                    -50%
+                                                                                );
+                                                                            ">
+                                                    <button type="button"
+                                                        @click="closeModalEditProfile()"
+                                                        class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white">
+                                                        <i
+                                                            class="bx bx-x text-xl"></i>
+                                                    </button>
+                                                    <form
+                                                        @submit.prevent="updateProfile(formUpdateProfile)">
+                                                        <div class="px-4 py-4 lg:px-5"
+                                                            style="width: 550px">
+                                                            <h3
+                                                                class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
+                                                                Chỉnh sửa thông tin
+                                                                cá
+                                                                nhân
+
+                                                            </h3>
+
+                                                            <div
+                                                                class="avatar-profile-edit">
+                                                                <div
+                                                                    class="avatar-upload">
+                                                                    <div
+                                                                        class="avatar-edit">
+                                                                        <input
+                                                                            type='file'
+                                                                            id="imageUpload"
+                                                                            accept=".png, .jpg, .jpeg" />
+                                                                        <label
+                                                                            for="imageUpload"></label>
+                                                                    </div>
+                                                                    <div
+                                                                        class="avatar-preview">
+                                                                        <div id="imagePreview"
+                                                                            :style="'background-image: url(' + inforUser.avatar + ')'">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div>
+                                                                <label
+                                                                    for="">Tên:</label>
+                                                                <input type="text"
+                                                                    v-model="formUpdateProfile.name"
+                                                                    class="py-2 px-3 block w-full border-2 border-gray-200 rounded-md text-sm focus:border-black shadow-sm"
+                                                                    maxlength="30">
+                                                                <div v-if="formUpdateProfile.name == ''"
+                                                                    class="mt-0 mb-0">
+                                                                    <span
+                                                                        class="text-red-400 text-sm p-2 pt-3 px-0">Vui
+                                                                        lòng nhập
+                                                                        tên!</span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="mt-2">
+                                                                <label
+                                                                    for="">Email:</label>
+                                                                <input type="email"
+                                                                    v-model="formUpdateProfile.email"
+                                                                    class="py-2 px-3 block w-full border-2 border-gray-200 rounded-md text-sm focus:border-black shadow-sm"
+                                                                    maxlength="30">
+                                                                <div v-if="formUpdateProfile.email == ''"
+                                                                    class="mt-0 mb-0">
+                                                                    <span
+                                                                        class="text-red-400 text-sm p-2 pt-3 px-0">Vui
+                                                                        lòng nhập
+                                                                        email!</span>
+                                                                </div>
+                                                                <div v-if="userStore.getUserError != 'success!'"
+                                                                    class="mt-0 mb-0">
+                                                                    <span
+                                                                        class="text-red-400 text-sm p-2 pt-3 px-0">{{
+                                                                            userStore.getUserError
+                                                                        }}</span>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="px-4 pb-2 lg:px-5"
+                                                            style="width: 450px">
+                                                            <button type="submit"
+                                                                class="btn btn-primary bg-blue-600">Cập
+                                                                nhật</button>
+
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="profile-header-tab nav nav-tabs pl-0 bg-gray-100"
+                                id="nav-tab" role="tablist">
+                                <button class="nav-link active" id="nav-post-tab"
+                                    data-bs-toggle="tab" data-bs-target="#nav-post"
+                                    type="button" role="tab"
+                                    aria-controls="nav-post"
+                                    aria-selected="true">Bài viết</button>
+                                <button class="nav-link" id="nav-question-tab"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#nav-question" type="button"
+                                    role="tab" aria-controls="nav-question"
+                                    aria-selected="false">Câu hỏi</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- begin profile-content -->
+                    <div class="profile-content">
+                        <div class="tab-content p-0">
+                            <!-- begin #profile-post tab -->
+                            <div class="tab-pane fade show active" id="nav-post"
+                                role="tabpanel" aria-labelledby="nav-post-tab">
+                                <!-- begin timeline -->
+                                <ul class="timeline">
+                                    <li>
+                                        <!-- begin timeline-time -->
+                                        <div class="timeline-time">
+                                            <span class="date">today</span>
+                                            <span class="time">04:20</span>
+                                        </div>
+                                        <!-- begin timeline-icon -->
+                                        <div class="timeline-icon">
+                                            <a href="javascript:;">&nbsp;</a>
+                                        </div>
+                                        <!-- begin timeline-body -->
+                                        <div class="timeline-body">
+                                            <div class="timeline-header">
+                                                <span class="userimage"><img
+                                                        :src="inforUser.avatar"
+                                                        alt="" /></span>
+                                                <span class="username"><a
+                                                        href="javascript:;">{{
+                                                            inforUser.name }}</a>
+                                                    <small></small></span>
+                                            </div>
+                                            <div class="timeline-content">
+                                                <p>
+                                                    Lorem ipsum dolor sit amet,
+                                                    consectetur adipiscing elit.
+                                                    Nunc faucibus turpis quis
+                                                    tincidunt
+                                                    luctus. Nam sagittis
+                                                    dui in nunc consequat, in
+                                                    imperdiet
+                                                    nunc sagittis.
+                                                </p>
+                                            </div>
+                                            <div class="timeline-likes">
+                                                <div class="stats-right">
+                                                    <span
+                                                        class="stats-text">18 <i
+                                                            class='fa fa-eye fa-fw fa-lg m-r-3'></i></span>
+                                                    <span class="stats-text">21 <i
+                                                            class="fa fa-comments fa-fw fa-lg m-r-3"></i></span>
+                                                    <span class="stats-text">259 <i
+                                                            class="fa fa-share fa-fw fa-lg m-r-3"></i></span>
+                                                </div>
+                                                <div class="stats" style="">
+                                                    <!-- <span
+                                                        class="fa-stack fa-fw stats-icon">
+                                                        <i
+                                                            class="fa fa-circle fa-stack-2x text-danger"></i>
+                                                        <i
+                                                            class="fa fa-heart fa-stack-1x fa-inverse t-plus-1"></i>
+                                                    </span> -->
+                                                    <span
+                                                        class="fa-stack fa-fw stats-icon">
+                                                        <i
+                                                            class="fa fa-circle fa-stack-2x text-primary"></i>
+                                                        <i
+                                                            class="fa fa-thumbs-up fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                    <span
+                                                        class="stats-total">4.3k</span>
+                                                </div>
+                                            </div>
+                                            <!-- <div class="timeline-footer">
+                                                <a href="javascript:;"
+                                                    class="m-r-15 text-inverse-lighter"><i
+                                                        class="fa fa-thumbs-up fa-fw fa-lg m-r-3"></i>
+                                                </a>
+                                                <a href="javascript:;"
+                                                    class="m-r-15 text-inverse-lighter"><i
+                                                        class="fa fa-share fa-fw fa-lg m-r-3"></i>
+                                                </a>
+                                            </div> -->
+                                            <div
+                                                class="timeline-comment-box flex align-items-center w-100 rounded-sm focus:border-black mb-0">
+                                                <div class="user">
+                                                    <img :src="inforUser.avatar" />
+                                                </div>
+                                                <div class="input w-full">
+                                                    <form action="">
+                                                        <div
+                                                            class="box-cmt flex border-x-0 border-t-0">
+                                                            <input type="text"
+                                                                class="block py-1 text-sm border-none focus:border-transparent focus:ring-0 w-100"
+                                                                maxlength="100"
+                                                                placeholder="Nhập bình luận...">
+                                                            <button type="submit"
+                                                                class=""><i
+                                                                    class='bx bxs-send text-lg'></i></button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- end timeline-body -->
+                                    </li>
+                                    <li>
+                                        <!-- begin timeline-icon -->
+                                        <div class="timeline-icon">
+                                            <a href="javascript:;">&nbsp;</a>
+                                        </div>
+                                        <!-- begin timeline-body -->
+                                        <div class="timeline-body">Loading...</div>
+                                        <!-- begin timeline-body -->
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="tab-pane fade" id="nav-question"
+                                role="tabpanel" aria-labelledby="nav-question-tab">
+                                <h2>adu</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <!-- BEGIN profile-header-tab -->
-            <ul class="profile-header-tab nav nav-tabs">
-              <li class="nav-item">
-                <a
-                  href=""
-                  class="nav-link_ active show"
-                  >TEST</a
-                >
-              </li>
-              <li class="nav-item">
-                <a
-                  href=""
-                  class="nav-link_"
-                  >TEST</a
-                >
-              </li>
-              <li class="nav-item">
-                <a
-                  href=""
-                  class="nav-link_"
-                  >TEST</a
-                >
-              </li>
-            </ul>
-          </div>
         </div>
-        <!-- begin profile-content -->
-        <div class="profile-content">
-          <!-- begin tab-content -->
-          <div class="tab-content p-0">
-            <!-- begin #profile-post tab -->
-            <div class="tab-pane fade active show" id="profile-post">
-              <!-- begin timeline -->
-              <ul class="timeline">
-                <li>
-                  <!-- begin timeline-time -->
-                  <div class="timeline-time">
-                    <span class="date">today</span>
-                    <span class="time">04:20</span>
-                  </div>
-                  <!-- begin timeline-icon -->
-                  <div class="timeline-icon">
-                    <a href="javascript:;">&nbsp;</a>
-                  </div>
-                  <!-- begin timeline-body -->
-                  <div class="timeline-body">
-                    <div class="timeline-header">
-                      <span class="userimage"
-                        ><img
-                          src="https://scontent.fhan4-2.fna.fbcdn.net/v/t1.6435-9/149299062_232989691790324_2796829381264086336_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=xSgUwUshPDIAX_YWlPi&_nc_ht=scontent.fhan4-2.fna&oh=00_AfATcRKgKC6HOtrIudxtwXaQj0z7TlcyK_SPiDv43zMjSA&oe=6421D58C"
-                          alt=""
-                      /></span>
-                      <span class="username"
-                        ><a href="javascript:;">Sonng Ngu</a> <small></small
-                      ></span>
-                      <span class="pull-right text-muted">18 Views</span>
-                    </div>
-                    <div class="timeline-content">
-                      <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                        Nunc faucibus turpis quis tincidunt luctus. Nam sagittis
-                        dui in nunc consequat, in imperdiet nunc sagittis.
-                      </p>
-                    </div>
-                    <div class="timeline-likes">
-                      <div class="stats-right">
-                        <span class="stats-text">259 Shares</span>
-                        <span class="stats-text">21 Comments</span>
-                      </div>
-                      <div class="stats">
-                        <span class="fa-stack fa-fw stats-icon">
-                          <i class="fa fa-circle fa-stack-2x text-danger"></i>
-                          <i
-                            class="fa fa-heart fa-stack-1x fa-inverse t-plus-1"
-                          ></i>
-                        </span>
-                        <span class="fa-stack fa-fw stats-icon">
-                          <i class="fa fa-circle fa-stack-2x text-primary"></i>
-                          <i class="fa fa-thumbs-up fa-stack-1x fa-inverse"></i>
-                        </span>
-                        <span class="stats-total">4.3k</span>
-                      </div>
-                    </div>
-                    <div class="timeline-footer">
-                      <a href="javascript:;" class="m-r-15 text-inverse-lighter"
-                        ><i class="fa fa-thumbs-up fa-fw fa-lg m-r-3"></i>
-                        Like</a
-                      >
-                      <a href="javascript:;" class="m-r-15 text-inverse-lighter"
-                        ><i class="fa fa-comments fa-fw fa-lg m-r-3"></i>
-                        Comment</a
-                      >
-                      <a href="javascript:;" class="m-r-15 text-inverse-lighter"
-                        ><i class="fa fa-share fa-fw fa-lg m-r-3"></i> Share</a
-                      >
-                    </div>
-                    <div class="timeline-comment-box">
-                      <div class="user">
-                        <img
-                          src="https://scontent.fhan4-2.fna.fbcdn.net/v/t1.6435-9/149299062_232989691790324_2796829381264086336_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=xSgUwUshPDIAX_YWlPi&_nc_ht=scontent.fhan4-2.fna&oh=00_AfATcRKgKC6HOtrIudxtwXaQj0z7TlcyK_SPiDv43zMjSA&oe=6421D58C"
-                        />
-                      </div>
-                      <div class="input">
-                        <form action="">
-                            <h4 class="text-light">Đây là phần bình luận!</h4>
-                        </form>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end timeline-body -->
-                </li>
-                <li>
-                  <!-- begin timeline-icon -->
-                  <div class="timeline-icon">
-                    <a href="javascript:;">&nbsp;</a>
-                  </div>
-                  <!-- begin timeline-body -->
-                  <div class="timeline-body">Loading...</div>
-                  <!-- begin timeline-body -->
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
-  </div>
 </template>
 
-<script setup></script>
+<script setup>
+import { ref, onMounted, computed } from 'vue';
+import { useAuthStore } from "@/stores/auth";
+import { useUserStore } from "@/stores/user";
+import { pageLoading, pageLoaded } from "@/assets/js/app.js"
+import { findProp } from '@vue/compiler-core';
+const authStore = useAuthStore();
+const userStore = useUserStore();
+const formUpdateProfile = ref({
+    idUser: '',
+    name: '',
+    image: '',
+    nameImage: '',
+    email: '',
+    // about: ''
+})
+const inforUser = computed(() => {
+    return authStore.getInfoUser ?? ''
+})
+onMounted(async () => {
+    pageLoading()
+    pageLoaded(1000)
 
+    $("#imageUpload").change(function () {
+        readURL(this);
+    });
+})
+const showModalEditProfile = (idUser, nameUser, mailUser) => {
+    formUpdateProfile.value.idUser = idUser
+    formUpdateProfile.value.name = nameUser
+    formUpdateProfile.value.email = mailUser
+    userStore.userError = ''
+    $('#modal-edit-user-role').removeClass('hidden')
+}
+const closeModalEditProfile = () => {
+    $('#modal-edit-user-role').addClass('hidden')
+}
+const readURL = (input) => {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            $('#imagePreview').css('background-image', 'url(' + e.target.result + ')');
+            $('#imagePreview').hide();
+            $('#imagePreview').fadeIn(650);
+            // Lấy tên file
+            var fileName = input.files[0].name;
+            var fileData = reader.result;
+            console.log(fileName)
+            formUpdateProfile.value.nameImage = fileName
+            formUpdateProfile.value.image = fileData
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+const updateProfile = async (formData) => {
+
+    if (formUpdateProfile.value.name !== '' && formUpdateProfile.value.email !== undefined) {
+        pageLoading()
+        await userStore.handleUpdateProfile(formData)
+        await authStore.getUser()
+        pageLoaded()
+        if (userStore.getUserError == 'success!') {
+            Swal.fire({
+                icon: 'success',
+                title: 'Cập nhật thông tin thành công!',
+                confirmButtonText: 'Tiếp tục'
+            })
+        }
+        // else {
+        //     Swal.fire({
+        //         icon: 'warning',
+        //         title: "Đã xảy ra lỗi, vui lòng thử lại.",
+        //         confirmButtonText: 'Đóng'
+        //     })
+        // }
+    }
+}
+</script>
 <style scoped>
-.content{
+.box-cmt {
+    border-bottom: 1px solid #7bafd9;
+}
+
+.box-cmt:focus-within {
+    border-bottom: 1px solid #0067bb;
+}
+
+.timeline-body .stats {
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e2e7eb;
+}
+
+#modal-edit-user-role .backdrop-modal-edit-role {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.avatar-profile-edit {
+    max-width: 960px;
+    margin: auto;
+    padding: 20px;
+}
+
+.avatar-profile-edit h1 {
+    font-size: 20px;
+    text-align: center;
+    margin: 20px 0 20px;
+}
+
+.avatar-profile-edit h1 small {
+    display: block;
+    font-size: 15px;
+    padding-top: 8px;
+    color: gray;
+}
+
+.avatar-profile-edit .avatar-upload {
+    position: relative;
+    max-width: 205px;
+    margin: auto;
+}
+
+.avatar-profile-edit .avatar-upload .avatar-edit {
+    position: absolute;
+    right: 30px;
+    z-index: 1;
+    top: 10px;
+}
+
+.avatar-profile-edit .avatar-upload .avatar-edit input {
+    display: none;
+}
+
+.avatar-profile-edit .avatar-upload .avatar-edit input+label {
+    display: inline-block;
+    width: 34px;
+    height: 34px;
+    margin-bottom: 0;
+    border-radius: 100%;
+    background: #FFFFFF;
+    border: 1px solid transparent;
+    box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.12);
+    cursor: pointer;
+    font-weight: normal;
+    transition: all 0.2s ease-in-out;
+}
+
+.avatar-profile-edit .avatar-upload .avatar-edit input+label:hover {
+    background: #f1f1f1;
+    border-color: #d6d6d6;
+}
+
+.avatar-profile-edit .avatar-upload .avatar-edit input+label:after {
+    content: "\f040";
+    font-family: "FontAwesome";
+    color: #757575;
+    position: absolute;
+    top: 6px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    margin: auto;
+}
+
+.avatar-profile-edit .avatar-upload .avatar-preview {
+    width: 192px;
+    height: 192px;
+    position: relative;
+    border-radius: 100%;
+    border: 6px solid #f3f3f3;
+    box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.1);
+}
+
+.avatar-profile-edit .avatar-upload .avatar-preview>div {
+    width: 100%;
+    height: 100%;
+    border-radius: 100%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.content {
     border-radius: 4px;
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
+
 .profile-header {
     position: relative;
     overflow: hidden
 }
 
 .profile-header .profile-header-cover {
-    background-image: linear-gradient(135deg, #ece5fe 0%, #d2fdf4 100%);
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
     border-radius: 4px;
     position: absolute;
     left: 0;
@@ -182,22 +490,27 @@
     padding: 25px
 }
 
+.profile-header-img img {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 50%;
+}
+
 .profile-header-img {
     float: left;
-    width: 120px;
-    height: 120px;
+    height: 100px;
+    width: 100px;
     overflow: hidden;
     position: relative;
     z-index: 10;
     margin: 0 0 -20px;
-    padding: 3px;
     border-radius: 4px;
     background: var(--color-light-mode)
 }
 
-.profile-header-img img {
-    max-width: 100%
-}
 
 .profile-header-info h4 {
     font-weight: 500;
@@ -205,7 +518,7 @@
 }
 
 .profile-header-img+.profile-header-info {
-    margin-left: 140px
+    margin-left: 110px
 }
 
 .profile-header .profile-header-content,
@@ -292,14 +605,13 @@
 .t-plus-7,
 .t-plus-8,
 .t-plus-9 {
-    position: relative!important
+    position: relative !important
 }
 
 .profile-header .profile-header-tab {
-    background: var(--color-light-mode);
+    /* background: var(--color-light-mode); */
     list-style-type: none;
-    margin: -10px 0 0;
-    padding: 0 0 0 140px;
+    margin: -15px 0 0 135px;
     white-space: nowrap;
     border-top: none;
     border-bottom: none;
@@ -308,7 +620,7 @@
 
 .text-ellipsis,
 .text-nowrap {
-    white-space: nowrap!important
+    white-space: nowrap !important
 }
 
 .profile-header .profile-header-tab>li {
@@ -388,7 +700,7 @@
 }
 
 .table.table-profile>thead>tr>th {
-    border-bottom: none!important
+    border-bottom: none !important
 }
 
 .table.table-profile>thead>tr>th h4 {
@@ -425,7 +737,7 @@
 }
 
 .table.table-profile>tbody>tr.divider>td {
-    padding: 0!important;
+    padding: 0 !important;
     height: 10px
 }
 
@@ -533,27 +845,37 @@ body.flat-black {
 }
 
 .bg-white {
-    background-color: var(--color-light-mode)!important;
+    background-color: var(--color-light-mode) !important;
 }
+
 .p-10 {
-    padding: 10px!important;
+    padding: 10px !important;
 }
+
 .media.media-xs .media-object {
     width: 32px;
 }
+
 .m-b-2 {
-    margin-bottom: 2px!important;
+    margin-bottom: 2px !important;
 }
-.media>.media-left, .media>.pull-left {
+
+.media>.media-left,
+.media>.pull-left {
     padding-right: 15px;
 }
-.media-body, .media-left, .media-right {
+
+.media-body,
+.media-left,
+.media-right {
     display: table-cell;
     vertical-align: top;
 }
+
 select.form-control:not([size]):not([multiple]) {
     height: 34px;
 }
+
 .form-control.input-inline {
     display: inline;
     width: auto;
@@ -657,8 +979,8 @@ select.form-control:not([size]):not([multiple]) {
 }
 
 .timeline .timeline-body>div+div:last-child {
-    margin-bottom: -20px;
-    padding-bottom: 20px;
+    margin-bottom: 10px;
+    /* padding-bottom: 20px; */
     border-radius: 0 0 6px 6px
 }
 
@@ -758,10 +1080,10 @@ select.form-control:not([size]):not([multiple]) {
 }
 
 .timeline-comment-box {
-    background: var(--color-dark-mode);
-    margin-left: -25px;
+    /* background: var(--color-dark-mode); */
+    /* margin-left: -25px;
     margin-right: -25px;
-    padding: 20px 25px
+    padding: 20px 25px */
 }
 
 .timeline-comment-box .user {
@@ -778,7 +1100,7 @@ select.form-control:not([size]):not([multiple]) {
 }
 
 .timeline-comment-box .user+.input {
-    margin-left: 44px
+    margin-left: 5px
 }
 
 .lead {
@@ -787,5 +1109,4 @@ select.form-control:not([size]):not([multiple]) {
     font-weight: 300;
     line-height: 1.4;
 }
-
 </style>

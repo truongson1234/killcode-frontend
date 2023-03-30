@@ -12,7 +12,7 @@
 }
 :root{
   --color-dark-mode: #16171d;
-  --color-light-mode: #f1f2f6;
+  --color-light-mode: #fcfcfc;
 }
 dl, ol, ul {
   margin-bottom: 0 !important;
@@ -24,9 +24,6 @@ img{
   /* width: 100%; */
   height: auto;
   object-fit: cover;
-}
-#app {
-  background: #dee1e2;
 }
 .wrapper{
   color: #000;
