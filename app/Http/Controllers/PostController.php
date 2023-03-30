@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Post;
-use App\Events\NewNotification;
+use App\Events\TestEvent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -61,12 +61,7 @@ class PostController extends Controller
         // Đính kèm các tag vào bài viết
         $post->tags()->attach($tagIds);
 
-        $notification = new Notification();
-        $notification->user_id = auth()->user()->id;
-        $notification->message = 'Bạn có một bài viết mới!';
-        $notification->save();
-
-        event(new NewNotification($notification));
+        event(new TestEvent());
 
         // Return created post data
         return response()->json([
