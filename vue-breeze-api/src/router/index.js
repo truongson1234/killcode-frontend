@@ -160,7 +160,6 @@ const routes = [
                 name: "User",
                 component: () => import("@/pages/user/Index.vue"),
                 meta: { showFooter: true, showNavBar: true },
-                beforeEnter: checkLogin
             },
         ],
     },

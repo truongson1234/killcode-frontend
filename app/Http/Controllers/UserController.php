@@ -19,7 +19,8 @@ class UserController extends Controller
     public function updateProfile(Request $request)
     {
         $user = User::findOrFail($request->input('idUser'));
-        $mailExist = User::where('email', $request->input('email'))->first();
+        $mailExist = User::where('email', $request->input('email'))->where('id','<>', $request->input('idUser'))->first();
+
         if(!$mailExist) {
             if($request->input('image') != '') {
                 $image = $request->input('image');
