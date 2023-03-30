@@ -64,11 +64,6 @@ export default {
         tags() {
             return this.initialTags
         },
-        autocomplete() {
-            return this.showAutocomplete
-        }
-    },  
-    methods: {
         removeTag(tag) {
             const index = this.tags.indexOf(tag);
             if (index !== -1) {

@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Post;
-use App\Events\NewNotification;
+use App\Events\TestEvent;
+use Pusher\Pusher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -61,12 +62,17 @@ class PostController extends Controller
         // Đính kèm các tag vào bài viết
         $post->tags()->attach($tagIds);
 
-        $notification = new Notification();
-        $notification->user_id = auth()->user()->id;
-        $notification->message = 'Bạn có một bài viết mới!';
-        $notification->save();
+        $pusher = new Pusher(
+            env('PUSHER_APP_KEY'),
+            env('PUSHER_APP_SECRET'),
+            env('PUSHER_APP_ID'),
+            [
+                'cluster' => env('PUSHER_APP_CLUSTER'),
+                'encrypted' => true
+            ]
+        );
 
-        event(new NewNotification($notification));
+        $pusher->trigger('test-channel', 'test-event', 'hello world');
 
         // Return created post data
         return response()->json([

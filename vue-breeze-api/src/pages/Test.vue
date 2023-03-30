@@ -1,50 +1,42 @@
-<template>
-  <div class="notification-list">
-    <div v-for="notification in notifications" :key="notification.id" class="notification">
-      {{ notification.message }}
+<!-- <template>
+    <div>
+        <h1>Notifications</h1>
+        <ul>
+            <li v-for="(notification, index) in notifications" :key="index">
+                {{ notification }}
+            </li>
+        </ul>
     </div>
-  </div>
 </template>
 
 <script>
-import Pusher from 'pusher-js';
+import Pusher from "pusher-js";
 
 export default {
-  name: 'NotificationList',
-  data() {
-    return {
-      notifications: []
-    };
-  },
-  props: {
-    userId: {
-      type: String,
-      required: true
-    }
-  },
-  created() {
-    const pusher = new Pusher(process.env.VUE_APP_PUSHER_KEY, {
-      cluster: process.env.VUE_APP_PUSHER_CLUSTER,
-      authEndpoint: '/broadcasting/auth',
-      auth: {
-        headers: {
-          'X-CSRF-Token': document.head.querySelector('meta[name="csrf-token"]').content
-        }
-      }
-    });
+    data() {
+        return {
+            notifications: [],
+            pusher: null,
+            channel: null,
+        };
+    },
+    created() {
+        this.pusher = new Pusher("498b63a6c28698265c1c", {
+            cluster: "ap1",
+            encrypted: true,
+        });
 
-    const channel = pusher.subscribe(`private-notification-channel.${this.userId}`);
-    channel.bind('App\\Events\\NewNotification', data => {
-      this.notifications.push(data.notification);
-    });
-  }
+        this.channel = this.pusher.subscribe(
+            "test-chanel"
+        );
+
+        this.channel.bind("test-event", (data) => {
+            this.notifications.push(data);
+        });
+    },
+    beforeDestroy() {
+        this.channel.unbind();
+        this.pusher.disconnect();
+    },
 };
-</script>
-
-<style scoped>
-.notification {
-  padding: 10px;
-  border: 1px solid #ccc;
-  margin-bottom: 10px;
-}
-</style>
+</script> -->
