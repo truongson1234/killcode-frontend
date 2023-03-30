@@ -237,7 +237,7 @@
                                             </div> -->
                                             <div
                                                 class="timeline-comment-box flex align-items-center w-100 rounded-sm focus:border-black mb-0">
-                                                <div class="user">
+                                                <div class="user" style="width:36px">
                                                     <img :src="inforUser.avatar" />
                                                 </div>
                                                 <div class="input w-full">
@@ -367,7 +367,10 @@ const updateProfile = async (formData) => {
 .box-cmt:focus-within {
     border-bottom: 1px solid #0067bb;
 }
-
+.box-cmt input {
+    padding-left: 5px;
+    padding-right: 5px;
+}
 .timeline-body .stats {
     padding-bottom: 10px;
     border-bottom: 1px solid #e2e7eb;
@@ -615,7 +618,8 @@ const updateProfile = async (formData) => {
     white-space: nowrap;
     border-top: none;
     border-bottom: none;
-    border-radius: 0
+    border-radius: 0;
+    margin-bottom: 3px;
 }
 
 .text-ellipsis,

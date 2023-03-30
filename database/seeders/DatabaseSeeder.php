@@ -34,14 +34,14 @@ class DatabaseSeeder extends Seeder
         //     'user_id' => 1,
         //     'role_id' => 1
         // ]);
-        // for ($i = 0; $i < 10; $i++) {
-        //     $name = Str::random(10); // Generate a random name
-        //     $slug = Str::slug($name); // Generate a slug from the name
-        //     DB::table('tags')->insert([
-        //         'name' => $name,
-        //         'slug' => $slug,
-        //     ]);
-        // }
+        for ($i = 0; $i < 10; $i++) {
+            $name = Str::random(10); // Generate a random name
+            $slug = Str::slug($name); // Generate a slug from the name
+            DB::table('tags')->insert([
+                'name' => $name,
+                'slug' => $slug,
+            ]);
+        }
         $this->call(RoleSeeder::class);
         $this->call(AdminSeeder::class);
     }
