@@ -24,13 +24,12 @@
             <template v-else>
               <!-- user -->
               <div class="navbar__dropdown dropdown">
-                <button
-                  class="navbar__dropdown-toggle btn btn-secondary dropdown-toggle"
-                  type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
+                <button class="navbar__dropdown-toggle" type="button"
+                  id="dropdownMenuButton1" data-bs-toggle="dropdown"
                   aria-expanded="false">
                   <div class="navbar__logo-user">
                     <img class="navbar__logo-user"
-                      src="https://scontent.fhan4-2.fna.fbcdn.net/v/t1.6435-9/149299062_232989691790324_2796829381264086336_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=xSgUwUshPDIAX_YWlPi&_nc_ht=scontent.fhan4-2.fna&oh=00_AfATcRKgKC6HOtrIudxtwXaQj0z7TlcyK_SPiDv43zMjSA&oe=6421D58C"
+                      :src="infoAuth.avatar"
                       alt="user">
                   </div>
                 </button>
@@ -69,6 +68,9 @@ const authStore = useAuthStore()
 var navbarEl = ref(false);
 const isAdmin = computed(() => {
   return authStore.getAuthRoles
+})
+const infoAuth = computed(() => {
+  return authStore.getInfoUser
 })
 const showMenuRepon = () => {
   navbarEl.value = !navbarEl.value;
@@ -159,7 +161,7 @@ const showMenuRepon = () => {
   right: 0;
 }
 
-.navbar .navbar__dropdown-toggle {
+/* .navbar .navbar__dropdown-toggle {
   padding: 5px 8px;
   border: 2px solid #333;
   background: var(--color-dark-mode);
@@ -168,14 +170,9 @@ const showMenuRepon = () => {
 
 .navbar .navbar__dropdown-toggle::after {
   display: none;
-}
-
-.navbar .navbar__logo-user {
-  width: 20px;
-  height: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+} */
+.navbar .navbar__dropdown-toggle {
+  border: 2px solid black;
   border-radius: 50%;
 }
 
@@ -183,6 +180,15 @@ const showMenuRepon = () => {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.navbar .navbar__logo-user {
+  width: 35px;
+  height: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
 }
 
 .navbar .navbar__toggle-menu {

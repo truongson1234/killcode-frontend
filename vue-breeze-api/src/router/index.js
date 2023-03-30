@@ -18,10 +18,9 @@ const requireAuth = async (to, from, next) => {
         next();
     }
 };
-const checkLogin = async (to, frorm, next) => {
+const checkLogin = (to, frorm, next) => {
     const status = localStorage.getItem("isAuthenticated");
-    // console.log('GET AUTH STATUS', status)
-    if (!status) {
+    if (status) {
         next();
     } else {
         next("/home");
@@ -160,6 +159,8 @@ const routes = [
                 ],
                 name: "User",
                 component: () => import("@/pages/user/Index.vue"),
+                meta: { showFooter: true, showNavBar: true },
+                beforeEnter: checkLogin
             },
         ],
     },

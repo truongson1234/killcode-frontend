@@ -1,10 +1,12 @@
 
 <template>
-    <main class="relative">
-        <Navbar v-if="showNavBar"/>
-        <router-view />
-        <Footer v-if="showFooter"/>
-    </main>
+    <div id="user">
+        <main class="relative" >
+            <Navbar v-if="showNavBar"/>
+            <router-view />
+            <Footer v-if="showFooter"/>
+        </main>
+    </div>
 </template>
 <script>
 import Navbar from "@/components/layout/Navbar.vue";

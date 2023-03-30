@@ -42,14 +42,16 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onBeforeMount } from "vue";
 import QuestionItem from "@/components/ui/QuestionItem.vue";
 import { useAuthStore } from "@/stores/auth";
 import { pageLoading, pageLoaded } from "@/assets/js/app.js"
 const authStore = useAuthStore();
-onMounted(async () => {
+onBeforeMount(() => {
     pageLoading()
-    pageLoaded(1000)
+})
+onMounted(async () => {
+    pageLoaded()
 });
 const QuestionsData = ref([
     {

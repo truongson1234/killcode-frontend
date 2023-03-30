@@ -25,7 +25,9 @@ export const useAuthStore = defineStore("auth", {
             try {
                 const data = await axios.get("/api/user");
                 if(data.data) {
+                    data.data.user.avatar = 'http://localhost:8000/images/' + data.data.user.avatar
                     this.authUser = data.data.user;
+                    
                     this.authRoles = data.data.roles;
                     this.authPermissions = data.data.permissions;
                     console.log(data.data)

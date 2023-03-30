@@ -16,17 +16,20 @@ use App\Http\Controllers\UserController;
 |
 */
 
-    Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
-        $user = $request->user();
-        $roles = $user->getRoleNames();
-        $permissions = $user->getPermissionNames();
-        return [
-            'user' => $user,
-            'roles' => $roles,
-            'permissions' => $permissions,
-        ];
-    });
+Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
+    $user = $request->user();
+    $roles = $user->getRoleNames();
+    $permissions = $user->getPermissionNames();
+    return [
+        'user' => $user,
+        'roles' => $roles,
+        'permissions' => $permissions,
+    ];
+});
 
+Route::group(['prefix' => 'user'], function () {
+    Route::post('update-profile', [UserController::class, 'updateProfile']);
+});
 // Get user by id
 Route::get('/users/{id}', 'App\Http\Controllers\UserController@show');
 
