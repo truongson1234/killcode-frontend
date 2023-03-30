@@ -19,7 +19,7 @@
       </div>
       <div class="post-card__tags mb-3">
         <a href="#" v-for="(data, index) in data.tags" :key="index">
-          {{ data }}
+          {{ data.name }}
         </a>
       </div>
     </div>

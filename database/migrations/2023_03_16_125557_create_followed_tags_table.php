@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTagUserTable extends Migration
+class CreateFollowedTagsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,15 @@ class CreateTagUserTable extends Migration
      */
     public function up()
     {
-        Schema::create('tag_user', function (Blueprint $table) {
+        // ('id','user_id','tag_id')
+        Schema::create('followed_tags', function (Blueprint $table) {
+            $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('tag_id');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('tag_id')->references('id')->on('tags')->onDelete('cascade');
-
-            $table->primary(['user_id', 'tag_id']);
         });
     }
 
@@ -32,6 +32,6 @@ class CreateTagUserTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tag_user');
+        Schema::dropIfExists('followed_tags');
     }
 }

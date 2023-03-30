@@ -31,7 +31,16 @@ Route::group(['prefix' => 'user'], function () {
     Route::post('update-profile', [UserController::class, 'updateProfile']);
 });
 // Get user by id
-Route::get('/users/{id}', 'App\Http\Controllers\UserController@show');
+Route::group(['prefix' => 'users'], function () {
+    Route::get('{id}', 'App\Http\Controllers\UserController@show');
+});
+
+// followed-tags api
+Route::group(['prefix' => 'followed-tags'], function () {
+    Route::get('', 'App\Http\Controllers\FollowedTagController@index');
+    Route::post('', 'App\Http\Controllers\FollowedTagController@store');
+    Route::delete('', 'App\Http\Controllers\FollowedTagController@destroy');
+});
 
 // posts api
 Route::group(['prefix' => 'posts'], function () {
@@ -41,6 +50,10 @@ Route::group(['prefix' => 'posts'], function () {
     Route::put('{id}', 'App\Http\Controllers\PostController@update');
     Route::delete('{id}', 'App\Http\Controllers\PostController@destroy');
 });
+
+// Route::middleware(['auth:sanctum'])->get('/posts2', function (Request $request) {
+//     return $request->user();
+// });
 
 // questions api
 Route::group(['prefix' => 'questions'], function () {
@@ -91,5 +104,10 @@ Route::group(['prefix' => 'users'], function () {
 
 // tags api
 Route::group(['prefix' => 'tags'], function () {
-    Route::get('search', 'App\Http\Controllers\TagController@search');
+    Route::get('', 'App\Http\Controllers\TagController@index');
+    Route::get('{id}', 'App\Http\Controllers\TagController@show');
+    Route::post('', 'App\Http\Controllers\TagController@store');
+    Route::put('{id}', 'App\Http\Controllers\TagController@update');
+    Route::delete('{id}', 'App\Http\Controllers\TagController@destroy');
+    Route::get('get-posts/{id}', 'App\Http\Controllers\TagController@getPosts');
 });

@@ -5,6 +5,7 @@ import CKEditor from '@ckeditor/ckeditor5-vue';
 import router from './router';
 import swal from 'sweetalert2';
 import jQuery from 'jquery';
+import '@/config/firebase.js'
 // component
 import App from '@/App.vue';
 

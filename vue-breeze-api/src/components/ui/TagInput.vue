@@ -74,6 +74,7 @@ export default {
             if (index !== -1) {
                 this.tags.splice(index, 1);
             }
+            this.emitTagsUpdated()
         },
         searchTags() {
             if (this.newTag === "") {
@@ -112,6 +113,10 @@ export default {
             // Add new tag
             this.newTag = "";
             this.showAutocomplete = false;
+            this.emitTagsUpdated()
+        },
+        emitTagsUpdated() {
+            this.$emit('add-item', {name: tag.name, id: tag.id})
         }
     },
 };

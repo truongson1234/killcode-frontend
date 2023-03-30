@@ -28,10 +28,12 @@
     "bootstrap-table": "^1.21.3",
     "boxicons": "^2.1.4",
     "daisyui": "^2.51.3",
+    "firebase": "^9.18.0",
     "flowbite": "^1.6.4",
     "jquery": "^3.6.3",
     "pinia": "^2.0.32",
     "popper.js": "^1.16.1",
+    "pusher-js": "^8.0.2",
     "sweetalert2": "^11.7.3",
     "vue": "^3.2.45",
     "vue-router": "^4.1.6"

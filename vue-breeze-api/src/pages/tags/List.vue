@@ -1,13 +1,8 @@
 <template>
     <div class="wrapper container py-5">
-        <div class="row">
-            <div class="col-12 col-md-9">
-                <div class="pb-3" v-for="post in posts" :key="post.id">
-                    <PostItem :data="post" />
-                </div>
-            </div>
-            <div class="d-none d-md-block col-md-3">
-                <Tagsname />
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
+            <div v-for="tag in tags" :key="tag.id" class="col-span-1 bg-gray-200 p-4">
+                <TagItem :data="tag" />
             </div>
         </div>
         <pagination
@@ -21,18 +16,16 @@
 <script>
 import axios from "axios";
 import Pagination from "@/components/ui/MyPagination.vue";
-import PostItem from "@/components/ui/PostItem.vue";
-import Tagsname from "@/components/ui/Tags.vue";
+import TagItem from "@/components/ui/TagItem.vue";
 
 export default {
     components: {
-        Pagination,
-        PostItem,
-        Tagsname
+        TagItem,
+        Pagination
     },
     data() {
         return {
-            posts: [], // danh sách bài viết
+            tags: [], // danh sách bài viết
             currentPage: 1,
             totalPages: 3,
         };
@@ -45,16 +38,11 @@ export default {
     methods: {
         fetchData() {
             axios
-                .get("/api/posts", {
-                    params: {
-                        page: this.currentPage,
-                        perPage: this.totalPages,
-                    },
-                })
+                .get("/api/followed-tags")
                 .then((response) => {
-                    this.posts = response.data.data;
+                    this.tags = response.data.data;
                     this.currentPage = response.data.currentPage;
-                    this.totalPages = response.data.totalPages;
+                    this.totalPages = response.data.totalPages - 1;
                 })
                 .catch((error) => {
                     console.log(error);
@@ -63,14 +51,14 @@ export default {
         onPageChanged(page) {
             this.currentPage = page;
             axios
-                .get("/api/posts", {
+                .get("/api/followed-tags", {
                     params: {
                         page: this.currentPage,
                         perPage: this.totalPages,
                     },
                 })
                 .then((response) => {
-                    this.posts = response.data.data;
+                    this.tags = response.data.data;
                     this.currentPage = response.data.currentPage;
                 })
                 .catch((error) => {
@@ -80,3 +68,5 @@ export default {
     },
 };
 </script>
+
+
