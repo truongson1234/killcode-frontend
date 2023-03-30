@@ -20,7 +20,7 @@ const requireAuth = async (to, from, next) => {
 };
 const checkLogin = (to, frorm, next) => {
     const status = localStorage.getItem("isAuthenticated");
-    if (status) {
+    if (!status) {
         next();
     } else {
         next("/home");
