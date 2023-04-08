@@ -96,6 +96,10 @@ class PermissionController extends Controller
     public function update(Request $request, $id)
     {
         $permission = Permission::findOrFail($id);
+        $existPermission = Permission::where('name', $request->input('name'))->where('id', '<>', $id)->first();
+        if($existPermission) {
+            return response()->json(['error' => 'Tên quyền này đã tồn tại, vui lòng nhập tên khác!'], 422);
+        }
         $permission->update($request->all());
 
         return response()->json([

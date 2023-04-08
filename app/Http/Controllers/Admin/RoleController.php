@@ -98,6 +98,10 @@ class RoleController extends Controller
     public function update(Request $request, $id)
     {
         $role = Role::findOrFail($id);
+        $existRole = Role::where('name', $request->input('name'))->where('id', '<>', $id)->first();
+        if($existRole) {
+            return response()->json(['error' => 'Tên vai trò này đã tồn tại, vui lòng nhập tên khác!'], 422);
+        }
         $role->update($request->all());
 
         return response()->json([

@@ -103,7 +103,7 @@
                                     <div id="modal-edit-user-role"
                                         class="hidden fixed top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] md:h-full">
                                         <div class="backdrop-modal-edit-role absolute z-10"
-                                            @click="closeModalEditUserRole()"></div>
+                                            @click="closeModalEditUserRole()" style="background: rgba(0, 0, 0, 0.2);"></div>
                                         <div class="relative h-full border-0">
                                             <div class="absolute bg-white rounded-lg shadow z-20"
                                                 style="
@@ -290,7 +290,7 @@
                                     <div id="modal-edit-role"
                                         class="hidden fixed top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] md:h-full">
                                         <div class="backdrop-modal-edit-role absolute z-10"
-                                            @click="closeModalEditRole()"></div>
+                                            @click="closeModalEditRole()" style="background: rgba(0, 0, 0, 0.2);"></div>
                                         <div class="relative h-full border-0">
                                             <div class="absolute bg-white rounded-lg shadow z-20"
                                                 style="
@@ -510,7 +510,7 @@
                                     <div id="modal-edit-permission"
                                         class="hidden fixed top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] md:h-full">
                                         <div class="backdrop-modal-edit-role absolute z-10"
-                                            @click="closeModalEditPermission()"></div>
+                                            @click="closeModalEditPermission()" style="background: rgba(0, 0, 0, 0.2);"></div>
                                         <div class="relative h-full border-0">
                                             <div class="absolute bg-white rounded-lg shadow z-20"
                                                 style="
@@ -663,8 +663,9 @@ import {
     rolesStore, formAddRole, formAddPermission, formEditRole, formEditPermission, formEditUserRole, formEditDetailUser,
     checkValiAddRole, checkValiEditRole, checkValiAddPermission, checkValiEditPermission,
     errorUserRole, errorUserPermission, errorRolePermission, errorPermissionRole, pageRole, pageUser,  pagePermission, itemsPerPageRole, itemsPerPagePermission,  itemsPerPageUser, indexStartUser, indexEndUser, indexStartRole, indexEndRole, indexStartPermission, indexEndPermission,
-    listRoles, listPermissions, listUsers, totalPagesRole, totalPagesPermission,  totalPagesUser, displayedItemsRole,  displayedItemsPermission, displayedItemsUser, onPageChanged, onPageChangedUser, onPageChangedPermission, updatedRoleUser, updatedPermissionUser, updatedPermission, updatedRolePermission, isReadonly, updateRoleUser,  updatePermissionUser, givePermissionForRole, revokePermission, revokePermissionUser, asignRole, removeRoleOfPermission, removeRoleUser, modelValueEditRole,  modelValueEditPermission, deleteRole, deletePermission, addRole, addPermission, valiEmptyInput, editRole, editPermission, showModalEditUserRole, showModalEditPermission, showModalEditRole, closeModalEditRole, closeModalEditPermission, closeModalEditUserRole, formatDateTime, sortTable, sortTableRole, sortTablePermission, sortIcon, sortIconRole, sortIconPermission,
+    listRoles, listPermissions, listUsers, totalPagesRole, totalPagesPermission,  totalPagesUser, displayedItemsRole,  displayedItemsPermission, displayedItemsUser, onPageChanged, onPageChangedUser, onPageChangedPermission, updatedRoleUser, updatedPermissionUser, updatedPermission, updatedRolePermission, isReadonly, updateRoleUser,  updatePermissionUser, givePermissionForRole, revokePermission, revokePermissionUser, asignRole, removeRoleOfPermission, removeRoleUser, modelValueEditRole,  modelValueEditPermission, deleteRole, deletePermission, addRole, addPermission, valiEmptyInput, editRole, editPermission, showModalEditUserRole, showModalEditPermission, showModalEditRole, closeModalEditRole, closeModalEditPermission, closeModalEditUserRole, sortTable, sortTableRole, sortTablePermission, sortIcon, sortIconRole, sortIconPermission,
 } from '@/components/admin/process/RoleProcess.js';
+import { formatDateTime } from '@/assets/js/app.js'
 onMounted(async () => {
     initModals();
     await rolesStore.getRoles();
@@ -672,7 +673,11 @@ onMounted(async () => {
     await rolesStore.getUsers()
 });
 </script>
-<style scoped>.focus\:border-gray-200:focus {
+<style scoped>
+#admin h3 {
+    font-size: 1.567rem;
+}
+.focus\:border-gray-200:focus {
     box-shadow: none;
 }
 
@@ -681,7 +686,6 @@ onMounted(async () => {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.2);
 }
 
 .hennge-pagination-custom button.Page-active {

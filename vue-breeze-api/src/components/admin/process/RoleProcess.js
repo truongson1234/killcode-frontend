@@ -434,8 +434,9 @@ export const editRole = (id, form) => {
                         confirmButtonColor: "#3085d6",
                         confirmButtonText: "Đóng",
                     });
+                }else {
+                    $("#modal-edit-role").addClass("hidden");
                 }
-                $("#modal-edit-role").addClass("hidden");
                 rolesStore.getUsers();
             })
             .catch((error) => { });
@@ -454,8 +455,9 @@ export const editPermission = (id, form) => {
                         confirmButtonColor: "#3085d6",
                         confirmButtonText: "Đóng",
                     });
+                }else {
+                    $("#modal-edit-permission").addClass("hidden");
                 }
-                $("#modal-edit-permission").addClass("hidden");
                 // rolesStore.getUsers();
             })
             .catch((error) => { });
@@ -496,17 +498,6 @@ export const closeModalEditPermission = () => {
 };
 export const closeModalEditUserRole = () => {
     $("#modal-edit-user-role").addClass("hidden");
-};
-export const formatDateTime = (date_time) => {
-    if (date_time != null) {
-        const date = new Date(date_time);
-        const day = date.getDate().toString().padStart(2, "0");
-        const month = (date.getMonth() + 1).toString().padStart(2, "0");
-        const year = date.getFullYear().toString();
-        const formattedDate = `${day}/${month}/${year}`;
-        return formattedDate;
-    }
-    return ''
 };
 export const sortTable = (key) => {
     if (sortKey.value === key) {

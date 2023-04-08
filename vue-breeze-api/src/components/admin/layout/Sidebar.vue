@@ -1,8 +1,8 @@
 <script setup>
 import { useRoute } from 'vue-router';
-import { useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/auth.js';
+const authStore = useAuthStore();
 const route = useRoute()
-const router = useRouter()
 </script>
 <template>
     <aside
@@ -43,6 +43,16 @@ const router = useRouter()
                         <span class="nav-link-text ms-1">Quyền hạn</span>
                     </router-link>
                 </li>
+                <li class="nav-item">
+                    <router-link :to="{ name: 'AdminTags' }" class="nav-link "
+                        :class="route.name == 'AdminTags' ? 'active' : ''">
+                        <div
+                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                                <i class='bx bxs-purchase-tag text-success text-sm opacity-10' style="padding-bottom: 6px"></i>
+                        </div>
+                        <span class="nav-link-text ms-1">Thẻ</span>
+                    </router-link>
+                </li>
 
                 <li class="nav-item mt-3">
                     <h6
@@ -50,35 +60,24 @@ const router = useRouter()
                         Account pages</h6>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link " href="">
+                    <router-link class="nav-link " :to="{ name: 'User' }">
                         <div
                             class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                             <i
                                 class="ni ni-single-02 text-dark text-sm opacity-10"></i>
                         </div>
-                        <span class="nav-link-text ms-1">Profile</span>
-                    </a>
+                        <span class="nav-link-text ms-1">Hồ sơ</span>
+                    </router-link>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link " href="">
+                    <button class="nav-link" @click="authStore.handleLogout()">
                         <div
-                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i
-                                class="ni ni-single-copy-04 text-warning text-sm opacity-10"></i>
+                            class="icon icon-shape icon-sm text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class='bx bxs-log-out text-dark text-sm opacity-10' style="padding-bottom: 6px"></i>
                         </div>
-                        <span class="nav-link-text ms-1">Sign In</span>
-                    </a>
+                        <span class="nav-link-text ms-1">Đăng xuất</span>
+                    </button>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link " href="">
-                        <div
-                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i
-                            class="ni ni-collection text-info text-sm opacity-10"></i>
-                    </div>
-                    <span class="nav-link-text ms-1">Sign Up</span>
-                </a>
-            </li>
             <!-- <li class="nav-item">
             <router-link :to="{ name: 'Home' }" class="nav-link " href="">
                 <div class="icon-sm text-center me-2 d-flex align-items-center justify-content-center ">
