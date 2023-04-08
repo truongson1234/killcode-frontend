@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\PermissionController;
+use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\UserController;
 /*
 |--------------------------------------------------------------------------
@@ -110,6 +111,14 @@ Route::group(['prefix' => 'users'], function () {
     Route::delete('{user_id}/roles/{role_id}', [UserController::class, 'removeRole']);
     Route::post('{user_id}/permissions', [UserController::class, 'givePermission']);
     Route::delete('{user_id}/permissions/{permission_id}', [UserController::class, 'revokePermission']);
+});
+
+//! API QUẢN LÍ CÁC THẺ CỦA ADMIN
+Route::group(['prefix' => 'admin/tags'], function () {
+    Route::get('', [TagController::class, 'index']);
+    Route::post('', [TagController::class, 'store']);
+    Route::delete('{id_tag}', [TagController::class, 'destroy']);
+    Route::put('{id_tag}', [TagController::class, 'update']);
 });
 
 // tags api

@@ -206,6 +206,11 @@ const routes = [
                 name: "AdminRoles",
                 component: () => import("@/pages/admin/Roles.vue"),
             },
+            {
+                path: "tags",
+                name: "AdminTags",
+                component: () => import("@/pages/admin/Tags.vue"),
+            },
             
         ],
         name: "Admin",

@@ -1,4 +1,3 @@
-
 <template>
   <div>
     <div class="flex items-center justify-center hidden" id="loading">
@@ -24,11 +23,11 @@ onMounted(async () => {
 });
 </script>
 <style scoped>
-.wrapper{
-  color: #000;
-  /* background: var(--color-light-mode); */
-  border-radius: 4px;
+.wrapper {
+    color: #000;
+    border-radius: 4px;
 }
+
 #loading {
     height: 100vh;
     width: 100vw;

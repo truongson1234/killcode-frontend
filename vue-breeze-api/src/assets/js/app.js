@@ -14,3 +14,14 @@ export const pageLoaded = (time = 0) => {
         });
     }, time);
 };
+export const formatDateTime = (date_time) => {
+    if (date_time != null) {
+        const date = new Date(date_time);
+        const day = date.getDate().toString().padStart(2, "0");
+        const month = (date.getMonth() + 1).toString().padStart(2, "0");
+        const year = date.getFullYear().toString();
+        const formattedDate = `${day}/${month}/${year}`;
+        return formattedDate;
+    }
+    return "";
+};
