@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Models\Post;
-use App\Events\TestEvent;
+use App\Models\Comment;
+use App\Models\Notification;
 use Pusher\Pusher;
+use Pusher\PusherException;
+use Pusher\ApiErrorException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
 
 class PostController extends Controller
 {
@@ -37,49 +40,89 @@ class PostController extends Controller
 
     public function show($id)
     {
-        $post = Post::findOrFail($id);
+        $post = Post::select('id', 'title', 'body', 'views', 'likes', 'created_at', 'updated_at')
+                    ->findOrFail($id);
+
+        $comments = Comment::with('user')
+                    ->select('id', 'content', 'parent_id', 'post_id', 'user_id', 'created_at', 'updated_at')
+                    ->where('post_id', $id)
+                    ->orderBy('created_at', 'asc')
+                    ->get()
+                    ->map(function ($comment) {
+                        $comment->author = [
+                            'name' => $comment->user->name,
+                            'email' => $comment->user->avatar,
+                        ];
+                        unset($comment->user);
+                        return $comment;
+                    });
 
         return response()->json([
-            'data' => $post
+            'post' => $post,
+            'comments' => $comments,
         ]);
     }
 
+
     public function store(Request $request)
     {
-        // Create post data in database
-        $post = new Post();
-        $post->user_id = auth()->user()->id;
-        // $post->user_id = $request->input('user_id');
-        $post->title = $request->input('title');
-        $post->body = $request->input('body');
-        $post->views = $request->input('views');
-        $post->likes = $request->input('likes');
-        $post->save();
+        try {
+            // tạo bài viết
+            $post = new Post();
+            $post->user_id = 1;
+            // $post->user_id = auth()->user()->id;
+            $post->title = $request->input('title');
+            $post->body = $request->input('body');
+            $post->views = $request->input('views');
+            $post->likes = $request->input('likes');
+            $post->save();
 
-        // Lấy danh sách các tag từ request
-        $tagIds = $request->input('tag_ids');
+            // tạo followed tag
+            $tagIds = $request->input('tag_ids');
 
-        // Đính kèm các tag vào bài viết
-        $post->tags()->attach($tagIds);
+            $post->tags()->attach($tagIds);
 
-        $pusher = new Pusher(
-            env('PUSHER_APP_KEY'),
-            env('PUSHER_APP_SECRET'),
-            env('PUSHER_APP_ID'),
-            [
-                'cluster' => env('PUSHER_APP_CLUSTER'),
-                'encrypted' => true
-            ]
-        );
+            // Tạo thông báo
+            $data_notification = [
+                'title' => 'Thông báo có bài viết mới!',
+                'content' => $post->title,
+            ];
 
-        $pusher->trigger('test-channel', 'test-event', 'hello world');
+            $pusher = new Pusher(
+                env('PUSHER_APP_KEY'),
+                env('PUSHER_APP_SECRET'),
+                env('PUSHER_APP_ID'),
+                [
+                    'cluster' => env('PUSHER_APP_CLUSTER'),
+                    'encrypted' => true
+                ]
+            );
 
-        // Return created post data
-        return response()->json([
-            'data' => $post,
-            'status' => 1,
-            'message' => 'Tạo thành công.'
-        ], 201);
+            // lấy tất cả các user đã follow các tag trong post
+            $users = User::whereIn('id', function($query) use($tagIds) {
+                $query->select('user_id')
+                    ->from('followed_tags')
+                    ->whereIn('tag_id', $tagIds);
+            })->get();
+
+            // gửi thông báo tới user đang follow tag trong post
+            foreach ($users as $user) {
+                $pusher->trigger('chanel-notification', 'event-notification-' . $user->id, $data_notification);
+            }
+
+            return response()->json([
+                'data' => $post,
+                'status' => 1,
+                'message' => 'Tạo thành công.'
+            ], 201);
+
+        } catch (ApiErrorException $exception) {
+            return response()->json([
+                'data' => [],
+                'status' => 0,
+                'message' => $exception->getMessage()
+            ]);
+        }
     }
 
     public function update(Request $request, $id)

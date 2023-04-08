@@ -23,6 +23,14 @@
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             />
         </div>
+
+        <SearchTags
+            :apiUrl="dataTags.url"
+        />
+        <ul>
+            <li></li>
+        </ul>
+
         <ckeditor
             :editor="editor"
             v-model="payload.body"
@@ -34,6 +42,8 @@
 <script setup>
 import axios from "axios";
 import { onMounted, ref } from "vue";
+import SearchTags from "@/components/ui/SearchTags.vue";
+
 // plugins ckeditor
 import ClassicEditor from "@ckeditor/ckeditor5-editor-classic/src/classiceditor";
 import EssentialsPlugin from "@ckeditor/ckeditor5-essentials/src/essentials";
@@ -58,11 +68,17 @@ const editorConfig = {
     },
 };
 
+const dataTags = ref({
+        tags: [],
+        url: "/api/tags",
+        input: []
+    })
+
 const payload = ref({
         // user_id: null,
         title: "",
         body: "",
-        tags: ["tagname1", "tagname2", "tagname3"],
+        tags: [1, 2, 3],
         views: 0,
         likes: 0,
     })
@@ -70,7 +86,10 @@ const payload = ref({
 
 const handleCreated = (payload) => {
     axios.post("/api/posts", payload).then((response) => {
-        Swal.fire("Lưu thành công", "chúc mừng <3", "success");
+        console.log(response.data);
+        if (response.data.status) {
+            Swal.fire("Lưu thành công", "chúc mừng <3", "success");
+        }
     });
 };
 </script>

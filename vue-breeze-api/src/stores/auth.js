@@ -30,7 +30,6 @@ export const useAuthStore = defineStore("auth", {
                     
                     this.authRoles = data.data.roles;
                     this.authPermissions = data.data.permissions;
-                    console.log(data.data)
                 }else {
                 }
                 

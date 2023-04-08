@@ -35,6 +35,13 @@ Route::group(['prefix' => 'users'], function () {
     Route::get('{id}', 'App\Http\Controllers\UserController@show');
 });
 
+Route::group(['prefix' => 'notifications'], function () {
+    Route::get('get-all', 'App\Http\Controllers\NotificationController@getAll');
+    Route::post('get', 'App\Http\Controllers\NotificationController@get');
+    Route::post('send-all', 'App\Http\Controllers\NotificationController@sendAll');
+    Route::post('send', 'App\Http\Controllers\NotificationController@send');
+});
+
 // followed-tags api
 Route::group(['prefix' => 'followed-tags'], function () {
     Route::get('', 'App\Http\Controllers\FollowedTagController@index');
@@ -49,11 +56,14 @@ Route::group(['prefix' => 'posts'], function () {
     Route::post('', 'App\Http\Controllers\PostController@store');
     Route::put('{id}', 'App\Http\Controllers\PostController@update');
     Route::delete('{id}', 'App\Http\Controllers\PostController@destroy');
+    // Comment
 });
 
-// Route::middleware(['auth:sanctum'])->get('/posts2', function (Request $request) {
-//     return $request->user();
-// });
+Route::group(['prefix' => 'comments'], function () {
+    Route::post('', 'App\Http\Controllers\CommentController@store');
+    // Route::put('{comment}', 'App\Http\Controllers\CommentController@update');
+    // Route::delete('{comment}', 'App\Http\Controllers\CommentController@destroy');
+});
 
 // questions api
 Route::group(['prefix' => 'questions'], function () {
@@ -111,3 +121,6 @@ Route::group(['prefix' => 'tags'], function () {
     Route::delete('{id}', 'App\Http\Controllers\TagController@destroy');
     Route::get('get-posts/{id}', 'App\Http\Controllers\TagController@getPosts');
 });
+
+
+
