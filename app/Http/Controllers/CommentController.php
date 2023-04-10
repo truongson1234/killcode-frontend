@@ -53,7 +53,8 @@ class CommentController extends Controller
                 'title' => 'Bình luận từ bài viết "' . $post->title . '"',
                 'content' => 'Nội dung: "' . $request->input('content') . '"',
             ];
-
+            
+            
             // Gửi thông báo
             $pusher = new Pusher(
                 env('PUSHER_APP_KEY'),
@@ -70,13 +71,23 @@ class CommentController extends Controller
 
             // Gửi cho các user đã bình luận bài viết "post_id"
             foreach ($previousComments as $previousComment) {
-                if ($previousComment->user_id !== $comment->user_id && !in_array($previousComment->user_id, $notifiedUserIds)) {
+                // ĐK1: người bình luận trước !== người đang bình luận
+                // => gửi thông báo cho người đã bình luận trước đó nhưng không gửi lại cho người đang thông báo
+                // ĐK2: để trách gửi thông báo nhiều lần cho 1 user
+                if ($previousComment->user_id !== $comment->user_id && $previousComment->user_id !== $post->user_id && !in_array($previousComment->user_id, $notifiedUserIds)) {
                     $notifiedUserIds[] = $previousComment->user_id; // Thêm ID người dùng vào mảng tạm
                     $pusher->trigger('chanel-notification', 'event-notification-' . $previousComment->user_id, $data_notification);
                 }
             }
+            
+            //người đăng bài !== người đang bình luận 
+            // => gửi thông báo cho người đăng bài nếu người đăng bài bình luận sẽ không gửi thông báo
+            if ($post->user_id !== $comment->user_id) {
+                $pusher->trigger('chanel-notification', 'event-notification-' . $post->user_id, $data_notification);
+            }
 
-            // Gửi tới bài viết
+
+            // Gửi bình luận tới bài viết
             $pusher->trigger('chanel-comments', 'event-comment-' . $post->id, $comment);
 
             return response()->json([

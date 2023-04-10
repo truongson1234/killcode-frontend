@@ -141,13 +141,12 @@ const showMenuRepon = () => {
     navbarEl.value = !navbarEl.value;
 };
 
-const fetchData = (id) => {
+const fetchData = () => {
     axios
-        .post('/api/notifications/get', {
-            user_id: id
-        })
+        .post('/api/notifications/my-notice')
         .then((response) => {
             notifications.value = response.data.data;
+            notifications.value.reverse();
         })
         .catch((error) => {
             console.log(error);
@@ -158,21 +157,21 @@ onMounted(async () => {
     await authStore.getToken();
     await authStore.getUser();
 
-    data.pusher = new Pusher("100f9f72ec40accb9c52", {
-        cluster: "ap1",
-        encrypted: true,
-    });
-
-    data.channel = data.pusher.subscribe("chanel-notification");
-
-    data.channel.bind('general-announcement', (notification) => {
-        notifications.value.push(notification);
-    });
-
     if (infoAuth.value) {
         const userId = infoAuth.value.id;
 
-        fetchData(userId)
+        fetchData()
+
+        data.pusher = new Pusher("100f9f72ec40accb9c52", {
+            cluster: "ap1",
+            encrypted: true,
+        });
+
+        data.channel = data.pusher.subscribe("chanel-notification");
+
+        data.channel.bind('general-announcement', (notification) => {
+            notifications.value.push(notification);
+        });
 
         data.channel.bind(`event-notification-${userId}`, (notification) => {
             notifications.value.push(notification);

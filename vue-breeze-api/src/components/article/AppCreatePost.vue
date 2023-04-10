@@ -24,12 +24,17 @@
             />
         </div>
 
+        <ul v-for="(tag, index) in dataTags.tags" :key="index">
+            <li class="flex">
+                <p class="text-green-500">{{ tag.name }}</p>
+                <button class="mx-2" @click="removeTag(tag.id)">xóa</button>
+            </li>
+        </ul>
+        
         <SearchTags
             :apiUrl="dataTags.url"
+            @add-item="addTag"
         />
-        <ul>
-            <li></li>
-        </ul>
 
         <ckeditor
             :editor="editor"
@@ -69,24 +74,37 @@ const editorConfig = {
 };
 
 const dataTags = ref({
-        tags: [],
         url: "/api/tags",
-        input: []
+        tag_ids: [],
     })
 
 const payload = ref({
-        // user_id: null,
         title: "",
         body: "",
-        tags: [1, 2, 3],
+        tag_ids: [1, 2, 3],
         views: 0,
         likes: 0,
     })
 
+const addTag = (data) => {
+    if (payload.value.tag_ids.length > 4) {
+        Swal.fire("Qúa nhiều tags rồi!", "Chỉ thêm được tối đa 5 tags.");
+    } else if (!payload.value.tag_ids.find(i => i == data.id)) {
+        payload.value.tag_ids.push(data.id);
+        dataTags.value.tag_ids.push(data);
+    }
+}
+const removeTag = (id) => {
+    const index = payload.value.tag_ids.indexOf(id);
+    if (index !== -1) {
+        payload.value.tag_ids.splice(index, 1);
+        dataTags.value.tag_ids.splice(index, 1);
+    }
+}
 
 const handleCreated = (payload) => {
     axios.post("/api/posts", payload).then((response) => {
-        console.log(response.data);
+        console.log(response);
         if (response.data.status) {
             Swal.fire("Lưu thành công", "chúc mừng <3", "success");
         }

@@ -12,17 +12,25 @@ class TagController extends Controller
 {
     public function index(Request $request)
     {
-        $query = $request->input('q');
-        $tags = Tag::where('name', 'LIKE', '%' . $query . '%')->get();
+        $query = Tag::where('name', 'LIKE', '%' . $request->input('q') . '%')->withCount('posts');
+        $tags = $query->get();
+        $count = $tags->count();
 
-        return response()->json($tags, 201);
+        return response()->json([
+            'total' => $count,
+            'tags' => $tags
+        ]);
     }
 
     public function show($id)
     {
         $tag = Tag::findOrFail($id);
+        $post_count = $tag->posts()->count();
 
-        return response()->json($tag);
+        return response()->json([
+            'tag' => $tag,
+            'post_count' => $post_count
+        ]);
     }
 
     public function store(Request $request)

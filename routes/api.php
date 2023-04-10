@@ -31,6 +31,7 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 Route::group(['prefix' => 'user'], function () {
     Route::post('update-profile', [UserController::class, 'updateProfile']);
 });
+
 // Get user by id
 Route::group(['prefix' => 'users'], function () {
     Route::get('{id}', 'App\Http\Controllers\UserController@show');
@@ -38,16 +39,18 @@ Route::group(['prefix' => 'users'], function () {
 
 Route::group(['prefix' => 'notifications'], function () {
     Route::get('get-all', 'App\Http\Controllers\NotificationController@getAll');
-    Route::post('get', 'App\Http\Controllers\NotificationController@get');
+    Route::post('get-user', 'App\Http\Controllers\NotificationController@getUser');
+    Route::post('my-notice', 'App\Http\Controllers\NotificationController@myNotice');
     Route::post('send-all', 'App\Http\Controllers\NotificationController@sendAll');
+    Route::post('send-users', 'App\Http\Controllers\NotificationController@sendUsers');
     Route::post('send', 'App\Http\Controllers\NotificationController@send');
 });
 
 // followed-tags api
 Route::group(['prefix' => 'followed-tags'], function () {
-    Route::get('', 'App\Http\Controllers\FollowedTagController@index');
-    Route::post('', 'App\Http\Controllers\FollowedTagController@store');
-    Route::delete('', 'App\Http\Controllers\FollowedTagController@destroy');
+    Route::get('', 'App\Http\Controllers\FollowedTagController@index');//lấy ra những tags đã followed
+    Route::post('', 'App\Http\Controllers\FollowedTagController@store');//followed
+    Route::delete('', 'App\Http\Controllers\FollowedTagController@destroy');//unfollowed
 });
 
 // posts api

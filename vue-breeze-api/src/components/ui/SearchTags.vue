@@ -18,11 +18,11 @@
                 {{ tag.name }}
             </li>
         </ul>
-        <div v-for="tag in tags" :key="tag.id">
+        <!-- <div v-for="tag in tags" :key="tag.id">
             <span  class="bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">
                 {{ tag.name }} <span @click="removeTag(tag)"><i class='bx bx-x'></i></span>
             </span>
-        </div>
+        </div> -->
     </div>
 </template>
 
@@ -100,7 +100,7 @@ export default {
             axios
                 .get(this.apiUrl + "?q=" + this.newTag)
                 .then((response) => {
-                    this.matchingTags = response.data.filter((tag) => {
+                    this.matchingTags = response.data.tags.filter((tag) => {
                         return this.initialTags.map(
                             (t) =>
                                 t.name.toLowerCase() === tag.name.toLowerCase()
@@ -113,7 +113,7 @@ export default {
                 });
         },
         addTagFromAutocomplete(tag) {
-            this.$emit('add-item', {name: tag.name, id: tag.id})
+            // this.$emit('add-item', {name: tag.name, id: tag.id})
             const existingTag = this.tags.find(
                 (t) => t.name.toLowerCase() === tag.name.toLowerCase()
             );

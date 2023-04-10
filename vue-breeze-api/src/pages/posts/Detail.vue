@@ -87,6 +87,7 @@ const fetchData = () => {
         .then((response) => {
             post.value = response.data.post;
             comments.value = response.data.comments;
+            comments.value.reverse();
         })
         .catch((error) => {
             console.log(error);

@@ -41,21 +41,22 @@ class PostController extends Controller
     public function show($id)
     {
         $post = Post::select('id', 'title', 'body', 'views', 'likes', 'created_at', 'updated_at')
-                    ->findOrFail($id);
+            ->findOrFail($id);
 
         $comments = Comment::with('user')
-                    ->select('id', 'content', 'parent_id', 'post_id', 'user_id', 'created_at', 'updated_at')
-                    ->where('post_id', $id)
-                    ->orderBy('created_at', 'asc')
-                    ->get()
-                    ->map(function ($comment) {
-                        $comment->author = [
-                            'name' => $comment->user->name,
-                            'email' => $comment->user->avatar,
-                        ];
-                        unset($comment->user);
-                        return $comment;
-                    });
+            ->select('id', 'content', 'parent_id', 'post_id', 'user_id', 'created_at', 'updated_at')
+            ->where('post_id', $id)
+            ->orderBy('created_at', 'desc')
+            ->take(5) // Giới hạn số lượng bản ghi comments chỉ lấy 5 bản mới nhất
+            ->get()
+            ->map(function ($comment) {
+                $comment->author = [
+                    'name' => $comment->user->name,
+                    'email' => $comment->user->avatar,
+                ];
+                unset($comment->user);
+                return $comment;
+            });
 
         return response()->json([
             'post' => $post,
@@ -69,8 +70,8 @@ class PostController extends Controller
         try {
             // tạo bài viết
             $post = new Post();
-            $post->user_id = 1;
-            // $post->user_id = auth()->user()->id;
+            // $post->user_id = 2;
+            $post->user_id = auth()->user()->id;
             $post->title = $request->input('title');
             $post->body = $request->input('body');
             $post->views = $request->input('views');

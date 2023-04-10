@@ -10,10 +10,34 @@ use App\Models\Notification;
 
 class NotificationController extends Controller
 {
-    public function get(Request $request)
+    public function getUser(Request $request)
     {
         try {
             $user = User::findOrFail($request->input('user_id'));
+
+            $notifications = $user->notifications()
+                ->orderBy('created_at', 'desc')
+                ->take(5)
+                ->get();
+
+            return response()->json([
+                'status' => 1,
+                'data' => $notifications,
+                'message' => 'Lấy ra thông báo của ' . $user->name . '.'
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 0,
+                'data' => $th,
+                'message' => 'Đã có lỗi xảy ra.'
+            ]);
+        }
+    }
+
+    public function myNotice(Request $request)
+    {
+        try {
+            $user = User::findOrFail(auth()->user()->id);
 
             $notifications = $user->notifications()
                 ->orderBy('created_at', 'desc')
@@ -81,6 +105,44 @@ class NotificationController extends Controller
         $notification->save();
 
         $pusher->trigger('chanel-notification', 'event-notification-' . $request->input('user_id'), $data_notification);
+
+        return response()->json([
+            'status' => 1,
+            'message' => 'Notification sent'
+        ]);
+    }
+
+    public function sendUsers(Request $request)
+    {
+        $data_notification = [
+            'title' => $request->input('title'),
+            'content' => $request->input('content')
+        ];
+
+        // Gửi thông báo
+        $pusher = new Pusher(
+            env('PUSHER_APP_KEY'),
+            env('PUSHER_APP_SECRET'),
+            env('PUSHER_APP_ID'),
+            [
+                'cluster' => env('PUSHER_APP_CLUSTER'),
+                'useTLS' => true,
+            ]
+        );
+
+        foreach ($request->input('user_ids') as $userId) {
+            $notification = new Notification([
+                'user_id' => $userId,
+                'title' => $data_notification['title'],
+                'content' => $data_notification['content'],
+                'read' => false,
+            ]);
+
+            $notification->save();
+
+            $pusher->trigger('chanel-notification', 'event-notification-' . $userId, $data_notification);
+        }
+
 
         return response()->json([
             'status' => 1,
