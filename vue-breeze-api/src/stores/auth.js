@@ -27,7 +27,7 @@ export const useAuthStore = defineStore("auth", {
                 if(data.data) {
                     data.data.user.avatar = 'http://localhost:8000/images/' + data.data.user.avatar
                     this.authUser = data.data.user;
-                    console.log(data.data);
+                    // console.log(data.data);
                     this.authRoles = data.data.roles;
                     this.authPermissions = data.data.permissions;
                 }else {

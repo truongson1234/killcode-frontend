@@ -26,6 +26,7 @@ class PostController extends Controller
                 $post->author = [
                     'name' => $post->user->name,
                     'email' => $post->user->email,
+                    'avatar' => $post->user->avatar,
                 ];
                 unset($post->user);
                 return $post;
