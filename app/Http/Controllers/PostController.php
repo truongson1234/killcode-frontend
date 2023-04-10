@@ -20,7 +20,7 @@ class PostController extends Controller
         $currentPage = $request->input('page', 1);
         $perPage = $request->input('perPage', 3);
 
-        $paginator = Post::with('user')->paginate($perPage);
+        $paginator = Post::with('user', 'tags')->paginate($perPage);
         $posts = collect($paginator->items())
             ->map(function ($post) {
                 $post->author = [
@@ -31,7 +31,7 @@ class PostController extends Controller
                 unset($post->user);
                 return $post;
             });
-
+            
         return response()->json([
             'currentPage' => $paginator->currentPage(),
             'totalPages' => $paginator->lastPage(),
