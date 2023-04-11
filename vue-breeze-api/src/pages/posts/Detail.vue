@@ -1,24 +1,54 @@
 <template>
-    <div class="wrapper container">
+    <div class="wrapper container detail-unique-post">
         <div class="p-6">
-            <h1 class="text-xl font-bold">{{ post.title }}</h1>
-            <div class="text-gray-500 mt-2">
-                {{ post.created_at }}
+            <div class="flex items-center">
+                <div class="userimage"><img :src="author.avatar" alt="" /></div>
+                <div class="flex flex-col ml-2">
+                    <span class="username leading-5 text-blue-600 font-bold"><a href="javascript:;">{{
+                        author.name }}</a>
+                    </span>
+                    <span class="text-gray-500">
+                        Đã đăng vào
+                        {{ formatDetailDateTime(post.created_at) }}
+                    </span>
+                </div>
             </div>
+            <h1 class="text-4xl font-bold title-post mt-4">{{ post.title }}</h1>
             <div class="prose mt-4" v-html="post.body"></div>
-            <hr class="my-6" />
-            <h2 class="text-lg font-bold mb-4">Comments</h2>
-            <div class="space-y-4">
-                <comment
-                    v-for="comment in comments"
-                    :key="comment.id"
-                    :comment="comment"
-                />
+            <div class="list-tag">
+                <a href="" class="inline-flex items-center bg-blue-100 text-blue-800 text-sm font-medium mr-1 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300 " v-for="tag in tags" :key="tag.id">{{ tag.name }}</a>
             </div>
-            <form v-if="authStore.getInfoUser" @submit.prevent="sendCmt(payload)">
-                <input type="text" v-model="payload.content" />
-                <button type="submit">Gửi</button>
-            </form>
+            <h2 class="text-lg font-bold mb-3 mt-4">Bình luận</h2>
+            <div class="space-y-4 box-users-comment">
+                <div v-if="comments && comments.length > 0">
+                    <comment 
+                        v-for="comment in comments"
+                        :key="comment.id"
+                        :comment="comment"
+                        :author="author"
+                        :formatdate="formatDetailDateTime"
+                    />
+                </div>
+                <div v-else class="text-center">
+                    <span class="text-gray-500">Chưa có bình luận nào.</span>
+                </div>
+            </div>
+            <div class="box-type-comment mt-4">
+                <form v-if="authStore.getInfoUser" @submit.prevent="sendCmt(payload)">
+                    <div class="flex items-center space-x-3">
+                        <div class="userimage self-start">
+                            <img :src="author.avatar" alt="" class="">
+                        </div>
+                        <textarea class="w-full" v-model="payload.content" placeholder="Viêt bình luận..."></textarea>
+                    </div>
+                    <div class="flex">
+                        <button type="submit" class="ml-auto bg-blue-500 hover:bg-blue-700 text-white py-2 px-2.5 rounded mt-2 justify-self-end">Bình luận</button>
+                    </div>
+                </form>
+                <div v-else class="text-center text-gray-500">
+                    <span class="">Đăng nhập để được bình luận! <router-link :to="{ name: 'Login' }" class="text-blue-500">Đăng nhập ngay.</router-link></span>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -27,6 +57,7 @@
 import { onMounted, ref, computed } from "vue";
 import { useRoute } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
+import { pageLoading, pageLoaded, formatDetailDateTime } from '@/assets/js/app.js'
 import axios from "axios";
 import Pusher from "pusher-js";
 import Comment from "@/components/ui/Comment.vue";
@@ -54,10 +85,13 @@ const payload = ref({
     user_id: null,
     content: "",
 });
+const author = ref({});
 const post = ref({});
+const tags = ref({})
 const comments = ref([]);
 
 onMounted(async () => {
+    await pageLoading()
     await authStore.getToken();
     await authStore.getUser();
 
@@ -66,7 +100,7 @@ onMounted(async () => {
         payload.value.user_id = infoAuth.value.id;
     }
 
-    fetchData(postId);
+    await fetchData(postId);
 
     // lắng nghe sự kiện
     data.pusher = new Pusher("100f9f72ec40accb9c52", {
@@ -79,6 +113,7 @@ onMounted(async () => {
     data.channel.bind(`event-comment-${postId}`, (cmt) => {
         comments.value.push(cmt);
     });
+    pageLoaded()
 });
 
 const fetchData = () => {
@@ -86,7 +121,10 @@ const fetchData = () => {
         .get(`/api/posts/${postId}`)
         .then((response) => {
             post.value = response.data.post;
+            tags.value = response.data.tags;
+            author.value = response.data.author;
             comments.value = response.data.comments;
+            // console.log('detail-post', response.data.tags)
             comments.value.reverse();
         })
         .catch((error) => {
@@ -103,3 +141,41 @@ const sendCmt = async (payload) => {
     }
 };
 </script>
+<style>
+.detail-unique-post .userimage img {
+    width: 100%;
+}
+.detail-unique-post .userimage {
+    width: 50px;
+    height: 50px;
+    border-radius: 40px;
+    overflow: hidden;
+}
+.detail-unique-post .box-users-comment {
+    border: 1px solid #e2e7eb;
+    padding: 15px;
+    border-radius: 3px;
+}
+.detail-unique-post .box-type-comment {
+    border: 1px solid #e2e7eb;
+    padding: 15px;
+    border-radius: 3px;
+}
+.detail-unique-post .box-type-comment .userimage {
+    width: 43px;
+    height: 43px;
+}
+.detail-unique-post .box-type-comment textarea {
+    border-radius: 3px;
+    height: 100px;
+}
+.detail-unique-post .prose pre {
+    margin: 1em 0;
+    background-color: #f1f2f3;
+    border: 1px solid #e5e5e5;
+    padding: 1em;
+    overflow: auto;
+    background-color: #f6f8fa;
+    border-radius: 3px
+}
+</style>

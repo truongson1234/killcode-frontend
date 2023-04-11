@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Post;
 use App\Models\Comment;
+use App\Models\Tag;
 use App\Models\Notification;
 use Pusher\Pusher;
 use Pusher\PusherException;
@@ -17,12 +18,8 @@ class PostController extends Controller
 {
     public function index(Request $request)
     {
-        $currentPage = $request->input('page', 1);
-        $perPage = $request->input('perPage', 3);
-
-        $paginator = Post::with('user', 'tags')->paginate($perPage);
-        $posts = collect($paginator->items())
-            ->map(function ($post) {
+        $data_query = Post::with('user', 'tags')->get();
+        $posts = $data_query->map(function ($post) {
                 $post->author = [
                     'name' => $post->user->name,
                     'email' => $post->user->email,
@@ -33,15 +30,13 @@ class PostController extends Controller
             });
             
         return response()->json([
-            'currentPage' => $paginator->currentPage(),
-            'totalPages' => $paginator->lastPage(),
-            'data' => $posts->all()
+            'data' => $posts
         ]);
     }
 
     public function show($id)
     {
-        $post = Post::select('id', 'title', 'body', 'views', 'likes', 'created_at', 'updated_at')
+        $post = Post::select('id', 'title', 'body', 'views', 'likes', 'created_at', 'updated_at', 'user_id')
             ->findOrFail($id);
 
         $comments = Comment::with('user')
@@ -58,10 +53,17 @@ class PostController extends Controller
                 unset($comment->user);
                 return $comment;
             });
-
+        $author = User::findOrFail($post->user_id);
+        $author->avatar = 'http://localhost:8000/images/'. $author->avatar;
+        $tags = Tag::select('tags.*')
+                ->join('post_tag', 'post_tag.tag_id', '=', 'tags.id')
+                ->where('post_tag.post_id', $post->id)
+                ->get();
         return response()->json([
             'post' => $post,
             'comments' => $comments,
+            'author' => $author,
+            'tags' => $tags
         ]);
     }
 

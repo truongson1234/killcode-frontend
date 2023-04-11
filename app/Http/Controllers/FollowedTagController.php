@@ -12,18 +12,15 @@ class FollowedTagController extends Controller
     // Lấy danh sách các thẻ đã được theo dõi của một người dùng
     public function index(Request $request)
     {
-        // $userId = $request->input('user_id');
-        $currentPage = $request->input('page', 1);
-        $perPage = $request->input('perPage', 3);
 
-        $paginator = Tag::with(['followers' => function ($query) { 
+        $data_query = Tag::with(['followers' => function ($query) { 
             $query->where('user_id', auth()->user()->id); 
         }]) 
             ->withCount('followers') 
             ->orderBy('created_at', 'desc') 
-            ->paginate($perPage);
+            ->get();
 
-        $tags = $paginator->map(function ($tag) { 
+        $tags = $data_query->map(function ($tag) { 
             $tag->is_following = $tag->followers->isNotEmpty();
 
             unset($tag->followers); 
@@ -31,8 +28,6 @@ class FollowedTagController extends Controller
         });
 
         return response()->json([
-            'currentPage' => $paginator->currentPage(),
-            'totalPages' => $paginator->lastPage(),
             'data' => $tags,
         ],200);
     }
