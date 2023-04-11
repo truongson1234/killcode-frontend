@@ -19,7 +19,7 @@ import TagItem from "@/components/ui/TagItem.vue";
 import VPagination from "@hennge/vue3-pagination";
 import "@hennge/vue3-pagination/dist/vue3-pagination.css";
 import "@/assets/admin/css/pagination-styles.css";
-import { pageLoading, pageLoaded } from '@/asset/js/app.js'
+import { pageLoading, pageLoaded } from '@/assets/js/app.js'
 export default {
     components: {
         TagItem,
@@ -34,7 +34,7 @@ export default {
         };
     },
     created() {
-        pageLoading()
+        pageLoading(2000)
     },
     mounted() {
         this.fetchData();
