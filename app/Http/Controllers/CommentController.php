@@ -76,6 +76,16 @@ class CommentController extends Controller
                 // ĐK2: để trách gửi thông báo nhiều lần cho 1 user
                 if ($previousComment->user_id !== $comment->user_id && $previousComment->user_id !== $post->user_id && !in_array($previousComment->user_id, $notifiedUserIds)) {
                     $notifiedUserIds[] = $previousComment->user_id; // Thêm ID người dùng vào mảng tạm
+
+                    $notification = new Notification([
+                        'user_id' => $previousComment->user_id,
+                        'title' => $data_notification['title'],
+                        'content' => $data_notification['content'],
+                        'read' => false,
+                    ]);
+        
+                    $notification->save();
+
                     $pusher->trigger('chanel-notification', 'event-notification-' . $previousComment->user_id, $data_notification);
                 }
             }
