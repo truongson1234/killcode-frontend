@@ -31,13 +31,15 @@ class CommentController extends Controller
                 $comment = new Comment();
                 $comment->parent_id = $parentComment->id;
                 $comment->post_id = $post->id;
-                $comment->user_id = auth()->user()->id;
+                // $comment->user_id = auth()->user()->id;
+                $comment->user_id = 2;
                 $comment->content = $request->input('content');
         
             } else {
                 $comment = new Comment();
                 $comment->post_id = $post->id;
-                $comment->user_id = auth()->user()->id;
+                // $comment->user_id = auth()->user()->id;
+                $comment->user_id = 2;
                 $comment->content = $request->input('content');
             }
 
@@ -51,9 +53,9 @@ class CommentController extends Controller
             // Tạo thông báo
             $data_notification = [
                 'title' => $post->title ,
-                'content' => $request->input('content'),
+                'content' => $comment->content,
                 'type_notification' => 'comment',
-                'post_id' => $request->input('post_id'),
+                'post_id' => $comment->post_id,
             ];
             
             
@@ -68,19 +70,20 @@ class CommentController extends Controller
                 ]
             );
 
-            $previousComments = Comment::where('post_id', $post->id)->where('id', '<>', $comment->id)->get();
-            $notifiedUserIds = [];
+            $previousComments = Comment::select('user_id')
+                ->where('post_id', $comment->post_id)
+                ->where('user_id', '<>', $comment->user_id)
+                ->where('user_id', '<>', $post->user_id)
+                ->groupBy('user_id')
+                ->get();
+            
 
-            // Gửi cho các user đã bình luận bài viết "post_id"
-            foreach ($previousComments as $previousComment) {
-                // ĐK1: người bình luận trước !== người đang bình luận
-                // => gửi thông báo cho người đã bình luận trước đó nhưng không gửi lại cho người đang thông báo
-                // ĐK2:
-                // ĐK3: để trách gửi thông báo nhiều lần cho 1 user
-                if ($previousComment->user_id !== $comment->user_id && $previousComment->user_id !== $post->user_id && !in_array($previousComment->user_id, $notifiedUserIds)) {
-                    $notifiedUserIds[] = $previousComment->user_id; // Thêm ID người dùng vào mảng tạm
+            // Gửi cho các user đã bình luận bài viết
+            if ($previousComments->count()) {
+                foreach ($previousComments as $previousComment) {
                     $notification = new Notification([
                         'user_id' => $previousComment->user_id,
+                        'sender_id' => $comment->user_id,
                         'title' => $data_notification['title'],
                         'content' => $data_notification['content'],
                         'type_notification' => $data_notification['type_notification'],
@@ -89,33 +92,46 @@ class CommentController extends Controller
                     ]);
                     
                     $notification->save();
-                    $data_notification['name_user'] = $notification->user->name;
-                    $data_notification['avatar_user'] = $notification->user->avatar;
-                    $pusher->trigger('chanel-notification', 'event-notification-' . $previousComment->user_id, $data_notification);
+
+                    $data_notification['read'] = $notification->read;
+
+                    $data_notification['sender'] = [
+                        'name' => $notification->sender->name,
+                        'avatar' => $notification->sender->avatar,
+                    ];
+    
+                    $pusher->trigger('chanel-notification', 'event-notification-' . $notification->user_id, $data_notification);
                 }
             }
-            
-            //người đăng bài !== người đang bình luận 
-            // => gửi thông báo cho người đăng bài nếu người đăng bài bình luận sẽ không gửi thông báo
-            if ($post->user_id !== $comment->user_id) {
+
+            if ($post->user_id) {
                 $notification = new Notification([
                     'user_id' => $post->user_id,
+                    'sender_id' => $comment->user_id,
                     'title' => $data_notification['title'],
                     'content' => $data_notification['content'],
                     'type_notification' => $data_notification['type_notification'],
                     'post_id' => $data_notification['post_id'],
                     'read' => false,
                 ]);
-    
+                
                 $notification->save();
-                $data_notification['name_user'] = $notification->user->name;
-                $data_notification['avatar_user'] = $notification->user->avatar;
-                $pusher->trigger('chanel-notification', 'event-notification-' . $post->user_id, $data_notification);
+
+                $data_notification['read'] = $notification->read;
+
+                $data_notification['sender'] = [
+                    'name' => $notification->sender->name,
+                    'avatar' => $notification->sender->avatar,
+                ];
+
+                dd($data_notification);
+
+                $pusher->trigger('chanel-notification', 'event-notification-' . $notification->user_id, $data_notification);
             }
 
 
             // Gửi bình luận tới bài viết
-            $pusher->trigger('chanel-comments', 'event-comment-' . $post->id, $comment);
+            $pusher->trigger('chanel-comments', 'event-comment-' . $comment->post_id, $comment);
 
             return response()->json([
                 'data' => $comment,
