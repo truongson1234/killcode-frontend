@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use App\Models\User;
 use App\Models\Post;
 use App\Models\Comment;
 use App\Models\Notification;
@@ -44,15 +45,20 @@ class CommentController extends Controller
 
             $comment->author = [
                 'name' => $comment->user->name,
-                'email' => $comment->user->avatar,
+                'email' => $comment->user->email,
             ];
             unset($comment->user);
-
             // Tạo thông báo
             $data_notification = [
-                'title' => 'Bình luận từ bài viết "' . $post->title . '"',
-                'content' => 'Nội dung: "' . $request->input('content') . '"',
+                'title' => $post->title ,
+                'content' => $request->input('content'),
+                'type_notification' => 'comment',
             ];
+            // $data_notification = [
+            //     'title' => 'Bình luận từ bài viết "' . $post->title . '"',
+            //     'content' => 'Nội dung: "' . $request->input('content') . '"',
+            //     'user_cmt' => $user_comment
+            // ];
             
             
             // Gửi thông báo
@@ -76,16 +82,19 @@ class CommentController extends Controller
                 // ĐK2: để trách gửi thông báo nhiều lần cho 1 user
                 if ($previousComment->user_id !== $comment->user_id && $previousComment->user_id !== $post->user_id && !in_array($previousComment->user_id, $notifiedUserIds)) {
                     $notifiedUserIds[] = $previousComment->user_id; // Thêm ID người dùng vào mảng tạm
-
+                    // $userCmt = User::findOrFail($previousComment->user_id);
                     $notification = new Notification([
                         'user_id' => $previousComment->user_id,
                         'title' => $data_notification['title'],
                         'content' => $data_notification['content'],
+                        'type_notification' => $data_notification['type_notification'],
+                        // 'name_user' => $userCmt->name,
+                        // 'avatar_user' => $userCmt->avatar,
                         'read' => false,
                     ]);
         
                     $notification->save();
-
+                    // unset($userCmt);
                     $pusher->trigger('chanel-notification', 'event-notification-' . $previousComment->user_id, $data_notification);
                 }
             }
@@ -93,14 +102,19 @@ class CommentController extends Controller
             //người đăng bài !== người đang bình luận 
             // => gửi thông báo cho người đăng bài nếu người đăng bài bình luận sẽ không gửi thông báo
             if ($post->user_id !== $comment->user_id) {
+                // $userCmt = User::findOrFail($previousComment->user_id);
                 $notification = new Notification([
                     'user_id' => $previousComment->user_id,
                     'title' => $data_notification['title'],
                     'content' => $data_notification['content'],
+                    'type_notification' => $data_notification['type_notification'],
+                    // 'name_user' => $userCmt->name,
+                    // 'avatar_user' => $userCmt->avatar,
                     'read' => false,
                 ]);
     
                 $notification->save();
+                // unset($userCmt);
                 $pusher->trigger('chanel-notification', 'event-notification-' . $post->user_id, $data_notification);
             }
 

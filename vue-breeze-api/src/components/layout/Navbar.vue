@@ -3,32 +3,26 @@
         <div class="upper-space"></div>
         <header class="navbar" :class="{ open: navbarEl }">
             <div class="container">
-                <router-link class="navbar__logo" :to="{ name: 'Home' }"
-                    >Killcode</router-link
-                >
-                <div class="navbar__group">
-                    <ul class="navbar__navigation">
+                <router-link class="navbar__logo"
+                    :to="{ name: 'Home' }">Killcode</router-link>
+                <div class="navbar__group ">
+                    <ul class="navbar__navigation flex items-center" >
                         <li>
-                            <router-link :to="{ name: 'TagsList' }"
-                                >Chủ đề</router-link
-                            >
+                            <router-link :to="{ name: 'TagsList' }">Chủ
+                                đề</router-link>
                         </li>
                         <li>
-                            <router-link :to="{ name: 'QuestionList' }"
-                                >Câu hỏi</router-link
-                            >
+                            <router-link :to="{ name: 'QuestionList' }">Câu
+                                hỏi</router-link>
                         </li>
                         <li>
-                            <router-link :to="{ name: 'Test' }"
-                                >Test</router-link
-                            >
+                            <router-link :to="{ name: 'Test' }">Test</router-link>
                         </li>
                         <li>
-                            <router-link :to="{ name: 'PostsList' }"
-                                >Bài viết</router-link
-                            >
+                            <router-link :to="{ name: 'PostsList' }">Bài
+                                viết</router-link>
                         </li>
-                        <div v-if="authStore.getInfoUser" class="navbar__notifications">
+                        <!-- <div v-if="authStore.getInfoUser" class="navbar__notifications">
                             <i class="bx bx-bell"></i>
                             <div class="navbar__notifications-dropdown">
                                 <ul>
@@ -41,6 +35,83 @@
                                     </li>
                                 </ul>
                             </div>
+                        </div> -->
+                        <div class="relative" v-if="authStore.getInfoUser">
+                            <button @click="showNotifications()"
+                                class="relative z-10 block rounded-md bg-white p-2 focus:outline-none">
+                                <svg class="h-5 w-5 text-gray-800"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 20 20" fill="currentColor">
+                                    <path
+                                        d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z" />
+                                </svg>
+                            </button>
+
+                            <div class="list-notification absolute right-0 mt-2 bg-white rounded-md shadow-lg overflow-hidden z-20 hidden"
+                                style="width:20rem;">
+                                <div class="py-2">
+                                    <a href="#"
+                                        class="flex items-center px-4 py-3 border-b hover:bg-gray-100 -mx-2">
+                                        <img class="h-8 w-8 rounded-full object-cover mx-1"
+                                            src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80"
+                                            alt="avatar">
+                                        <p class="text-gray-600 text-sm mx-2">
+                                            <span class="font-bold" href="#">Sara
+                                                Salah</span>
+                                            replied on the <span
+                                                class="font-bold text-blue-500"
+                                                href="#">Upload Image</span>
+                                            artical . 2m
+                                        </p>
+                                    </a>
+                                    <a href="#"
+                                        class="flex items-center px-4 py-3 border-b hover:bg-gray-100 -mx-2">
+                                        <img class="h-8 w-8 rounded-full object-cover mx-1"
+                                            src="https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80"
+                                            alt="avatar">
+                                        <p class="text-gray-600 text-sm mx-2">
+                                            <span class="font-bold" href="#">Slick
+                                                Net</span>
+                                            start following you . 45m
+                                        </p>
+                                    </a>
+                                    <a href="#"
+                                        class="flex items-center px-4 py-3 border-b hover:bg-gray-100 -mx-2">
+                                        <img class="h-8 w-8 rounded-full object-cover mx-1"
+                                            src="https://images.unsplash.com/photo-1450297350677-623de575f31c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80"
+                                            alt="avatar">
+                                        <p class="text-gray-600 text-sm mx-2">
+                                            <span class="font-bold" href="#">Jane
+                                                Doe</span>
+                                            Like Your reply on <span
+                                                class="font-bold text-blue-500"
+                                                href="#">Test
+                                                with TDD</span> artical . 1h
+                                        </p>
+                                    </a>
+                                    <a href="#"
+                                        class="flex items-center px-4 py-3 hover:bg-gray-100 -mx-2">
+                                        <img class="h-8 w-8 rounded-full object-cover mx-1"
+                                            src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=398&q=80"
+                                            alt="avatar">
+                                        <p class="text-gray-600 text-sm mx-2">
+                                            <span class="font-bold" href="#">Abigail
+                                                Bennett</span> start following
+                                            you . 3h
+                                        </p>
+                                    </a>
+                                    <li
+                                        v-for="notification in notifications"
+                                        :key="notification.id"
+                                    >
+                                        <h3>{{ notification.title }}</h3>
+                                        <p>{{ notification.content }}</p>
+                                    </li>
+                                </div>
+                                <a href="#"
+                                    class="block bg-gray-800 text-white text-center font-bold py-2">See
+                                    all notifications</a>
+                            </div>
                         </div>
                     </ul>
                     <div class="navbar__group-icon">
@@ -50,55 +121,38 @@
                         <template v-else>
                             <!-- user -->
                             <div class="navbar__dropdown dropdown">
-                                <button
-                                    class="navbar__dropdown-toggle"
-                                    type="button"
-                                    id="dropdownMenuButton1"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false"
-                                >
+                                <button class="navbar__dropdown-toggle"
+                                    type="button" id="dropdownMenuButton1"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
                                     <div class="navbar__logo-user">
-                                        <img
-                                            class="navbar__logo-user"
-                                            :src="infoAuth.avatar"
-                                            alt="user"
-                                        />
+                                        <img class="navbar__logo-user"
+                                            :src="infoAuth.avatar" alt="user" />
                                     </div>
                                 </button>
-                                <ul
-                                    class="navbar__dropdown-menu dropdown-menu"
-                                    aria-labelledby="dropdownMenuButton1"
-                                >
+                                <ul class="navbar__dropdown-menu dropdown-menu"
+                                    aria-labelledby="dropdownMenuButton1">
                                     <li>
-                                        <router-link
-                                            class="navbar__ dropdown-item"
-                                            :to="{ name: 'User' }"
-                                            >Hồ sơ</router-link
-                                        >
+                                        <router-link class="navbar__ dropdown-item"
+                                            :to="{ name: 'User' }">Hồ
+                                            sơ</router-link>
                                     </li>
                                     <li v-if="isAdmin.indexOf('admin') != -1">
-                                        <router-link
-                                            class="navbar__ dropdown-item"
-                                            :to="{ name: 'Dashboard' }"
-                                            >Quản trị</router-link
-                                        >
+                                        <router-link class="navbar__ dropdown-item"
+                                            :to="{ name: 'Dashboard' }">Quản
+                                            trị</router-link>
                                     </li>
                                     <li>
-                                        <router-link
-                                            class="navbar__ dropdown-item"
-                                            :to="{ name: 'PostsCreate' }"
-                                            >Viết bài</router-link
-                                        >
+                                        <router-link class="navbar__ dropdown-item"
+                                            :to="{ name: 'PostsCreate' }">Viết
+                                            bài</router-link>
                                     </li>
                                     <li>
                                         <BtnDarkMode />
                                     </li>
                                     <li>
-                                        <button
-                                            class="navbar__ dropdown-item"
+                                        <button class="navbar__ dropdown-item"
                                             href="#"
-                                            @click="authStore.handleLogout()"
-                                        >
+                                            @click="authStore.handleLogout()">
                                             Đăng xuất
                                         </button>
                                     </li>
@@ -106,10 +160,8 @@
                             </div>
                             <!--  -->
                         </template>
-                        <i
-                            class="navbar__toggle-menu bx bx-menu"
-                            @click="showMenuRepon"
-                        ></i>
+                        <i class="navbar__toggle-menu bx bx-menu"
+                            @click="showMenuRepon"></i>
                     </div>
                 </div>
             </div>
@@ -145,13 +197,20 @@ const notifications = ref([]);
 const showMenuRepon = () => {
     navbarEl.value = !navbarEl.value;
 };
-
+const showNotifications = () => {
+    if ($('.list-notification ').first().is(":hidden")) {
+        $('.list-notification ').slideDown(300);
+    } else {
+        $('.list-notification ').slideUp(300);
+    }
+}
 const fetchData = () => {
     axios
         .post('/api/notifications/my-notice')
         .then((response) => {
             notifications.value = response.data.data;
             notifications.value.reverse();
+            console.log('duma',notifications.value )
         })
         .catch((error) => {
             console.log(error);
@@ -308,6 +367,7 @@ onBeforeUnmount(() => {
     position: relative;
     display: none;
 }
+
 .navbar__notifications {
     position: relative;
     display: flex;

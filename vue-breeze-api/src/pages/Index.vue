@@ -15,6 +15,7 @@ import Footer from "@/components/layout/Footer.vue";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import '@/assets/css/style.css';
+
 export default {
     components: {
         Navbar,

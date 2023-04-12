@@ -67,7 +67,6 @@ export default {
                 .then((response) => {
                     response.data.data.forEach(item => {
                         item.author.avatar = 'http://localhost:8000/images/' +  item.author.avatar
-                        console.log(item);
                     });
                     this.posts = response.data.data;
                     // this.currentPage = response.data.currentPage;
