@@ -79,7 +79,8 @@ class CommentController extends Controller
             foreach ($previousComments as $previousComment) {
                 // ĐK1: người bình luận trước !== người đang bình luận
                 // => gửi thông báo cho người đã bình luận trước đó nhưng không gửi lại cho người đang thông báo
-                // ĐK2: để trách gửi thông báo nhiều lần cho 1 user
+                // ĐK2:
+                // ĐK3: để trách gửi thông báo nhiều lần cho 1 user
                 if ($previousComment->user_id !== $comment->user_id && $previousComment->user_id !== $post->user_id && !in_array($previousComment->user_id, $notifiedUserIds)) {
                     $notifiedUserIds[] = $previousComment->user_id; // Thêm ID người dùng vào mảng tạm
                     // $userCmt = User::findOrFail($previousComment->user_id);
@@ -104,7 +105,7 @@ class CommentController extends Controller
             if ($post->user_id !== $comment->user_id) {
                 // $userCmt = User::findOrFail($previousComment->user_id);
                 $notification = new Notification([
-                    'user_id' => $previousComment->user_id,
+                    'user_id' => $post->user_id,
                     'title' => $data_notification['title'],
                     'content' => $data_notification['content'],
                     'type_notification' => $data_notification['type_notification'],
@@ -114,7 +115,6 @@ class CommentController extends Controller
                 ]);
     
                 $notification->save();
-                // unset($userCmt);
                 $pusher->trigger('chanel-notification', 'event-notification-' . $post->user_id, $data_notification);
             }
 
