@@ -75,30 +75,32 @@ const editorConfig = {
 
 const dataTags = ref({
         url: "/api/tags",
-        tag_ids: [],
+        tags: [],
     })
 
 const payload = ref({
         title: "",
         body: "",
-        tag_ids: [1, 2, 3],
+        tag_ids: [],
         views: 0,
         likes: 0,
     })
 
 const addTag = (data) => {
+    console.log(data);
     if (payload.value.tag_ids.length > 4) {
         Swal.fire("Qúa nhiều tags rồi!", "Chỉ thêm được tối đa 5 tags.");
     } else if (!payload.value.tag_ids.find(i => i == data.id)) {
         payload.value.tag_ids.push(data.id);
-        dataTags.value.tag_ids.push(data);
+        dataTags.value.tags.push(data);
+        console.log(payload.value, dataTags.value);
     }
 }
 const removeTag = (id) => {
     const index = payload.value.tag_ids.indexOf(id);
     if (index !== -1) {
         payload.value.tag_ids.splice(index, 1);
-        dataTags.value.tag_ids.splice(index, 1);
+        dataTags.value.tags.splice(index, 1);
     }
 }
 
