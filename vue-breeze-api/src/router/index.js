@@ -178,13 +178,6 @@ const routes = [
             },
             {
                 path: "user",
-                children: [
-                    {
-                        path: ":edit",
-                        name: "userEdit",
-                        component: () => import("@/pages/user/Edit.vue"),
-                    },
-                ],
                 name: "User",
                 component: () => import("@/pages/user/Index.vue"),
                 meta: { showFooter: true, showNavBar: true },

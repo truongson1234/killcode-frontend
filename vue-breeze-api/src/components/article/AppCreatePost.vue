@@ -1,5 +1,5 @@
 <template>
-    <div class="">
+    <div class="create-post-unique">
         <div class="flex justify-between mb-6">
             <button
                 @click="handleCreated(payload)"
@@ -56,6 +56,7 @@ import ParagraphPlugin from "@ckeditor/ckeditor5-paragraph/src/paragraph";
 import CodeBlock from "@ckeditor/ckeditor5-code-block/src/codeblock";
 import List from '@ckeditor/ckeditor5-list/src/list';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
+
 const editor = ClassicEditor;
 const editorConfig = {
     plugins: [
@@ -115,8 +116,8 @@ const handleCreated = (payload) => {
     });
 };
 </script>
-<style scoped>
-.ck-editor .ck-editor__main .ck-editor__editable {
+<style>
+.create-post-unique .ck.ck-editor__main > .ck-editor__editable {
     height: 500px !important;;
 }
 </style>

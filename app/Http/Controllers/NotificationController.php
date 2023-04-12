@@ -40,6 +40,7 @@ class NotificationController extends Controller
             $user = User::findOrFail(auth()->user()->id);
 
             $notifications = $user->notifications()
+                ->with('user')
                 ->orderBy('created_at', 'desc')
                 ->take(5)
                 ->get();

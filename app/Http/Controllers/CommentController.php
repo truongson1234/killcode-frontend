@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use App\Models\User;
 use App\Models\Post;
 use App\Models\Comment;
 use App\Models\Notification;
@@ -44,14 +45,15 @@ class CommentController extends Controller
 
             $comment->author = [
                 'name' => $comment->user->name,
-                'email' => $comment->user->avatar,
+                'email' => $comment->user->email,
             ];
             unset($comment->user);
-
             // Tạo thông báo
             $data_notification = [
-                'title' => 'Bình luận từ bài viết "' . $post->title . '"',
-                'content' => 'Nội dung: "' . $request->input('content') . '"',
+                'title' => $post->title ,
+                'content' => $request->input('content'),
+                'type_notification' => 'comment',
+                'post_id' => $request->input('post_id'),
             ];
             
             
@@ -77,16 +79,18 @@ class CommentController extends Controller
                 // ĐK3: để trách gửi thông báo nhiều lần cho 1 user
                 if ($previousComment->user_id !== $comment->user_id && $previousComment->user_id !== $post->user_id && !in_array($previousComment->user_id, $notifiedUserIds)) {
                     $notifiedUserIds[] = $previousComment->user_id; // Thêm ID người dùng vào mảng tạm
-
                     $notification = new Notification([
                         'user_id' => $previousComment->user_id,
                         'title' => $data_notification['title'],
                         'content' => $data_notification['content'],
+                        'type_notification' => $data_notification['type_notification'],
+                        'post_id' => $data_notification['post_id'],
                         'read' => false,
                     ]);
-        
+                    
                     $notification->save();
-
+                    $data_notification['name_user'] = $notification->user->name;
+                    $data_notification['avatar_user'] = $notification->user->avatar;
                     $pusher->trigger('chanel-notification', 'event-notification-' . $previousComment->user_id, $data_notification);
                 }
             }
@@ -98,11 +102,14 @@ class CommentController extends Controller
                     'user_id' => $post->user_id,
                     'title' => $data_notification['title'],
                     'content' => $data_notification['content'],
+                    'type_notification' => $data_notification['type_notification'],
+                    'post_id' => $data_notification['post_id'],
                     'read' => false,
                 ]);
     
                 $notification->save();
-                
+                $data_notification['name_user'] = $notification->user->name;
+                $data_notification['avatar_user'] = $notification->user->avatar;
                 $pusher->trigger('chanel-notification', 'event-notification-' . $post->user_id, $data_notification);
             }
 

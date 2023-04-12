@@ -88,7 +88,7 @@ class PostController extends Controller
 
             // Tạo thông báo
             $data_notification = [
-                'title' => 'Thông báo có bài viết mới!',
+                'title' => 'Có bài viết mới từ chủ đề bạn đã theo dõi!',
                 'content' => $post->title,
             ];
 
