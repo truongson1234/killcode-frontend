@@ -9,6 +9,11 @@
                 <div class="navbar__group">
                     <ul class="navbar__navigation">
                         <li>
+                            <router-link :to="{ name: 'TagsList' }"
+                                >Chủ đề</router-link
+                            >
+                        </li>
+                        <li>
                             <router-link :to="{ name: 'QuestionList' }"
                                 >Câu hỏi</router-link
                             >

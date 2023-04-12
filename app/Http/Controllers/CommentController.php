@@ -94,6 +94,14 @@ class CommentController extends Controller
             //người đăng bài !== người đang bình luận 
             // => gửi thông báo cho người đăng bài nếu người đăng bài bình luận sẽ không gửi thông báo
             if ($post->user_id !== $comment->user_id) {
+                $notification = new Notification([
+                    'user_id' => $previousComment->user_id,
+                    'title' => $data_notification['title'],
+                    'content' => $data_notification['content'],
+                    'read' => false,
+                ]);
+    
+                $notification->save();
                 $pusher->trigger('chanel-notification', 'event-notification-' . $post->user_id, $data_notification);
             }
 

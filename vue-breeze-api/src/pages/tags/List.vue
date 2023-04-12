@@ -1,39 +1,61 @@
 <template>
     <div class="wrapper container py-5">
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
-            <div v-for="tag in tags" :key="tag.id" class="col-span-1 bg-gray-200 p-4">
+        <h1 class="mb-4 text-uppercase">Chủ đề ({{ tags.length }})</h1>
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-5 list-tag">
+            <div v-for="tag in displayedItems" :key="tag.id"
+                class="col-span-1 p-4 rounded item-tag">
                 <TagItem :data="tag" />
             </div>
         </div>
-        <pagination
-            :current-page="currentPage"
-            :total-pages="totalPages"
-            @page-changed="onPageChanged"
-        />
+        <v-pagination v-model="pageTag" :pages="totalPagesTag" :range-size="1"
+            active-color="#0074FF" class="my-3"
+            @update:modelValue="onPageChanged" />
     </div>
 </template>
 
 <script>
 import axios from "axios";
-import Pagination from "@/components/ui/MyPagination.vue";
 import TagItem from "@/components/ui/TagItem.vue";
-
+import VPagination from "@hennge/vue3-pagination";
+import "@hennge/vue3-pagination/dist/vue3-pagination.css";
+import "@/assets/admin/css/pagination-styles.css";
+import { pageLoading, pageLoaded } from '@/assets/js/app.js'
 export default {
     components: {
         TagItem,
-        Pagination
+        VPagination
     },
     data() {
         return {
-            tags: [], // danh sách bài viết
+            tags: [], 
             currentPage: 1,
-            totalPages: 3,
+            pageTag: 1,
+            itemsPerPageTag: 5
         };
     },
+    created() {
+        pageLoading(2000)
+    },
     mounted() {
-        // gọi API để lấy danh sách bài viết và thông tin phân trang
-        // sau đó cập nhật giá trị của posts, currentPage và totalPages
         this.fetchData();
+        pageLoaded()
+    },
+    computed: {
+        totalPagesTag() {
+            if (this.tags != null) {
+                return Math.ceil(this.tags.length / this.itemsPerPageTag);
+            }
+        },
+        displayedItems() {
+            if (this.tags != null) {
+                var startIndex = (this.currentPage - 1) * this.itemsPerPageTag;
+                var endIndex = startIndex + this.itemsPerPageTag;
+                if (endIndex > this.tags.length) {
+                    endIndex = this.tags.length
+                }
+                return this.tags.slice(startIndex, endIndex);
+            }
+        }
     },
     methods: {
         fetchData() {
@@ -41,8 +63,8 @@ export default {
                 .get("/api/followed-tags")
                 .then((response) => {
                     this.tags = response.data.data;
-                    this.currentPage = response.data.currentPage;
-                    this.totalPages = response.data.totalPages - 1;
+                    // this.currentPage = response.data.currentPage;
+                    // this.totalPages = response.data.totalPages - 1;
                 })
                 .catch((error) => {
                     console.log(error);
@@ -50,23 +72,28 @@ export default {
         },
         onPageChanged(page) {
             this.currentPage = page;
-            axios
-                .get("/api/followed-tags", {
-                    params: {
-                        page: this.currentPage,
-                        perPage: this.totalPages,
-                    },
-                })
-                .then((response) => {
-                    this.tags = response.data.data;
-                    this.currentPage = response.data.currentPage;
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
+            // axios
+            //     .get("/api/followed-tags", {
+            //         params: {
+            //             page: this.currentPage,
+            //             perPage: this.totalPages,
+            //         },
+            //     })
+            //     .then((response) => {
+            //         this.tags = response.data.data;
+            //         this.currentPage = response.data.currentPage;
+            //     })
+            //     .catch((error) => {
+            //         console.log(error);
+            //     });
         },
+        
     },
 };
 </script>
-
+<style scoped>
+.list-tag .item-tag {
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+</style>
 

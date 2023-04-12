@@ -1,53 +1,49 @@
 <template>
-  <div class="post-card p-3">
-    <div class="d-flex justify-content-between">
-      <div class="post-card__user mb-3">
-        <div class="post-card__userImage">
-          <img
-            src="https://scontent.fhan4-2.fna.fbcdn.net/v/t39.30808-1/258867188_422634896159135_6359898657562207559_n.jpg?stp=c0.0.160.160a_dst-jpg_p160x160&_nc_cat=108&ccb=1-7&_nc_sid=7206a8&_nc_ohc=9QfNSos32BoAX-WYCLq&_nc_ht=scontent.fhan4-2.fna&oh=00_AfBTvEQkSH8MeoiaX9n-l7O4fdgIWM618ET2u967p2vZrQ&oe=642B1761"
-            alt="logo-user"
-          />
-        </div>
-        <div class="post-card__userInfo">
-          <a href="#">
-            {{ data.author.name }}
-          </a>
-          <span>
-            {{ createdAt }}
+  <div class="p-3">
+    <div class="box-post">
+      <div class="box-post-header flex items-center">
+        <div class="userimage"><img :src="data.author.avatar" alt="" /></div>
+        <div class="flex flex-col">
+          <span class="username leading-5"><a href="javascript:;">{{
+            data.author.name }}</a>
+          </span>
+          <span class="time-post leading-3 text-slate-400">
+            đăng lúc
+            {{ formatDateTime(data.created_at) }}
           </span>
         </div>
       </div>
-      <div class="post-card__tags mb-3">
-        <a href="#" v-for="(data, index) in data.tags" :key="index">
-          {{ data.name }}
-        </a>
+      <div class="box-post-content">
+        <p>
+          <router-link :to="{ name: 'PostsDetail', params: { id: data.id } }" class="">
+            {{ data.title }}
+          </router-link>
+        </p>
       </div>
-    </div>
-    <div class="post-card__text mb-3">
-      <router-link :to="{ name: 'PostsDetail', params: { id: data.id } }">
-        {{ data.title }}
-      </router-link>
-    </div>
-
-    <div class="post-card__overview">
-      <p>
-        <i class="bx bxs-star"></i>
-        <span>{{ data.likes }}</span>
-      </p>
-      <p>
-        <i class="bx bxs-comment-dots"></i>
-        <span>{{ 0 }}</span>
-      </p>
-      <p>
-        <i class="bx bxs-file-find"></i>
-        <span>{{ data.views }}</span>
-      </p>
+      <div class="flex items-center justify-between mt-2">
+        <div class="box-tags">
+          <a href="#" class="inline-flex items-center bg-blue-100 text-blue-800 text-sm font-medium mr-1 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300 " v-for="(data, index) in data.tags" :key="index">
+            {{ data.name }}
+          </a>
+        </div>
+        <div class="box-post-engagement">
+          <div class="engagements flex items-center">
+            <span class="engagements-text">{{ data.likes }}
+              <i class='bx bx-like fa-fw fa-lg m-r-3'></i></span>
+            <span class="engagements-text">{{ data.views }} <i
+                class='bx bx-show fa-fw fa-lg m-r-3'></i></span>
+            <span class="engagements-text">21 <i
+                class="bx bx-comment-detail fa-fw fa-lg m-r-3"></i></span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref,computed } from "vue";
+import { ref, computed } from "vue";
+import { formatDateTime } from '@/assets/js/app.js'
 import { useAuthStore } from "@/stores/auth";
 
 const props = defineProps({
@@ -56,112 +52,95 @@ const props = defineProps({
 
 const data = props.data;
 
-const createdAt = computed(() => {
-  const currentDate = new Date(data.created_at);
-
-  const day = currentDate.getDate().toString().padStart(2, '0');
-  const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
-  const year = currentDate.getFullYear().toString();
-
-  return `${day}/${month}/${year}`;
-});
 </script>
 
 <style scoped>
-.post-card {
-  background: var(--color-dark-mode);
-  color: var(--color-light-mode);
-  border-radius: 4px;
+.box-post {
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  position: relative;
+  padding: 20px 25px;
+  border-radius: 6px;
 }
-.post-card__tags {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+
+.box-post .box-post-header .time-post {
+  font-size: 12px
 }
-.post-card__tags a {
-  padding: 2px 12px;
-  color: var(--color-dark-mode);
+
+.box-post-header {
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e2e7eb;
+  line-height: 30px
+}
+
+.box-post-header .userimage {
+  float: left;
+  width: 34px;
+  height: 34px;
+  border-radius: 40px;
+  overflow: hidden;
+  margin: -2px 10px -2px 0
+}
+
+.box-post-header .username {
+  font-size: 16px;
   font-weight: 600;
-  text-decoration: none;
-  background: var(--color-light-mode);
-  border-radius: 4px;
+  margin-right: 5px;
 }
-.post-card__text a {
-  font-size: 20px;
-  font-family: "Vollkorn", serif;
-  font-weight: 400;
-  text-decoration: none;
-  color: var(--color-light-mode);
-  text-align: left;
+
+.box-post-header .username,
+.box-post-header .username a {
+  color: #2d353c
+}
+
+.box-post-content {
+  color: var(--color-dark-mode);
+  text-align: justify;
+  padding-top: 5px;
+}
+.box-post-content p {
   display: -webkit-box;
-  -webkit-line-clamp: 1;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-.post-card__text a::after {
-  content: "\201D";
-  display: inline;
-  color: #999;
+.box-post-content:after,
+.box-post-content:before {
+  content: '';
+  display: table;
+  clear: both
 }
 
-.post-card__text a::before {
-  content: "\201C";
-  display: inline;
-  color: #999;
+.box-post-engagement {
+  color: #6d767f;
+  font-weight: 600;
+  font-size: 12px
 }
 
-.post-card__user {
-  display: flex;
-  flex-direction: row;
-  /* border-top: 1px solid #c1c1c1; */
-  align-items: center;
-}
-.post-card__userImage {
-  width: 42px;
-  height: 42px;
-  overflow: hidden;
-  border-radius: 50%;
+.box-post-engagement .engagements {
+  text-align: right;
 }
 
-.post-card__userInfo {
-  display: flex;
-  flex-direction: column;
-  margin-left: 16px;
+.box-post-engagement .stats-total {
+  display: inline-block;
+  line-height: 20px
 }
 
-.post-card__userInfo a {
-  color: var(--color-light-mode);
+.box-post-engagement .stats-icon {
+  float: left;
+  margin-right: 5px;
+  font-size: 9px
 }
 
-.post-card__userInfo span:nth-child(1) {
-  font-weight: bold;
-  font-size: 14px;
-  color: #3f3f55;
+.box-post-engagement .stats-icon+.stats-icon {
+  margin-left: -2px
 }
-.post-card__userInfo span:nth-child(2) {
-  color: #adada6;
-  font-family: sans-serif;
-  font-size: 12px;
-  margin-top: 2px;
+
+.box-post-engagement .engagements-text {
+  line-height: 20px
 }
-.post-card__overview {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
-}
-.post-card__overview p {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 0;
-}
-.post-card__overview i {
-  margin-right: 3px;
-}
-.post-card__overview span {
-  font-size: 13px;
-  font-weight: bold;
+
+.box-post-engagement .engagements-text+.engagements-text {
+  margin-left: 15px
 }
 </style>
