@@ -54,13 +54,8 @@ import ItalicPlugin from "@ckeditor/ckeditor5-basic-styles/src/italic";
 import LinkPlugin from "@ckeditor/ckeditor5-link/src/link";
 import ParagraphPlugin from "@ckeditor/ckeditor5-paragraph/src/paragraph";
 import CodeBlock from "@ckeditor/ckeditor5-code-block/src/codeblock";
-<<<<<<< HEAD
-import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight';
-
-=======
 import List from '@ckeditor/ckeditor5-list/src/list';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
->>>>>>> d58fe5ba64078811b1bec5b40c37b3b7f4c0dba0
 const editor = ClassicEditor;
 const editorConfig = {
     plugins: [
@@ -70,18 +65,11 @@ const editorConfig = {
         LinkPlugin,
         ParagraphPlugin,
         CodeBlock,
-<<<<<<< HEAD
-        Highlight
-    ],
-    toolbar: {
-        items: ["bold", "italic", "link", "undo", "redo", "codeBlock", "highlight"],
-=======
         List, 
         Heading
     ],
     toolbar: {
         items: ["bold", "italic", "link", "undo", "redo", "codeBlock", "bulletedList", "numberedList", "heading"],
->>>>>>> d58fe5ba64078811b1bec5b40c37b3b7f4c0dba0
     },
 };
 
