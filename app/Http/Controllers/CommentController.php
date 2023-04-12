@@ -73,7 +73,8 @@ class CommentController extends Controller
             foreach ($previousComments as $previousComment) {
                 // ĐK1: người bình luận trước !== người đang bình luận
                 // => gửi thông báo cho người đã bình luận trước đó nhưng không gửi lại cho người đang thông báo
-                // ĐK2: để trách gửi thông báo nhiều lần cho 1 user
+                // ĐK2:
+                // ĐK3: để trách gửi thông báo nhiều lần cho 1 user
                 if ($previousComment->user_id !== $comment->user_id && $previousComment->user_id !== $post->user_id && !in_array($previousComment->user_id, $notifiedUserIds)) {
                     $notifiedUserIds[] = $previousComment->user_id; // Thêm ID người dùng vào mảng tạm
 

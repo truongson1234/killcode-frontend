@@ -108,6 +108,15 @@ class PostController extends Controller
 
             // gửi thông báo tới user đang follow tag trong post
             foreach ($users as $user) {
+                $notification = new Notification([
+                    'user_id' => $user->id,
+                    'title' => $data_notification['title'],
+                    'content' => $data_notification['content'],
+                    'read' => false,
+                ]);
+    
+                $notification->save();
+
                 $pusher->trigger('chanel-notification', 'event-notification-' . $user->id, $data_notification);
             }
 

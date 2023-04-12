@@ -57,6 +57,7 @@ import ItalicPlugin from "@ckeditor/ckeditor5-basic-styles/src/italic";
 import LinkPlugin from "@ckeditor/ckeditor5-link/src/link";
 import ParagraphPlugin from "@ckeditor/ckeditor5-paragraph/src/paragraph";
 import CodeBlock from "@ckeditor/ckeditor5-code-block/src/codeblock";
+import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight';
 
 const editor = ClassicEditor;
 const editorConfig = {
@@ -67,9 +68,10 @@ const editorConfig = {
         LinkPlugin,
         ParagraphPlugin,
         CodeBlock,
+        Highlight
     ],
     toolbar: {
-        items: ["bold", "italic", "link", "undo", "redo", "codeBlock"],
+        items: ["bold", "italic", "link", "undo", "redo", "codeBlock", "highlight"],
     },
 };
 
