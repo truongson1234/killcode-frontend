@@ -104,7 +104,7 @@ class CommentController extends Controller
                 }
             }
 
-            if ($post->user_id) {
+            if ($post->user_id !== $comment->user_id) {
                 $notification = new Notification([
                     'user_id' => $post->user_id,
                     'sender_id' => $comment->user_id,
@@ -123,8 +123,6 @@ class CommentController extends Controller
                     'name' => $notification->sender->name,
                     'avatar' => $notification->sender->avatar,
                 ];
-
-                dd($data_notification);
 
                 $pusher->trigger('chanel-notification', 'event-notification-' . $notification->user_id, $data_notification);
             }

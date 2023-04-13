@@ -4,63 +4,60 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Question;
 
 class QuestionController extends Controller
 {
     public function index()
     {
-        $questions = Question::all();
+        $questions = Question::with('user')->orderByDesc('created_at')->get();
 
         return response()->json([
-            'data' => $questions
-        ]);
-    }
-
-    public function show($id)
-    {
-        $questions = Question::findOrFail($id);
-
-        return response()->json([
-            'data' => $questions
+            'data' => $questions,
         ]);
     }
 
     public function store(Request $request)
     {
-        // Create question data in database
-        $question = new Question();
-        $question->user_id = auth()->user()->id;
-        // $question->user_id = $request->input('user_id');
-        $question->title = $request->input('title');
-        $question->body = $request->input('body');
-        $question->views = $request->input('views');
-        $question->likes = $request->input('likes');
-        $question->save();
+        $question = Question::create([
+            'user_id' => auth()->user()->id,
+            'title' => $request->title,
+            'body' => $request->body,
+        ]);
 
-        // Return created question data
         return response()->json([
-            'data' => $question
+            'data' => $question,
+            'message' => 'Question created successfully.',
         ], 201);
     }
 
-    public function update(Request $request, $id)
+    public function show(Question $question)
     {
-        // Update question data in database
-        $question = Question::findOrFail($id);
-        $question->update($request->all());
+        $question->load('user', 'answers.user');
 
-        // Return question post data
         return response()->json([
-            'data' => $question
+            'data' => $question,
         ]);
     }
 
-    public function destroy($id)
+    public function update(Request $request, Question $question)
     {
-        $question = Question::findOrFail($id);
+        $question->update([
+            'title' => $request->title,
+            'body' => $request->body,
+        ]);
+
+        return response()->json([
+            'data' => $question,
+            'message' => 'Question updated successfully.',
+        ]);
+    }
+
+    public function destroy(Question $question)
+    {
         $question->delete();
 
-        return response()->json(null, 204);
+        return response()->json([
+            'message' => 'Question deleted successfully.',
+        ]);
     }
 }
