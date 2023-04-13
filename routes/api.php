@@ -39,8 +39,11 @@ Route::group(['prefix' => 'users'], function () {
 
 Route::group(['prefix' => 'notifications'], function () {
     Route::get('get-all', 'App\Http\Controllers\NotificationController@getAll');
+    Route::put('read-notice/{id}', 'App\Http\Controllers\NotificationController@readNotice');
+    Route::put('read-all-notice/{user_id}', 'App\Http\Controllers\NotificationController@readAllNotice');
     Route::post('get-user', 'App\Http\Controllers\NotificationController@getUser');
     Route::post('my-notice', 'App\Http\Controllers\NotificationController@myNotice');
+    Route::post('all-my-notice', 'App\Http\Controllers\NotificationController@allMyNotice');
     Route::post('send-all', 'App\Http\Controllers\NotificationController@sendAll');
     Route::post('send-users', 'App\Http\Controllers\NotificationController@sendUsers');
     Route::post('send', 'App\Http\Controllers\NotificationController@send');

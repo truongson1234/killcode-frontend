@@ -31,15 +31,15 @@ class CommentController extends Controller
                 $comment = new Comment();
                 $comment->parent_id = $parentComment->id;
                 $comment->post_id = $post->id;
-                // $comment->user_id = auth()->user()->id;
-                $comment->user_id = 2;
+                $comment->user_id = auth()->user()->id;
+                // $comment->user_id = 2;
                 $comment->content = $request->input('content');
         
             } else {
                 $comment = new Comment();
                 $comment->post_id = $post->id;
-                // $comment->user_id = auth()->user()->id;
-                $comment->user_id = 2;
+                $comment->user_id = auth()->user()->id;
+                // $comment->user_id = 2;
                 $comment->content = $request->input('content');
             }
 
@@ -99,6 +99,7 @@ class CommentController extends Controller
                         'name' => $notification->sender->name,
                         'avatar' => $notification->sender->avatar,
                     ];
+                    $data_notification['created_at'] = $notification->created_at;
     
                     $pusher->trigger('chanel-notification', 'event-notification-' . $notification->user_id, $data_notification);
                 }
@@ -123,8 +124,7 @@ class CommentController extends Controller
                     'name' => $notification->sender->name,
                     'avatar' => $notification->sender->avatar,
                 ];
-
-                dd($data_notification);
+                $data_notification['created_at'] = $notification->created_at;
 
                 $pusher->trigger('chanel-notification', 'event-notification-' . $notification->user_id, $data_notification);
             }

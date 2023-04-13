@@ -46,3 +46,29 @@ export const formatDetailDateTime = (date_time) => {
     }
     return "";
 };
+
+//* Trả về thời gian trôi qua kể từ hiện tại
+export const formatDateTimeFB = (dateTime) => {
+    const now = new Date();
+    const diffMs = Math.abs(now - dateTime); // tính khoảng cách thời gian giữa 2 ngày
+    const diffMins = Math.round(diffMs / 60000); // tính số phút
+    const diffHours = Math.round(diffMs / 3600000); // tính số giờ
+    const diffDays = Math.round(diffMs / 86400000); // tính số ngày
+
+    if (diffMins < 60) { // nếu trong vòng 1 giờ
+        if(diffMins < 1) {
+            return `Vừa xong`;
+        }
+        return `${diffMins} phút trước`;
+    } else if (diffHours < 24) { // nếu trong vòng 1 ngày
+        return `${diffHours} giờ trước`;
+    } else if (diffDays < 7) { // nếu trong vòng 1 tuần
+        return `${diffDays} ngày trước`;
+    } else { // nếu lớn hơn 1 tuần
+        const day = dateTime.getDate();
+        const month = dateTime.getMonth() + 1;
+        const year = dateTime.getFullYear();
+        return `${day}/${month}/${year}`;
+    }
+};
+  

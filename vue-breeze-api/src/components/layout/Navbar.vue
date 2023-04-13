@@ -22,65 +22,74 @@
                             <router-link :to="{ name: 'PostsList' }">Bài
                                 viết</router-link>
                         </li>
-                        <!-- <div v-if="authStore.getInfoUser" class="navbar__notifications">
-                            <i class="bx bx-bell"></i>
-                            <div class="navbar__notifications-dropdown">
-                                <ul>
-                                    <li
-                                        v-for="notification in notifications"
-                                        :key="notification.id"
-                                    >
-                                        <h3>{{ notification.title }}</h3>
-                                        <p>{{ notification.content }}</p>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div> -->
-                        <div class="relative" v-if="authStore.getInfoUser">
-                            <button @click="showNotifications()"
-                                class="relative z-10 block rounded-md bg-white p-2 focus:outline-none">
-                                <svg class="h-5 w-5 text-gray-800"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 20 20" fill="currentColor">
-                                    <path
-                                        d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z" />
-                                </svg>
-                            </button>
+                    </ul>
+                    <div class="relative" v-if="authStore.getInfoUser">
+                        <button @click="showNotifications($event)"
+                            class="relative z-10 block rounded-md bg-white pl-3 pr-1 py-2 focus:outline-none">
+                            <i class='bx bxs-bell h-5 w-5 text-gray-800' ></i>
+                        </button>
 
-                            <div class="list-notification absolute right-0 mt-2 bg-white rounded-md shadow-lg overflow-hidden z-20 hidden"
-                                style="width:20rem;">
-                                <div class="py-2">
-                                    <router-link :to="{ name: 'PostsDetail', params: { id: notification.post_id } }" v-for="notification in notifications"
-                                        :key="notification.id"
-                                        class="flex items-center px-4 py-3 border-b hover:bg-gray-100 -mx-2">
-                                        <img class="h-8 w-8 rounded-full object-cover mx-1"
-                                            :src="notification.avatar_user"
-                                            alt="avatar">
+                        <div class="list-notification absolute right-0 mt-2 bg-white rounded-md shadow-lg overflow-hidden z-20 hidden"
+                            style="width:20rem;">
+                            <div class="flex items-center justify-between px-3 pt-2">
+                                <h4 class="font-bold">Thông báo</h4>
+                                <span class="cursor-pointer px-1 py-1 text-lg" @click="readAllNotice(authStore.getInfoUser.id)">
+                                    <i class='bx bx-check-double'></i>
+                                </span>
+                            </div>
+                            <div class="">
+                                <router-link :to="{ name: 'PostsDetail', params: { id: notification.post_id } }" v-for="(notification, index) in notifications"
+                                    :key="notification.id"
+                                    @click="readNotice(notification.id, notification.post_id, index)"
+                                    class="flex items-center px-4 py-3 border-b  -mx-2 hover:bg-gray-100" :class="[notification.read ? '' : 'bg-gray-100 ']">
+                                    <img class="h-8 w-8 rounded-full object-cover mx-1"
+                                        :src="notification.sender.avatar"
+                                        alt="avatar">
+                                    <div class="flex flex-col">
                                         <p class="text-gray-600 text-sm mx-2">
-                                            <span class="font-bold" href="#">{{notification.user.name}}</span>
+                                            <span class="font-bold" href="#">{{notification.sender.name}}</span>
                                             đã bình luận bài viết  <span
                                                 class="font-bold text-blue-500"
-                                                href="#">{{ notification.title }}</span> bạn đã theo dõi . 1h
+                                                href="#">{{ notification.title }}</span> bạn đã theo dõi.
                                         </p>
-                                    </router-link>
-                                    <!-- <a href="#"
-                                        class="flex items-center px-4 py-3 hover:bg-gray-100 -mx-2">
-                                        <img class="h-8 w-8 rounded-full object-cover mx-1"
-                                            src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=398&q=80"
-                                            alt="avatar">
-                                        <p class="text-gray-600 text-sm mx-2">
-                                            <span class="font-bold" href="#">Abigail
-                                                Bennett</span> start following
-                                            you . 3h
-                                        </p>
-                                    </a> -->
-                                </div>
-                                <a href="#"
-                                    class="block bg-gray-800 text-white text-center font-bold py-2">See
-                                    all notifications</a>
+                                        <p class="text-xs mx-2 text-gray-400">{{ formatDateTimeFB(new Date(notification.created_at)) }}</p>
+                                    </div>
+                                </router-link>
+                                <!-- <a href="#"
+                                    class="flex items-center px-4 py-3 hover:bg-gray-100 -mx-2">
+                                    <img class="h-8 w-8 rounded-full object-cover mx-1"
+                                        src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=398&q=80"
+                                        alt="avatar">
+                                    <p class="text-gray-600 text-sm mx-2">
+                                        <span class="font-bold" href="#">Abigail
+                                            Bennett</span> start following
+                                        you . 3h
+                                    </p>
+                                </a> -->
                             </div>
+                            <router-link :to="{ name: 'ListAllNotice', params: { id: authStore.getInfoUser.id } }"
+                                class="block bg-gray-800 text-white text-center text-sm py-1.5 read-all-notification">Xem tất cả thông báo</router-link>
                         </div>
-                    </ul>
+                    </div>
+                    <div class="relative" v-if="authStore.getInfoUser">
+                        <button @click="showPencilWrite($event)"
+                            class="relative z-10 block rounded-md bg-white py-2 pr-3 pl-1 focus:outline-none">
+                            <i class='bx bxs-edit-alt h-5 w-5 text-gray-800'></i>
+                        </button>
+
+                        <div class="pencil-write absolute right-0 mt-2 bg-white rounded-md shadow-lg overflow-hidden z-20 hidden"
+                            style="width:10rem;">
+                            <ul class="">
+                                <router-link :to="{name: 'PostsCreate' }" @click="hidePencilWrite" class="px-3 py-2 flex items-center hover:bg-gray-100 hover:text-current">
+                                    <i class='bx bxs-pencil pr-1'></i> 
+                                    Viết bài
+                                </router-link>
+                                <router-link :to="{name: 'PostsCreate' }" @click="hidePencilWrite" class="px-3 py-2 flex items-center hover:bg-gray-100 hover:text-current">
+                                    <i class='bx bx-question-mark pr-1'></i> Đặt câu hỏi
+                                </router-link>
+                            </ul>
+                        </div>
+                    </div>
                     <div class="navbar__group-icon">
                         <template v-if="!authStore.getInfoUser">
                             <BtnLogin />
@@ -90,36 +99,40 @@
                             <div class="navbar__dropdown dropdown">
                                 <button class="navbar__dropdown-toggle"
                                     type="button" id="dropdownMenuButton1"
-                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    @click="dropdownIconUser($event)">
                                     <div class="navbar__logo-user">
                                         <img class="navbar__logo-user"
                                             :src="infoAuth.avatar" alt="user" />
                                     </div>
                                 </button>
-                                <ul class="navbar__dropdown-menu dropdown-menu"
-                                    aria-labelledby="dropdownMenuButton1">
+                                <ul class="dropdownIconUserMenu navbar__dropdown-menu dropdown-menu hidden py-0" style="width: 17rem;">
+                                    <li class="flex items-center navbar__ dropdown-item bg-gray-100 py-2">
+                                        <img class="rounded-full w-14 h-14"
+                                            :src="infoAuth.avatar" alt="user" />
+                                        <div class="flex flex-col pl-1.5">
+                                            <span class="text-blue-500 text-md font-bold">{{ infoAuth.name }}</span>
+                                            <span class="text-gray-500 text-sm">{{ infoAuth.email }}</span>
+                                        </div>
+                                    </li>
                                     <li>
-                                        <router-link class="navbar__ dropdown-item"
-                                            :to="{ name: 'User' }">Hồ
-                                            sơ</router-link>
+                                        <router-link class="navbar__ dropdown-item flex items-center" @click="hideItemDropdownIconUser"
+                                            :to="{ name: 'User' }">
+                                            <i class='bx bxs-user pr-1.5'></i> Hồ sơ cá nhân
+                                        </router-link>
                                     </li>
                                     <li v-if="isAdmin.indexOf('admin') != -1">
-                                        <router-link class="navbar__ dropdown-item"
-                                            :to="{ name: 'Dashboard' }">Quản
-                                            trị</router-link>
+                                        <router-link class="navbar__ dropdown-item flex items-center" @click="hideItemDropdownIconUser"
+                                            :to="{ name: 'Dashboard' }">
+                                            <i class='bx bx-shield-quarter pr-1.5' ></i> Quản trị hệ thống
+                                        </router-link>
                                     </li>
                                     <li>
-                                        <router-link class="navbar__ dropdown-item"
-                                            :to="{ name: 'PostsCreate' }">Viết
-                                            bài</router-link>
+                                        <BtnDarkMode  @click="hideItemDropdownIconUser"/>
                                     </li>
                                     <li>
-                                        <BtnDarkMode />
-                                    </li>
-                                    <li>
-                                        <button class="navbar__ dropdown-item"
-                                            href="#"
-                                            @click="authStore.handleLogout()">
+                                        <button class="navbar__ dropdown-item flex items-center"
+                                            @click="authStore.handleLogout(), hideItemDropdownIconUser">
+                                            <i class='bx bxs-log-out pr-1.5' ></i>
                                             Đăng xuất
                                         </button>
                                     </li>
@@ -143,8 +156,7 @@ import axios from "axios";
 import { useAuthStore } from "@/stores/auth";
 import BtnDarkMode from "@/components/ui/BtnDarkMode.vue";
 import BtnLogin from "@/components/ui/BtnLogin.vue";
-import { forEach } from "lodash-es";
-
+import {formatDateTimeFB} from '@/assets/js/app.js'
 const authStore = useAuthStore();
 
 const data = () => ({
@@ -165,23 +177,70 @@ const notifications = ref([]);
 const showMenuRepon = () => {
     navbarEl.value = !navbarEl.value;
 };
-const showNotifications = () => {
+const showNotifications = (event) => {
+    event.stopPropagation();
     if ($('.list-notification ').first().is(":hidden")) {
         $('.list-notification ').slideDown(300);
-    } else {
-        $('.list-notification ').slideUp(300);
+    }else {
+        $('.list-notification').slideUp(300);
     }
+}
+const dropdownIconUser = (event) => {
+    event.stopPropagation();
+    if ($('.dropdownIconUserMenu').first().is(":hidden")) {
+        $('.dropdownIconUserMenu').slideDown(300);
+    }else {
+        $('.dropdownIconUserMenu').slideUp(300);
+    }
+}
+const showPencilWrite = (event) => {
+    event.stopPropagation();
+    if ($('.pencil-write').first().is(":hidden")) {
+        $('.pencil-write').slideDown(300);
+    }else {
+        $('.pencil-write').slideUp(300);
+    }
+}
+const hidePencilWrite = () => {
+    $('.pencil-write').slideUp(300);
+}
+const hideItemDropdownIconUser = () => {
+    $('.dropdownIconUserMenu').slideUp(300);
+}
+const readNotice = async (id_notice, id_, index) => {
+    await axios.put(`api/notifications/read-notice/${id_notice}`)
+    .then(res => {
+        notifications.value[index].read = true
+        // console.log(res)
+    })
+    .catch(err => {
+        console.log(err)
+    })
+    $('.list-notification ').slideUp(300);
+}
+const readAllNotice = async (user_id) => {
+    await axios.put(`api/notifications/read-all-notice/${user_id}`)
+    .then(res => {
+        notifications.value.forEach(function(item) {
+            item.read = true
+        })
+        // console.log(res)
+    })
+    .catch(err => {
+        console.log(err)
+    })
 }
 const fetchData = () => {
     axios
         .post('/api/notifications/my-notice')
         .then((response) => {
-            response.data.data.map(function(item) {
-                return item.avatar_user =  'http://localhost:8000/images/' + item.avatar_user
-            }) 
             notifications.value = response.data.data;
-            notifications.value.reverse();
-            console.log(notifications.value)
+            notifications.value.map(function(item) {
+                if(item.sender.avatar.indexOf('http://localhost:8000/images/') == -1) {
+                    return item.sender.avatar =  'http://localhost:8000/images/' + item.sender.avatar
+                }
+            }) 
+            // console.log(response.data.data)
         })
         .catch((error) => {
             console.log(error);
@@ -189,6 +248,24 @@ const fetchData = () => {
 };
 
 onMounted(async () => {
+    $(document).on('click', function(event) {
+        if (!$(event.target).closest('.dropdownIconUser').length) {
+            $('.dropdownIconUserMenu').slideUp(300);
+        }
+        if (!$(event.target).closest('.showNotifications').length) {
+            $('.list-notification').slideUp(300);
+        }
+        if (!$(event.target).closest('.showPencilWrite').length) {
+            $('.pencil-write').slideUp(300);
+        }
+    });
+    $('.read-all-notification').click(function() {
+        $('.list-notification').slideDown(300);
+    })
+    $('.list-notification').click(function(event) {
+        event.stopPropagation()
+        $(this).slideDown(300);
+    })
     await authStore.getToken();
     await authStore.getUser();
 
@@ -196,7 +273,7 @@ onMounted(async () => {
         const userId = infoAuth.value.id;
 
         fetchData()
-
+        
         data.pusher = new Pusher("100f9f72ec40accb9c52", {
             cluster: "ap1",
             encrypted: true,
@@ -205,11 +282,19 @@ onMounted(async () => {
         data.channel = data.pusher.subscribe("chanel-notification");
 
         data.channel.bind('general-announcement', (notification) => {
-            notifications.value.push(notification);
+            notifications.value.unshift(notification);
+            notifications.value.pop();
         });
 
         data.channel.bind(`event-notification-${userId}`, (notification) => {
-            notifications.value.push(notification);
+            notifications.value.unshift(notification);
+            notifications.value.pop();
+            notifications.value.map(function(item) {
+                if(item.sender.avatar.indexOf('http://localhost:8000/images/') == -1) {
+                    return item.sender.avatar =  'http://localhost:8000/images/' + item.sender.avatar
+                }
+            }) 
+            // console.log('cc',notifications.value);
         });
     }
 });
@@ -254,7 +339,6 @@ onBeforeUnmount(() => {
 .navbar .navbar__group {
     display: flex;
     align-items: center;
-    gap: 30px;
 }
 
 .navbar .navbar__navigation {

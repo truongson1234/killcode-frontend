@@ -34,15 +34,59 @@ class NotificationController extends Controller
         }
     }
 
+    public function readNotice($id) {
+        try {
+            $notice = Notification::findOrFail($id);
+            $notice->update(['read' => true]);
+            return response()->json(['msg' => 'Đọc thành công'], 204);
+        } catch (\Throwable $th) {
+            return response()->json(['error' => $th], 402);
+        }
+    }
+    public function readAllNotice($user_id) {
+        try {
+            $notices = Notification::where('user_id', $user_id)->get();
+            foreach($notices as $notice) {
+                $notice->update(['read' => true]);
+            }
+            return response()->json(['msg' => 'Đọc thành công'], 204);
+        } catch (\Throwable $th) {
+            return response()->json(['error' => $th], 402);
+        }
+    }
+
     public function myNotice(Request $request)
     {
         try {
             $user = User::findOrFail(auth()->user()->id);
 
             $notifications = $user->notifications()
-                ->with('user')
+                ->with('sender')
                 ->orderBy('created_at', 'desc')
                 ->take(5)
+                ->get();
+
+            return response()->json([
+                'status' => 1,
+                'data' => $notifications,
+                'message' => 'Lấy ra thông báo của ' . $user->name . '.'
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 0,
+                'data' => $th,
+                'message' => 'Đã có lỗi xảy ra.'
+            ]);
+        }
+    }
+    public function allMyNotice(Request $request)
+    {
+        try {
+            $user = User::findOrFail(auth()->user()->id);
+
+            $notifications = $user->notifications()
+                ->with('sender')
+                ->orderBy('created_at', 'desc')
                 ->get();
 
             return response()->json([

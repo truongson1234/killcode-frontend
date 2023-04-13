@@ -1,11 +1,13 @@
 <template>
-  <button class="btn-darkmode" @click="toggleDark()">
-    Chế độ: {{ isDark ? "Tối" : "Sáng" }}
+  <button class="btn-darkmode flex items-center" @click="toggleDark()">
+    <span v-if="isDark" class="pr-1.5"><i class='bx bxs-sun'></i></span>
+    <span v-else class="pr-1.5"><i class='bx bxs-moon' ></i></span>
+    Chế độ: {{ isDark ? "Sáng" : "Tối" }}
   </button>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref,computed } from "vue";
 import { useDark, useToggle } from "@vueuse/core";
 
 const isDark = useDark({

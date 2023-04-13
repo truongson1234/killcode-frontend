@@ -18,7 +18,7 @@ const requireAuth = async (to, from, next) => {
         next();
     }
 };
-const checkLogin = (to, frorm, next) => {
+const checkUnLogin = (to, frorm, next) => {
     const status = localStorage.getItem("isAuthenticated");
     if (!status) {
         next();
@@ -26,6 +26,14 @@ const checkLogin = (to, frorm, next) => {
         next("/home");
     }
 };
+const checkLogined = (to, from, next) => {
+    const status = localStorage.getItem("isAuthenticated");
+    if (status) {
+        next();
+    } else {
+        next("/home");
+    }
+}
 const routes = [
     //! ROUTES AUTH
     {
@@ -66,7 +74,7 @@ const routes = [
                 meta: { showHeader: false, showFooter: false, isAdmin: false },
             },
         ],
-        beforeEnter: checkLogin,
+        beforeEnter: checkUnLogin,
     },
 
     //! ROUTE USER
@@ -101,6 +109,13 @@ const routes = [
                 name: "Profile",
                 component: () => import("@/pages/user/Profile.vue"),
                 meta: { showFooter: true, showNavBar: false },
+            },
+            {
+                path: "list-all-notice/:id",
+                name: "ListAllNotice",
+                component: () => import("@/pages/notice/Index.vue"),
+                meta: { showFooter: true, showNavBar: true },
+                beforeEnter: checkLogined,
             },
             {
                 path: "question",
@@ -161,6 +176,7 @@ const routes = [
                         path: "/create-posts",
                         name: "PostsCreate",
                         component: () => import("@/pages/posts/Create.vue"),
+                        beforeEnter: checkLogined,
                     },
                     {
                         path: "/edit-posts/:id",
@@ -181,6 +197,7 @@ const routes = [
                 name: "User",
                 component: () => import("@/pages/user/Index.vue"),
                 meta: { showFooter: true, showNavBar: true },
+                beforeEnter: checkLogined,
             },
         ],
     },

@@ -19,12 +19,15 @@
             />
         </div>
 
-        <ul v-for="(tag, index) in dataTags.tags" :key="index">
-            <li class="flex">
-                <p class="text-green-500">{{ tag.name }}</p>
-                <button class="mx-2" @click="removeTag(tag.id)">x</button>
-            </li>
-        </ul>
+        <div class="flex items-center mb-2">
+            <label for="" class="pr-2">Thẻ được gắn:</label>
+            <ul v-for="(tag, index) in dataTags.tags" :key="index">
+                <li class="flex items-center bg-blue-100 text-blue-800 text-sm font-medium mr-1 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300 ">
+                    <p class="text-blue-500">{{ tag.name }}</p>
+                    <button class="flex items-center justify-center ml-1 hover:rounded-full hover:bg-gray-400 hover:text-white" @click="removeTag(tag.id)"><i class='bx bx-x'></i></button>
+                </li>
+            </ul>
+        </div>
         <div class="mb-3">
             <SearchTags
             :apiUrl="dataTags.url"
@@ -90,7 +93,7 @@ const payload = ref({
 const addTag = (data) => {
     console.log(data);
     if (payload.value.tag_ids.length > 4) {
-        Swal.fire("Qúa nhiều tags rồi!", "Chỉ thêm được tối đa 5 tags.");
+        // Swal.fire("Qúa nhiều tags rồi!", "Chỉ thêm được tối đa 5 tags.");
     } else if (!payload.value.tag_ids.find(i => i == data.id)) {
         payload.value.tag_ids.push(data.id);
         dataTags.value.tags.push(data);
