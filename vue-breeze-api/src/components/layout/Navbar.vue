@@ -116,7 +116,7 @@
                                     </li>
                                     <li>
                                         <router-link class="navbar__ dropdown-item flex items-center" @click="hideItemDropdownIconUser"
-                                            :to="{ name: 'User' }">
+                                            :to="{ name: 'User', params: {id: infoAuth.id} }">
                                             <i class='bx bxs-user pr-1.5'></i> Hồ sơ cá nhân
                                         </router-link>
                                     </li>

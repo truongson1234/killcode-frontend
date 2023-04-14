@@ -18,7 +18,9 @@
 <script setup>
 import axios from "axios";
 import { ref, computed } from "vue";
-
+import router from '@/router';
+import { useAuthStore } from "@/stores/auth";
+const authStore = useAuthStore();
 const props = defineProps({
     data: Object,
 });
@@ -32,17 +34,36 @@ const renderIcon = computed(() => {
 })
 const toggleFollow = async (tag) => {
     try {
-        const response = await axios({
-            method: tag.is_following ? 'delete' : 'post',
-            url: "/api/followed-tags",
-            data: {
-                tag_id: tag.id,
-            },
-        });
-        if (response.data.status === 1) {
-            data.is_following = !tag.is_following;
-            data.followers_count = !tag.is_following ? tag.followers_count - 1 : tag.followers_count + 1;
-            // Swal.fire(response.data.message, "UwU <3", "success");
+        if(authStore.getInfoUser != null) {
+            const response = await axios({
+                method: tag.is_following ? 'delete' : 'post',
+                url: "/api/followed-tags",
+                data: {
+                    tag_id: tag.id,
+                },
+            });
+            if (response.data.status === 1) {
+                data.is_following = !tag.is_following;
+                data.followers_count = !tag.is_following ? tag.followers_count - 1 : tag.followers_count + 1;
+                // Swal.fire(response.data.message, "UwU <3", "success");
+            }
+
+        }else {
+            Swal.fire({
+                title: "",
+                text:'Vui lòng đăng nhập để có thể theo dõi chủ đề!',
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#aaa8a5",
+                confirmButtonText: "Đăng nhập",
+                cancelButtonText: "Hủy",
+            }).then(result => {
+                if(result.isConfirmed) {
+                    router.push({ name: 'Login' })
+                    .then(() => { router.go() })
+                }
+            })
         }
     } catch (error) {
         console.log(error);

@@ -193,7 +193,7 @@ const routes = [
                 meta: { showFooter: true, showNavBar: true },
             },
             {
-                path: "user",
+                path: "user/:id",
                 name: "User",
                 component: () => import("@/pages/user/Index.vue"),
                 meta: { showFooter: true, showNavBar: true },

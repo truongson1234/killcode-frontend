@@ -63,8 +63,6 @@ export default {
                 .get("/api/followed-tags")
                 .then((response) => {
                     this.tags = response.data.data;
-                    // this.currentPage = response.data.currentPage;
-                    // this.totalPages = response.data.totalPages - 1;
                 })
                 .catch((error) => {
                     console.log(error);

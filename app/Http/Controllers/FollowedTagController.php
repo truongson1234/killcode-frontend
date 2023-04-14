@@ -12,24 +12,31 @@ class FollowedTagController extends Controller
     // Lấy danh sách các thẻ đã được theo dõi của một người dùng
     public function index(Request $request)
     {
+        if(auth()->user()) {
+            $data_query = Tag::with(['followers' => function ($query) { 
+                $query->where('user_id', auth()->user()->id); 
+            }])     
+                ->withCount('followers') 
+                ->orderBy('created_at', 'desc') 
+                ->get();
 
-        $data_query = Tag::with(['followers' => function ($query) { 
-            $query->where('user_id', auth()->user()->id); 
-        }]) 
-            ->withCount('followers') 
-            ->orderBy('created_at', 'desc') 
-            ->get();
+            $tags = $data_query->map(function ($tag) { 
+                $tag->is_following = $tag->followers->isNotEmpty();
+    
+                unset($tag->followers); 
+                return $tag; 
+            });
+    
+            return response()->json([
+                'data' => $tags,
+            ],200);
+        }else {
+            $tags = Tag::orderBy('created_at', 'desc')->get();
+            return response()->json([
+                'data' => $tags,
+            ],200);
+        }
 
-        $tags = $data_query->map(function ($tag) { 
-            $tag->is_following = $tag->followers->isNotEmpty();
-
-            unset($tag->followers); 
-            return $tag; 
-        });
-
-        return response()->json([
-            'data' => $tags,
-        ],200);
     }
 
     // Theo dõi một thẻ mới

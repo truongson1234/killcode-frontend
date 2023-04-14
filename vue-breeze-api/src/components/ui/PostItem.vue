@@ -1,13 +1,16 @@
 <template>
   <div class="p-3">
-    <div class="box-post">
+    <div class="box-post relative">
+      <div v-if="data.user_id == idAuthor" class="absolute right-7 cursor-pointer" @click="editPost(data.id)">
+        <i class='bx bx-edit text-gray-400'></i>
+      </div>
       <div class="box-post-header flex items-center">
         <div class="userimage"><img :src="data.author.avatar" alt="" /></div>
         <div class="flex flex-col">
           <span class="username leading-5"><a href="javascript:;">{{
             data.author.name }}</a>
           </span>
-          <span class="time-post leading-3 text-slate-400">
+          <span class="time-post leading-3 text-slate-400" v-if="statusDate">
             đăng lúc
             {{ formatDateTime(data.created_at) }}
           </span>
@@ -42,16 +45,31 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { formatDateTime } from '@/assets/js/app.js'
 import { useAuthStore } from "@/stores/auth";
-
+import router from '@/router'
+const authStore = useAuthStore();
 const props = defineProps({
   data: Object,
+  statusDate: {
+    type: Boolean,
+    default: true
+  }
 });
 
 const data = props.data;
-
+const statusDate = props.statusDate;
+const idAuthor = computed(() => {
+  if(authStore.getInfoUser != null) {
+    return authStore.getInfoUser.id
+  }
+  return ''
+})
+const editPost = (id) => {
+  router.push({ name: 'PostsEdit', params: {id: id}})
+  .then(() => { router.go() })
+}
 </script>
 
 <style scoped>

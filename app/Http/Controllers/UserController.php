@@ -25,7 +25,7 @@ class UserController extends Controller
             if($request->input('image') != '') {
                 $image = $request->input('image');
                 $filename = time().$request->input('nameImage');
-                if (file_exists(public_path('images/'.$user->avatar))) {
+                if (file_exists(public_path('images/'.$user->avatar)) && $user->avatar != 'user.png') {
                     File::delete(public_path('images/'.$user->avatar));
                 }
                 Image::make($image)->save(public_path('images/'.$filename));

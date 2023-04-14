@@ -67,6 +67,21 @@ class PostController extends Controller
         ]);
     }
 
+    public function getPostByUser($id) {
+        $data_query = Post::where('user_id', $id)->with('user', 'tags')->get();
+        $posts = $data_query->map(function ($post) {
+            $post->author = [
+                'name' => $post->user->name,
+                'email' => $post->user->email,
+                'avatar' => $post->user->avatar,
+            ];
+            unset($post->user);
+            return $post;
+        });
+        return response()->json([
+            'posts' => $posts,
+        ]);
+    }
 
     public function store(Request $request)
     {
@@ -89,6 +104,7 @@ class PostController extends Controller
             // Tạo thông báo
             $data_notification = [
                 'title' => 'Có bài viết mới từ chủ đề bạn đã theo dõi!',
+                'type_notification' => 'post',
                 'content' => $post->title,
             ];
 
@@ -115,6 +131,7 @@ class PostController extends Controller
                     'user_id' => $user->id,
                     'title' => $data_notification['title'],
                     'content' => $data_notification['content'],
+                    'type_notification' => $data_notification['type_notification'],
                     'read' => false,
                 ]);
     
@@ -142,8 +159,15 @@ class PostController extends Controller
     {
         // Update post data in database
         $post = Post::findOrFail($id);
-        $post->update($request->all());
-
+        // $post->update($request->all());
+        $post->update([
+            'title' => $request->input('title'),
+            'body' => $request->input('body'),
+        ]);
+        // tạo followed tag
+        $tagIds = $request->input('tag_ids');
+        $post->tags()->detach();
+        $post->tags()->attach($tagIds);
         // Return updated post data
         return response()->json([
             'data' => $post,

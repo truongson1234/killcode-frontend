@@ -47,6 +47,29 @@ export const formatDetailDateTime = (date_time) => {
     return "";
 };
 
+export const formatDateTimeHours= (date_time) => {
+    if (date_time != null) {
+        const date = new Date(date_time);
+
+        // Lấy thứ trong tuần 
+        const dayOfWeek = date.getDay(); // lấy thứ trong tuần (0-6)
+        const days = ['Chủ nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'];
+        const dayName = days[dayOfWeek];
+
+        // Lấy giờ phút giây 
+        var hours = date.getHours(); // lấy giờ (0-23)
+        var minutes = date.getMinutes(); // lấy phút (0-59)
+        if(minutes < 10) {
+            minutes = '0' + minutes
+        }
+        if(hours < 10) {
+            hours = '0' + hours
+        }
+        const dateTimeString = `${dayName} lúc ${hours}:${minutes}`;
+        return dateTimeString
+    }
+    return "";
+};
 //* Trả về thời gian trôi qua kể từ hiện tại
 export const formatDateTimeFB = (dateTime) => {
     const now = new Date();

@@ -60,6 +60,7 @@ Route::group(['prefix' => 'followed-tags'], function () {
 Route::group(['prefix' => 'posts'], function () {
     Route::get('', 'App\Http\Controllers\PostController@index');
     Route::get('{id}', 'App\Http\Controllers\PostController@show');
+    Route::get('list-post-user/{id}', 'App\Http\Controllers\PostController@getPostByUser');
     Route::post('', 'App\Http\Controllers\PostController@store');
     Route::put('{id}', 'App\Http\Controllers\PostController@update');
     Route::delete('{id}', 'App\Http\Controllers\PostController@destroy');

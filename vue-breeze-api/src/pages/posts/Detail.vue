@@ -113,7 +113,7 @@ onMounted(async () => {
     data.channel.bind(`event-comment-${postId}`, (cmt) => {
         comments.value.push(cmt);
     });
-    pageLoaded()
+    pageLoaded(1000)
 });
 
 const fetchData = () => {
@@ -162,8 +162,8 @@ const sendCmt = async (payload) => {
     border-radius: 3px;
 }
 .detail-unique-post .box-type-comment .userimage {
-    width: 43px;
-    height: 43px;
+    width: 45px;
+    height: 42px;
 }
 .detail-unique-post .box-type-comment textarea {
     border-radius: 3px;

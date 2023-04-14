@@ -71,6 +71,7 @@ export default {
                     this.posts = response.data.data;
                     // this.currentPage = response.data.currentPage;
                     // this.totalPages = response.data.totalPages;
+                    console.log(this.posts);
                 })
                 .catch((error) => {
                     console.log(error);
