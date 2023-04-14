@@ -54,12 +54,12 @@ class CommentController extends Controller
             $data_notification = [
                 'title' => 'Thông báo có bình luận mới',
                 'type_notification' => 'comment',
-                'route' => json_encode([
+                'route' => [
                     'name' => 'PostsDetail',
                     'params' => [
                         'id' => $comment->post_id
                     ]
-                ])
+                ]
             ];
             
             // Gửi thông báo
