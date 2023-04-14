@@ -9,7 +9,7 @@ class Notification extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'sender_id', 'title', 'content', 'type_notification', 'post_id', 'read'];
+    protected $fillable = ['user_id', 'sender_id', 'title', 'content', 'type_notification', 'route', 'read'];
 
     protected $casts = [
         'read' => 'boolean',
@@ -23,5 +23,15 @@ class Notification extends Model
     public function sender()
     {
         return $this->belongsTo(User::class, 'sender_id');
+    }
+
+    public function getRouteAttribute($value)
+    {
+        return json_decode($value, true);
+    }
+
+    public function setRouteAttribute($value)
+    {
+        $this->attributes['route'] = json_encode($value);
     }
 }

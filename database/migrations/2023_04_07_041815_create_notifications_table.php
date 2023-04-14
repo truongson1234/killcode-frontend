@@ -18,7 +18,7 @@ class CreateNotificationsTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('sender_id');
             $table->string('type_notification');
-            $table->integer('post_id');
+            $table->json('route')->nullable();
             $table->string('title');
             $table->text('content');
             $table->boolean('read')->default(false);

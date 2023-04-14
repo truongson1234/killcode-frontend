@@ -9,15 +9,15 @@ class Question extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'title', 'body', 'views', 'likes', 'tags'];
+    protected $fillable = ['user_id', 'title', 'body', 'views', 'likes'];
 
-    public function getTagsAttribute($value)
+    public function user()
     {
-        return json_decode($value, true);
+        return $this->belongsTo(User::class);
     }
 
-    public function setTagsAttribute($value)
+    public function answers()
     {
-        $this->attributes['tags'] = json_encode($value);
+        return $this->hasMany(Answer::class);
     }
 }

@@ -52,12 +52,15 @@ class CommentController extends Controller
             unset($comment->user);
             // Tạo thông báo
             $data_notification = [
-                'title' => $post->title ,
-                'content' => $comment->content,
+                'title' => 'Thông báo có bình luận mới',
                 'type_notification' => 'comment',
-                'post_id' => $comment->post_id,
+                'route' => [
+                    'name' => 'PostsDetail',
+                    'params' => [
+                        'id' => $comment->post_id
+                    ]
+                ]
             ];
-            
             
             // Gửi thông báo
             $pusher = new Pusher(
@@ -85,54 +88,43 @@ class CommentController extends Controller
                         'user_id' => $previousComment->user_id,
                         'sender_id' => $comment->user_id,
                         'title' => $data_notification['title'],
-                        'content' => $data_notification['content'],
+                        'content' => '<span class="font-bold" href="#">' . $comment->author['name'] . '</span> đã bình luận bài viết của theo dõi',
                         'type_notification' => $data_notification['type_notification'],
-                        'post_id' => $data_notification['post_id'],
+                        'route' => $data_notification['route'],
                         'read' => false,
                     ]);
                     
                     $notification->save();
 
-                    $data_notification['read'] = $notification->read;
+                    $notification['user'] = $notification->user;
+                    $notification['sender'] = $notification->sender;
 
-                    $data_notification['sender'] = [
-                        'name' => $notification->sender->name,
-                        'avatar' => $notification->sender->avatar,
-                    ];
-                    $data_notification['created_at'] = $notification->created_at;
-    
-                    $pusher->trigger('chanel-notification', 'event-notification-' . $notification->user_id, $data_notification);
+                    $pusher->trigger('chanel-notification', 'event-notification-' . $notification->user_id, $notification);
                 }
             }
 
-            if ($post->user_id) {
+            if ($post->user_id !== $comment->user_id) {
                 $notification = new Notification([
                     'user_id' => $post->user_id,
                     'sender_id' => $comment->user_id,
                     'title' => $data_notification['title'],
-                    'content' => $data_notification['content'],
+                    'content' => '<span class="font-bold" href="#">' . $comment->author['name'] . '</span> đã bình luận bài viết của bạn',
                     'type_notification' => $data_notification['type_notification'],
-                    'post_id' => $data_notification['post_id'],
+                    'route' => $data_notification['route'],
                     'read' => false,
                 ]);
                 
                 $notification->save();
+                
+                $notification['user'] = $notification->user;
+                $notification['sender'] = $notification->sender;
 
-                $data_notification['read'] = $notification->read;
-
-                $data_notification['sender'] = [
-                    'name' => $notification->sender->name,
-                    'avatar' => $notification->sender->avatar,
-                ];
-                $data_notification['created_at'] = $notification->created_at;
-
-                $pusher->trigger('chanel-notification', 'event-notification-' . $notification->user_id, $data_notification);
+                $pusher->trigger('chanel-notification', 'event-notification-' . $notification->user_id, $notification);
             }
-
 
             // Gửi bình luận tới bài viết
             $pusher->trigger('chanel-comments', 'event-comment-' . $comment->post_id, $comment);
-
+ 
             return response()->json([
                 'data' => $comment,
                 'status' => 1,
