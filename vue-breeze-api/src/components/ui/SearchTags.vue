@@ -4,7 +4,8 @@
             v-model="newTag"
             @input="searchTags"
             :placeholder="placeholder"
-            class="py-2 px-3 block w-full border-2 border-gray-200 rounded-md text-sm focus:border-black"
+            type="text"
+            class="inpt-search-tag py-2 px-3 block w-full rounded-md text-sm " :class="[hightlightBorder ? 'border-red-600' : 'border-gray-200']"
             :readonly="isReadonly"
             :style="isReadonly ? ['background: rgba(0,0,0,0.1)', 'pointer-events: none'] : ''"
         />
@@ -41,6 +42,10 @@ export default {
             default: "",
         },
         isReadonly: {
+            type: Boolean,
+            default: false,
+        },
+        hightlightBorder: {
             type: Boolean,
             default: false,
         },
