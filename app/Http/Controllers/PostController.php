@@ -73,8 +73,8 @@ class PostController extends Controller
         try {
             // tạo bài viết
             $post = new Post();
-            $post->user_id = 2;
-            // $post->user_id = auth()->user()->id;
+            // $post->user_id = 2;
+            $post->user_id = auth()->user()->id;
             $post->title = $request->input('title');
             $post->body = $request->input('body');
             $post->views = $request->input('views');
@@ -91,12 +91,12 @@ class PostController extends Controller
                 'sender_id' => $post->user_id,
                 'title' => 'Thông báo có bài viết mới',
                 'type_notification' => 'new post',
-                'route' => json_encode([
+                'route' => [
                     'name' => 'PostsDetail',
                     'params' => [
                         'id' => $post->id
                     ]
-                ])
+                ]
             ];
 
             $pusher = new Pusher(
