@@ -9,9 +9,10 @@ class Notification extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'sender_id', 'title', 'content', 'type_notification', 'post_id', 'read'];
+    protected $fillable = ['user_id', 'sender_id', 'title', 'content', 'type_notification', 'route', 'read'];
 
     protected $casts = [
+        'route' => 'json',
         'read' => 'boolean',
     ];
 

@@ -44,6 +44,10 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
+    public function tags() {
+        return $this->belongsToMany(Tag::class, 'followed_tags');
+    }
+
     public function notifications()
     {
         return $this->hasMany(Notification::class);

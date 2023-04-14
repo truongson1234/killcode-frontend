@@ -73,8 +73,8 @@ class PostController extends Controller
         try {
             // tạo bài viết
             $post = new Post();
-            // $post->user_id = 2;
-            $post->user_id = auth()->user()->id;
+            $post->user_id = 2;
+            // $post->user_id = auth()->user()->id;
             $post->title = $request->input('title');
             $post->body = $request->input('body');
             $post->views = $request->input('views');
@@ -88,8 +88,15 @@ class PostController extends Controller
 
             // Tạo thông báo
             $data_notification = [
-                'title' => 'Có bài viết mới từ chủ đề bạn đã theo dõi!',
-                'content' => $post->title,
+                'sender_id' => $post->user_id,
+                'title' => 'Thông báo có bài viết mới',
+                'type_notification' => 'new post',
+                'route' => json_encode([
+                    'name' => 'PostsDetail',
+                    'params' => [
+                        'id' => $post->id
+                    ]
+                ])
             ];
 
             $pusher = new Pusher(
@@ -107,21 +114,35 @@ class PostController extends Controller
                 $query->select('user_id')
                     ->from('followed_tags')
                     ->whereIn('tag_id', $tagIds);
-            })->get();
+            })->with('tags')->get();
 
-            // gửi thông báo tới user đang follow tag trong post
-            foreach ($users as $user) {
-                $notification = new Notification([
-                    'user_id' => $user->id,
-                    'title' => $data_notification['title'],
-                    'content' => $data_notification['content'],
-                    'read' => false,
-                ]);
-    
-                $notification->save();
+            if ($users->count()) {
 
-                $pusher->trigger('chanel-notification', 'event-notification-' . $user->id, $data_notification);
-            }
+                // gửi thông báo tới user đang follow tag trong post
+                foreach ($users as $user) {
+                    $tagNames = $user->tags->whereIn('id', $tagIds)
+                        ->take(3)
+                        ->pluck('name')
+                        ->implode(', ');
+
+                    $notification = new Notification([
+                        'user_id' => $user->id,
+                        'sender_id' => $data_notification['sender_id'],
+                        'title' => $data_notification['title'],
+                        'content' => 'Có bài viết mới từ ' . $tagNames . '. Tựa đề: ' . $post->title,
+                        'type_notification' => $data_notification['type_notification'],
+                        'route' => $data_notification['route'],
+                        'read' => false,
+                    ]);
+        
+                    $notification->save();
+
+                    $notification['user'] = $notification->user;
+                    $notification['sender'] = $notification->sender;
+
+                    $pusher->trigger('chanel-notification', 'event-notification-' . $user->id, $notification);
+                }
+            }            
 
             return response()->json([
                 'data' => $post,
