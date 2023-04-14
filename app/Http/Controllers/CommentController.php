@@ -32,14 +32,14 @@ class CommentController extends Controller
                 $comment->parent_id = $parentComment->id;
                 $comment->post_id = $post->id;
                 $comment->user_id = auth()->user()->id;
-                // $comment->user_id = 2;
+                // $comment->user_id = 1;
                 $comment->content = $request->input('content');
         
             } else {
                 $comment = new Comment();
                 $comment->post_id = $post->id;
                 $comment->user_id = auth()->user()->id;
-                // $comment->user_id = 2;
+                // $comment->user_id = 1;
                 $comment->content = $request->input('content');
             }
 
@@ -88,7 +88,7 @@ class CommentController extends Controller
                         'user_id' => $previousComment->user_id,
                         'sender_id' => $comment->user_id,
                         'title' => $data_notification['title'],
-                        'content' => '<span class="font-bold" href="#">' . $comment->author['name'] . '</span> đã bình luận bài viết của theo dõi',
+                        'content' => '<span class="font-bold">' . $comment->author['name'] . '</span> đã bình luận bài viết bạn đang theo dõi',
                         'type_notification' => $data_notification['type_notification'],
                         'route' => $data_notification['route'],
                         'read' => false,
@@ -98,8 +98,8 @@ class CommentController extends Controller
 
                     $notification['user'] = $notification->user;
                     $notification['sender'] = $notification->sender;
-
-                    $pusher->trigger('chanel-notification', 'event-notification-' . $notification->user_id, $notification);
+                    // dd($notification->toArray());
+                    $pusher->trigger('chanel-notification', 'event-notification-' . $notification->user_id, $notification->toArray());
                 }
             }
 
@@ -119,7 +119,7 @@ class CommentController extends Controller
                 $notification['user'] = $notification->user;
                 $notification['sender'] = $notification->sender;
 
-                $pusher->trigger('chanel-notification', 'event-notification-' . $notification->user_id, $notification);
+                $pusher->trigger('chanel-notification', 'event-notification-' . $notification->user_id, $notification->toArray());
             }
 
             // Gửi bình luận tới bài viết

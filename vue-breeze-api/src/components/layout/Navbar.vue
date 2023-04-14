@@ -38,7 +38,7 @@
                                 </span>
                             </div>
                             <div class="">
-                                <router-link :to="{ name: 'PostsDetail', params: { id: notification.post_id } }" v-for="(notification, index) in notifications"
+                                <router-link :to="{ name: 'PostsDetail', params: { id: notification.route.params.id } }" v-for="(notification, index) in notifications"
                                     :key="notification.id"
                                     @click="readNotice(notification.id, notification.post_id, index)"
                                     class="flex items-center px-4 py-3 border-b  -mx-2 hover:bg-gray-100" :class="[notification.read ? '' : 'bg-gray-100 ']">
@@ -47,10 +47,7 @@
                                         alt="avatar">
                                     <div class="flex flex-col">
                                         <p class="text-gray-600 text-sm mx-2">
-                                            <span class="font-bold" href="#">{{notification.sender.name}}</span>
-                                            đã bình luận bài viết  <span
-                                                class="font-bold text-blue-500"
-                                                href="#">{{ notification.title }}</span> bạn đã theo dõi.
+                                            <span v-html="notification.content"></span>
                                         </p>
                                         <p class="text-xs mx-2 text-gray-400">{{ formatDateTimeFB(new Date(notification.created_at)) }}</p>
                                     </div>
@@ -240,7 +237,7 @@ const fetchData = () => {
                     return item.sender.avatar =  'http://localhost:8000/images/' + item.sender.avatar
                 }
             }) 
-            // console.log(response.data.data)
+            console.log('thong baooooo',response.data.data)
         })
         .catch((error) => {
             console.log(error);
@@ -294,7 +291,7 @@ onMounted(async () => {
                     return item.sender.avatar =  'http://localhost:8000/images/' + item.sender.avatar
                 }
             }) 
-            // console.log('cc',notifications.value);
+            console.log('cc',notifications.value);
         });
     }
 });

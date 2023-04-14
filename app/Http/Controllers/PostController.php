@@ -144,7 +144,8 @@ class PostController extends Controller
                         'user_id' => $user->id,
                         'sender_id' => $data_notification['sender_id'],
                         'title' => $data_notification['title'],
-                        'content' => 'Có bài viết mới từ ' . $tagNames . '. Tựa đề: ' . $post->title,
+                        // 'content' => 'Có bài viết mới từ ' . $tagNames . '. Tựa đề: ' . $post->title,
+                        'content' => 'Có bài viết mới từ chủ đề <span class="font-bold">' . $tagNames .'</span>',
                         'type_notification' => $data_notification['type_notification'],
                         'route' => $data_notification['route'],
                         'read' => false,
@@ -155,7 +156,7 @@ class PostController extends Controller
                     $notification['user'] = $notification->user;
                     $notification['sender'] = $notification->sender;
 
-                    $pusher->trigger('chanel-notification', 'event-notification-' . $user->id, $notification);
+                    $pusher->trigger('chanel-notification', 'event-notification-' . $user->id, $notification->toArray());
                 }
             }            
 
@@ -198,6 +199,8 @@ class PostController extends Controller
     public function destroy($id)
     {
         $post = Post::findOrFail($id);
+        $post->tags()->detach();
+        $post->comments()->delete();
         $post->delete();
 
         return response()->json([

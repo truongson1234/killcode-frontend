@@ -23,7 +23,7 @@ export const useTagStore = defineStore("tag", {
         async handleDeleteTag(id) {
             await axios.delete(`api/admin/tags/${id}`)
             .then(res => {
-                // this.getTags()
+                this.getTags()
                 this.tagErrors = 'success!'
             })
             .catch(err => {

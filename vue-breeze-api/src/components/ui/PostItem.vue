@@ -1,8 +1,20 @@
 <template>
   <div class="p-3">
     <div class="box-post relative">
-      <div v-if="data.user_id == idAuthor" class="absolute right-7 cursor-pointer" @click="editPost(data.id)">
-        <i class='bx bx-edit text-gray-400'></i>
+      <div class="absolute right-7 cursor-pointer"
+        v-if="data.user_id == idAuthor">
+        <button @click="showToolPost($event, data.id)"><i
+            class='bx bx-dots-horizontal-rounded text-gray-400'></i></button>
+        <div class="tool-post-container hidden bg-white absolute right-0 shadow-lg"
+          :class="`tool-post${data.id}`" style="min-width:15rem">
+          <router-link :to="{ name: 'PostsEdit', params: { id: data.id } }"
+            class="px-2 py-2 flex items-center hover:text-current hover:bg-gray-100 w-full">
+            <i class='bx bx-edit text-gray-400 pr-1'></i> Chỉnh sửa bài viết
+          </router-link>
+          <button @click="deletePost(data.id)"
+            class="px-2 py-2 flex items-center hover:text-current hover:bg-gray-100 w-full"><i
+              class='bx bxs-trash  text-gray-400 pr-1'></i>Xóa bài viết</button>
+        </div>
       </div>
       <div class="box-post-header flex items-center">
         <div class="userimage"><img :src="data.author.avatar" alt="" /></div>
@@ -18,14 +30,17 @@
       </div>
       <div class="box-post-content">
         <p>
-          <router-link :to="{ name: 'PostsDetail', params: { id: data.id } }" class="">
+          <router-link :to="{ name: 'PostsDetail', params: { id: data.id } }"
+            class="">
             {{ data.title }}
           </router-link>
         </p>
       </div>
       <div class="flex items-center justify-between mt-2">
         <div class="box-tags">
-          <a href="#" class="inline-flex items-center bg-blue-100 text-blue-800 text-sm font-medium mr-1 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300 " v-for="(data, index) in data.tags" :key="index">
+          <a href="#"
+            class="inline-flex items-center bg-blue-100 text-blue-800 text-sm font-medium mr-1 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300 "
+            v-for="(data, index) in data.tags" :key="index">
             {{ data.name }}
           </a>
         </div>
@@ -49,27 +64,40 @@ import { ref, computed, onMounted } from "vue";
 import { formatDateTime } from '@/assets/js/app.js'
 import { useAuthStore } from "@/stores/auth";
 import router from '@/router'
+import axios from 'axios'
 const authStore = useAuthStore();
 const props = defineProps({
   data: Object,
   statusDate: {
     type: Boolean,
     default: true
-  }
+  },
+  deletePost: Function
 });
 
 const data = props.data;
 const statusDate = props.statusDate;
 const idAuthor = computed(() => {
-  if(authStore.getInfoUser != null) {
+  if (authStore.getInfoUser != null) {
     return authStore.getInfoUser.id
   }
   return ''
 })
-const editPost = (id) => {
-  router.push({ name: 'PostsEdit', params: {id: id}})
-  .then(() => { router.go() })
+const showToolPost = (event, index) => {
+  event.stopPropagation();
+  if ($(`.box-post .tool-post${index}`).first().is(':hidden')) {
+    $(`.box-post .tool-post${index}`).slideDown(300)
+  } else {
+    $(`.box-post .tool-post${index}`).slideUp(300)
+  }
 }
+onMounted(() => {
+  $(document).on('click', function (event) {
+    if (!$(event.target).closest('.showToolPost').length) {
+      $(`.box-post .tool-post-container `).slideUp(300);
+    }
+  });
+})
 </script>
 
 <style scoped>
@@ -115,6 +143,7 @@ const editPost = (id) => {
   text-align: justify;
   padding-top: 5px;
 }
+
 .box-post-content p {
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -160,5 +189,4 @@ const editPost = (id) => {
 
 .box-post-engagement .engagements-text+.engagements-text {
   margin-left: 15px
-}
-</style>
+}</style>

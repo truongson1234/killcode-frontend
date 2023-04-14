@@ -7,9 +7,11 @@
                 <TagItem :data="tag" />
             </div>
         </div>
-        <v-pagination v-model="pageTag" :pages="totalPagesTag" :range-size="1"
-            active-color="#0074FF" class="my-3"
-            @update:modelValue="onPageChanged" />
+        <div v-if="tags.length > itemsPerPageTag">
+            <v-pagination v-model="pageTag" :pages="totalPagesTag" :range-size="1"
+                active-color="#0074FF" class="my-3"
+                @update:modelValue="onPageChanged" />
+        </div>
     </div>
 </template>
 

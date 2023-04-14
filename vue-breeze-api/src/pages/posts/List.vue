@@ -3,16 +3,18 @@
         <div class="row">
             <div class="col-12 col-md-9">
                 <div class="" v-for="post in displayedItems" :key="post.id">
-                    <PostItem :data="post" />
+                    <PostItem :data="post" :deletePost="deletePost"/>
                 </div>
             </div>
             <div class="d-none d-md-block col-md-3">
                 <Tagsname />
             </div>
         </div>
-        <v-pagination v-model="pagePost" :pages="totalPagesPost" :range-size="1"
+        <div v-if="posts.length > itemsPerPagePost">
+            <v-pagination v-model="pagePost" :pages="totalPagesPost" :range-size="1"
             active-color="#0074FF" class="my-3"
             @update:modelValue="onPageChanged" />
+        </div>
     </div>
 </template>
 
@@ -50,7 +52,7 @@ export default {
             }
         },
         displayedItems() {
-            if(this.posts != null) {
+            if (this.posts != null) {
                 var startIndex = (this.currentPage - 1) * this.itemsPerPagePost;
                 var endIndex = startIndex + this.itemsPerPagePost;
                 if (endIndex > this.posts.length) {
@@ -59,14 +61,24 @@ export default {
                 return this.posts.slice(startIndex, endIndex);
             }
         }
-    },  
+    },
     methods: {
+        async deletePost(id_post) {
+            await axios.delete(`api/posts/${id_post}`)
+                .then(res => {
+                    this.posts = this.posts.filter((post) => post.id !== id_post);
+                    console.log('ayeah');
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+        },
         fetchData() {
             axios
                 .get("/api/posts")
                 .then((response) => {
                     response.data.data.forEach(item => {
-                        item.author.avatar = 'http://localhost:8000/images/' +  item.author.avatar
+                        item.author.avatar = 'http://localhost:8000/images/' + item.author.avatar
                     });
                     this.posts = response.data.data;
                     // this.currentPage = response.data.currentPage;

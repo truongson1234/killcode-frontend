@@ -60,7 +60,7 @@ const route = useRoute()
                         Account pages</h6>
                 </li>
                 <li class="nav-item">
-                    <router-link class="nav-link " :to="{ name: 'User' }">
+                    <router-link class="nav-link " :to="{ name: 'User', params: {id: authStore.getInfoUser.id} }">
                         <div
                             class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                             <i

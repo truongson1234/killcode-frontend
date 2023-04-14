@@ -308,7 +308,7 @@ export const modelValueEditRole = (event) => {
 export const modelValueEditPermission = (event) => {
     formEditPermission.value.name = event.target.value;
 };
-export const deleteRole = (id, name) => {
+export const deleteRole = (item, id, name) => {
     Swal.fire({
         title: "",
         text: `Bạn có chắc muốn xóa vai trò "${name}" ?`,
@@ -331,13 +331,28 @@ export const deleteRole = (id, name) => {
                             confirmButtonColor: "#3085d6",
                             confirmButtonText: "Đóng",
                         });
+                    }else {
+                        const index = rolesStore.listRoles.indexOf(item);
+                        if (index || index == 0) {
+                            rolesStore.listRoles.splice(index, 1);
+                            if(displayedItemsRole.value.length <= 1) {
+                                currentPage.value = totalPagesRole.value
+                                pageRole.value = totalPagesRole.value
+                                var startIndex = (currentPage.value - 1) * itemsPerPageRole.value;
+                                var endIndex = startIndex + itemsPerPageRole.value;
+                                if (endIndex > rolesStore.listRoles.length) {
+                                    endIndex = rolesStore.listRoles.length;
+                                }
+                                rolesStore.listRoles.slice(startIndex, endIndex)
+                            }
+                        }
                     }
                 })
                 .catch((error) => { });
         }
     });
 };
-export const deletePermission = (id, name) => {
+export const deletePermission = (item, id, name) => {
     Swal.fire({
         title: "",
         text: `Bạn có chắc muốn xóa quyền "${name}" ?`,
@@ -360,6 +375,21 @@ export const deletePermission = (id, name) => {
                             confirmButtonColor: "#3085d6",
                             confirmButtonText: "Đóng",
                         });
+                    }else {
+                        const index = rolesStore.listPermissions.indexOf(item);
+                        if (index || index == 0) {
+                            rolesStore.listPermissions.splice(index, 1);
+                            if(displayedItemsPermission.value.length <= 1) {
+                                currentPagePermission.value = totalPagesPermission.value
+                                pagePermission.value = totalPagesPermission.value
+                                var startIndex = (currentPagePermission.value - 1) * itemsPerPagePermission.value;
+                                var endIndex = startIndex + itemsPerPagePermission.value;
+                                if (endIndex > rolesStore.listPermissions.length) {
+                                    endIndex = rolesStore.listPermissions.length;
+                                }
+                                rolesStore.listPermissions.slice(startIndex, endIndex)
+                            }
+                        }
                     }
                 })
                 .catch((error) => { });

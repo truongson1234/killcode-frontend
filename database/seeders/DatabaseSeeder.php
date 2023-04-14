@@ -14,22 +14,22 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $roles = [
-            [
-                'name' => 'admin',
-                'created_at' => now(),
-            ],
-            [
-                'name' => 'user',
-                'created_at' => now(),
-            ]
-        ];
+        // $roles = [
+        //     [
+        //         'name' => 'admin',
+        //         'created_at' => now(),
+        //     ],
+        //     [
+        //         'name' => 'user',
+        //         'created_at' => now(),
+        //     ]
+        // ];
 
-        DB::table('roles')->insert($roles);
-        DB::table('user_roles')->insert([
-            'user_id' => 1,
-            'role_id' => 1
-        ]);
+        // DB::table('roles')->insert($roles);
+        // DB::table('user_roles')->insert([
+        //     'user_id' => 1,
+        //     'role_id' => 1
+        // ]);
         for ($i = 0; $i < 10; $i++) {
             $name = Str::random(10); // Generate a random name
             $slug = Str::slug($name); // Generate a slug from the name

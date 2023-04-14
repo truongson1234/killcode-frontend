@@ -16,7 +16,7 @@
             </div>
         </div>
         <router-link
-            :to="{ name: 'PostsDetail', params: { id: notification.post_id } }"
+            :to="{ name: 'PostsDetail', params: { id: notification.route.params.id } }"
             v-for="(notification, index) in displayedNotifications" :key="notification.id"
             @click="readNotice(notification.id, notification.post_id, index)"
             class=" flex px-4 py-3 border-b hover:text-inherit -mx-2 hover:bg-gray-100"
@@ -26,11 +26,7 @@
                     :src="notification.sender.avatar" alt="avatar">
                 <div>
                     <p class="text-gray-600 text-sm mx-2">
-                        <span class="font-bold" href="#">{{ notification.sender.name
-                        }}</span>
-                        đã bình luận bài viết <span class="font-bold text-blue-500"
-                            href="#">{{ notification.title }}</span> bạn đang theo
-                        dõi.
+                        <span v-html="notification.content"></span>
                     </p>
                     <p class="mx-2 text-gray-400 text-sm">{{ formatDateTimeFB(new Date(notification.created_at)) }}</p>
                 </div>

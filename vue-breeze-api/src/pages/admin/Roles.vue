@@ -266,6 +266,7 @@
                                             <div class="flex gap-x-1">
                                                 <button @click.prevent="
                                                     deleteRole(
+                                                        item,
                                                         item.id,
                                                         item.name
                                                     )
@@ -486,6 +487,7 @@
                                             <div class="flex gap-x-1">
                                                 <button @click.prevent="
                                                     deletePermission(
+                                                        item,
                                                         item.id,
                                                         item.name
                                                     )

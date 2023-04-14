@@ -43,6 +43,16 @@ export const deleteTag = (item, id) => {
                         const index = tagStore.dataTags.indexOf(item);
                         if (index || index == 0) {
                             tagStore.dataTags.splice(index, 1);
+                            if(displayedItemsTag.value.length < 1) {
+                                currentPage.value = totalPagesTag.value
+                                pageTag.value = totalPagesTag.value
+                                var startIndex = (currentPage.value - 1) * itemsPerPage.value;
+                                var endIndex = startIndex + itemsPerPage.value;
+                                if (endIndex > tagStore.dataTags.length) {
+                                    endIndex = tagStore.dataTags.length;
+                                }
+                                tagStore.dataTags.slice(startIndex, endIndex)
+                            }
                         }
                     }
                 })
@@ -99,7 +109,7 @@ export const editTag = async(id, form) => {
 }
 export const onPageChanged = (page) => {
     currentPage.value = page;
-};
+}
 export const valiEmptyInput = (name_condition, value) => {
     if (value == "") {
         if (name_condition == "name") checkValiAddTag.value.name = true;
