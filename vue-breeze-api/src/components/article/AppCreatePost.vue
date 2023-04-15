@@ -108,7 +108,7 @@ const checkCkeditor = () => {
 }
 const onEditorFocus = (event) => {
     focusEditor.value = true
-  console.log('CKEditor is focused!');
+//   console.log('CKEditor is focused!');
 }
 
 const removeTag = (id) => {
