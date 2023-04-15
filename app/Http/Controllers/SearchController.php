@@ -21,12 +21,12 @@ class SearchController extends Controller
                     ->orWhere('body', 'like', "%$keyword%");
         });
 
-        // $questions = Question::withCount('answers')->where(function ($query) use ($keyword) {
-        //     $query->where('title', 'like', "%$keyword%")
-        //             ->orWhere('body', 'like', "%$keyword%");
-        // });
+        $questions = Question::withCount('answers')->where(function ($query) use ($keyword) {
+            $query->where('title', 'like', "%$keyword%")
+                    ->orWhere('body', 'like', "%$keyword%");
+        });
 
-        $tags = Tag::withCount('followers')->where(function ($query) use ($keyword) {
+        $tags = Tag::withCount('followers', 'posts', 'questions')->where(function ($query) use ($keyword) {
             $query->where('name', 'like', "%$keyword%")
                     ->orWhere('slug', 'like', "%$keyword%");
         });
@@ -35,26 +35,38 @@ class SearchController extends Controller
         switch ($sort_by) {
             case 'latest':
                 $posts->latest(); // sắp xếp theo bài viết mới nhất
+                $questions->latest();
                 $tags->latest();
                 break;
             case 'likes':
                 $posts->orderBy('likes', 'desc'); // sắp xếp theo số lượt thích giảm dần
+                $questions->orderBy('likes', 'desc');
                 break;
             case 'comments':
                 $posts->orderBy('comments_count', 'desc'); // sắp xếp theo số lượt bình luận giảm dần
+                $questions->orderBy('answers_count', 'desc');
                 break;
             case 'views':
                 $posts->orderBy('views', 'desc'); // sắp xếp theo số lượt xem giảm dần
+                $questions->orderBy('views', 'desc');
                 break;
             case 'interactions':
                 $posts->orderBy('comments_count', 'desc')
                       ->orderBy('likes', 'desc')
                       ->orderBy('views', 'desc')
                       ->latest(); // sắp xếp theo số lượt tương tác (comments, likes, views) giảm dần
-                $tags->orderBy('followers_count', 'desc')->latest();
+                $questions->orderBy('answers_count', 'desc')
+                        ->orderBy('likes', 'desc')
+                        ->orderBy('views', 'desc')
+                        ->latest();
+                $tags->orderBy('followers_count', 'desc')
+                    ->orderBy('posts_count', 'desc')
+                    ->orderBy('questions_count', 'desc')
+                    ->latest();
                 break;
             default:
                 $posts->latest();
+                $questions->latest();
                 $tags->latest();
                 break;
         }
@@ -62,6 +74,7 @@ class SearchController extends Controller
         // trả về kết quả dưới dạng một đối tượng JSON
         return response()->json([
             'posts' => $posts->get(),
+            'questions' => $questions->get(),
             'tags' => $tags->get(),
         ]);
     }
