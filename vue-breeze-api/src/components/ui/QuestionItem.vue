@@ -4,13 +4,13 @@
       <div class="question-card__user mb-3">
         <div class="question-card__userImage">
           <img
-            src="https://scontent.fhan4-2.fna.fbcdn.net/v/t39.30808-1/258867188_422634896159135_6359898657562207559_n.jpg?stp=c0.0.160.160a_dst-jpg_p160x160&_nc_cat=108&ccb=1-7&_nc_sid=7206a8&_nc_ohc=9QfNSos32BoAX-WYCLq&_nc_ht=scontent.fhan4-2.fna&oh=00_AfBTvEQkSH8MeoiaX9n-l7O4fdgIWM618ET2u967p2vZrQ&oe=642B1761"
+            src=""
             alt="logo-user"
           />
         </div>
         <div class="question-card__userInfo">
           <a href="#">
-            {{ question.author }}
+            {{ question.author.name }}
           </a>
           <span>
             {{ question.created_at }}
@@ -18,8 +18,8 @@
         </div>
       </div>
       <div class="question-card__tags mb-3">
-        <a href="#" v-for="(data, index) in question.tags" :key="index">
-          {{ data }}
+        <a href="#" v-for="(tag) in question.tags" :key="tag.pivot.tag_id">
+          {{ tag.name }}
         </a>
       </div>
     </div>
@@ -32,15 +32,15 @@
     <div class="question-card__overview">
       <p>
         <i class="bx bxs-star"></i>
-        <span>{{ question.overview.rating }}</span>
+        <span>{{ question.likes }}</span>
       </p>
-      <p>
+      <!-- <p>
         <i class="bx bxs-comment-dots"></i>
         <span>{{ question.overview.reply }}</span>
-      </p>
+      </p> -->
       <p>
         <i class="bx bxs-file-find"></i>
-        <span>{{ question.overview.view }}</span>
+        <span>{{ question.views }}</span>
       </p>
     </div>
   </div>

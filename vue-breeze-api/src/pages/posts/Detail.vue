@@ -85,6 +85,7 @@ const payload = ref({
     user_id: null,
     content: "",
 });
+
 const author = ref({});
 const post = ref({});
 const tags = ref({})

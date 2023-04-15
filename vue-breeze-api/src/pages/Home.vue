@@ -2,26 +2,7 @@
     <div class="wrapper container py-10">
         <div class="home row">
             <div class="col-12 col-md-9">
-                <h3 class="home__tag-name mb-3 text-center">
-                    Câu hỏi thường gặp
-                </h3>
-                <div class="row">
-                    <div v-if="authStore.getInfoUser">
-                        <h1>{{ authStore.getInfoUser.name }}</h1>
-                        <h1>{{ authStore.getInfoUser.email }}</h1>
-                        <h1>{{ authStore.getInfoUser.email_verified_at }}</h1>
-                    </div>
-                    <div v-else>
-                        <h1>Go and Login</h1>
-                    </div>
-                    <div class="col-12 col-md-6 pb-3"
-                        v-for="(data, index) in QuestionsData" :key="index">
-                        <QuestionItem :data="data" />
-                    </div>
-                </div>
-                <h3 class="home__tag-name mb-3 text-center">
-                    Bài viết nổi bật nổi bật
-                </h3>
+                
             </div>
             <div class="d-none d-md-block col-md-3">
                 <p style="color: var(--color-dark-mode)">
@@ -43,7 +24,6 @@
 
 <script setup>
 import { ref, onMounted, onBeforeMount } from "vue";
-import QuestionItem from "@/components/ui/QuestionItem.vue";
 import { useAuthStore } from "@/stores/auth";
 import { pageLoading, pageLoaded } from "@/assets/js/app.js"
 const authStore = useAuthStore();
@@ -53,56 +33,7 @@ onBeforeMount(() => {
 onMounted(async () => {
     pageLoaded()
 });
-const QuestionsData = ref([
-    {
-        id: 1,
-        title: "No1 Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni,doloribus?",
-        author: "Sonng Ngu",
-        created_at: "26/02/2023",
-        tags: ["tag1", "tag2", "tag3"],
-        overview: {
-            view: 100,
-            reply: 10,
-            rating: 4,
-        },
-    },
-    {
-        id: 2,
-        title: "No1 Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni,doloribus?",
-        author: "Sonng Ngu",
-        created_at: "26/02/2023",
-        tags: ["tag1", "tag2", "tag3"],
-        overview: {
-            view: 100,
-            reply: 10,
-            rating: 4,
-        },
-    },
-    {
-        id: 3,
-        title: "No1 Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni,doloribus?",
-        author: "Sonng Ngu",
-        created_at: "26/02/2023",
-        tags: ["tag1", "tag2", "tag3"],
-        overview: {
-            view: 100,
-            reply: 10,
-            rating: 4,
-        },
-    },
-    {
-        id: 4,
-        title: "No1 Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni,doloribus?",
-        author: "Sonng Ngu",
-        created_at: "26/02/2023",
-        tags: ["tag1", "tag2", "tag3"],
-        overview: {
-            view: 100,
-            reply: 10,
-            rating: 4,
-        },
-    },
-]);
+
 </script>
 
 <style scoped>

@@ -32,6 +32,8 @@ Route::group(['prefix' => 'user'], function () {
     Route::post('update-profile', [UserController::class, 'updateProfile']);
 });
 
+Route::get('/search', 'App\Http\Controllers\SearchController@search');
+
 // Get user by id
 Route::group(['prefix' => 'users'], function () {
     Route::get('{id}', 'App\Http\Controllers\UserController@show');
@@ -76,6 +78,10 @@ Route::group(['prefix' => 'questions'], function () {
     Route::post('', 'App\Http\Controllers\QuestionController@store');
     Route::put('{id}', 'App\Http\Controllers\QuestionController@update');
     Route::delete('{id}', 'App\Http\Controllers\QuestionController@destroy');
+});
+
+Route::group(['prefix' => 'answers'], function () {
+    Route::post('', 'App\Http\Controllers\AnswerController@store');
 });
 
 //! API VAI TRÒ 

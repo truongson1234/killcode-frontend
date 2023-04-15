@@ -12,7 +12,7 @@
                                 đề</router-link>
                         </li>
                         <li>
-                            <router-link :to="{ name: 'QuestionList' }">Câu
+                            <router-link :to="{ name: 'QuestionsList' }">Câu
                                 hỏi</router-link>
                         </li>
                         <li>

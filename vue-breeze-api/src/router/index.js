@@ -103,21 +103,21 @@ const routes = [
                 meta: { showFooter: true, showNavBar: false },
             },
             {
-                path: "question",
-                name: "Question",
+                path: "questions",
+                name: "Questions",
                 children: [
                     {
                         path: "",
-                        name: "QuestionList",
-                        component: () => import("@/pages/question/List.vue"),
+                        name: "QuestionsList",
+                        component: () => import("@/pages/questions/List.vue"),
                     },
                     {
                         path: "question-detail/:id",
                         name: "QuestionDetail",
-                        component: () => import("@/pages/question/Detail.vue"),
+                        component: () => import("@/pages/questions/Detail.vue"),
                     },
                 ],
-                component: () => import("@/pages/question/Index.vue"),
+                component: () => import("@/pages/questions/Index.vue"),
                 meta: { showFooter: true, showNavBar: true },
             },
             {
