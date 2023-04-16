@@ -196,6 +196,16 @@ class PostController extends Controller
         ]);
     }
 
+    public function like(Request $request)
+    {
+        
+    }
+
+    public function unlike(Request $request)
+    {
+        
+    }
+
     public function destroy($id)
     {
         $post = Post::findOrFail($id);

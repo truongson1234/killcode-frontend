@@ -66,7 +66,9 @@ Route::group(['prefix' => 'posts'], function () {
     Route::post('', 'App\Http\Controllers\PostController@store');
     Route::put('{id}', 'App\Http\Controllers\PostController@update');
     Route::delete('{id}', 'App\Http\Controllers\PostController@destroy');
-    // Comment
+    // Likes
+    Route::put('like', 'App\Http\Controllers\PostController@like');
+
 });
 
 Route::group(['prefix' => 'comments'], function () {
