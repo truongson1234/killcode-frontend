@@ -48,7 +48,7 @@ export const useAuthStore = defineStore("auth", {
                 await this.getUser()
                 pageLoaded()
                 localStorage.setItem('isAuthenticated', true)
-                this.router.push("/home");
+                this.router.push("/home").then(() => this.router.go())
             } catch (error) {
                 if (error.response.status == 422) {
                     pageLoaded()

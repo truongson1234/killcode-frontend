@@ -445,6 +445,10 @@ onMounted(async () => {
     });
   }
 });
+onBeforeUnmount(() => {
+    data.channel?.unbind?.();
+    data.pusher?.disconnect?.();
+});
 </script>
 
 <style scoped>

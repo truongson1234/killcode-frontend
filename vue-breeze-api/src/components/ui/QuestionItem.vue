@@ -4,7 +4,7 @@
       <div class="question-card__user mb-3">
         <div class="question-card__userImage">
           <img
-            src="https://scontent.fhan4-2.fna.fbcdn.net/v/t39.30808-1/258867188_422634896159135_6359898657562207559_n.jpg?stp=c0.0.160.160a_dst-jpg_p160x160&_nc_cat=108&ccb=1-7&_nc_sid=7206a8&_nc_ohc=9QfNSos32BoAX-WYCLq&_nc_ht=scontent.fhan4-2.fna&oh=00_AfBTvEQkSH8MeoiaX9n-l7O4fdgIWM618ET2u967p2vZrQ&oe=642B1761"
+            src=""
             alt="logo-user"
           />
         </div>

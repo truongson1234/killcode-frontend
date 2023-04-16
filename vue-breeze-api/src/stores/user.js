@@ -26,7 +26,7 @@ export const useUserStore = defineStore("user", {
                     this.authUser = data.data.user;
                     this.authRoles = data.data.roles;
                     this.authPermissions = data.data.permissions;
-                    console.log(data.data);
+                    // console.log(data.data);
                 } else {
                 }
             } catch (error) {
@@ -38,7 +38,7 @@ export const useUserStore = defineStore("user", {
                 await axios
                     .post("api/user/update-profile", formData)
                     .then((res) => {
-                        console.log(res);
+                        // console.log(res);
                         this.userError = 'success!'
                     });
             } catch (error) {
