@@ -1,7 +1,7 @@
 <template>
     <div class="wrapper container py-5">
         <h1 class="mb-4 text-uppercase">Chủ đề ({{ tags.length }})</h1>
-        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-5 list-tag">
+        <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 grid-cols-1 gap-4 mb-5 list-tag">
             <div v-for="tag in displayedItems" :key="tag.id"
                 class="col-span-1 p-4 rounded item-tag">
                 <TagItem :data="tag" />
@@ -32,7 +32,7 @@ export default {
             tags: [], 
             currentPage: 1,
             pageTag: 1,
-            itemsPerPageTag: 5
+            itemsPerPageTag: 8
         };
     },
     created() {

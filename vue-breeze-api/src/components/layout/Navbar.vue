@@ -237,7 +237,7 @@ const fetchData = () => {
                     return item.sender.avatar =  'http://localhost:8000/images/' + item.sender.avatar
                 }
             }) 
-            console.log('thong baooooo',response.data.data)
+            // console.log('thong baooooo',response.data.data)
         })
         .catch((error) => {
             console.log(error);
