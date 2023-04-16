@@ -10,7 +10,7 @@
         </div>
         <div class="question-card__userInfo">
           <a href="#">
-            {{ question.author }}
+            {{ question.author.name }}
           </a>
           <span>
             {{ question.created_at }}
@@ -18,8 +18,8 @@
         </div>
       </div>
       <div class="question-card__tags mb-3">
-        <a href="#" v-for="(data, index) in question.tags" :key="index">
-          {{ data }}
+        <a href="#" v-for="(tag) in question.tags" :key="tag.pivot.tag_id">
+          {{ tag.name }}
         </a>
       </div>
     </div>
@@ -32,15 +32,15 @@
     <div class="question-card__overview">
       <p>
         <i class="bx bxs-star"></i>
-        <span>{{ question.overview.rating }}</span>
+        <span>{{ question.likes }}</span>
       </p>
-      <p>
+      <!-- <p>
         <i class="bx bxs-comment-dots"></i>
         <span>{{ question.overview.reply }}</span>
-      </p>
+      </p> -->
       <p>
         <i class="bx bxs-file-find"></i>
-        <span>{{ question.overview.view }}</span>
+        <span>{{ question.views }}</span>
       </p>
     </div>
   </div>

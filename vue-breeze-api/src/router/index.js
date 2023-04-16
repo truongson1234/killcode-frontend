@@ -118,21 +118,28 @@ const routes = [
                 beforeEnter: checkLogined,
             },
             {
-                path: "question",
-                name: "Question",
+                path: "list-all-notice/:id",
+                name: "ListAllNotice",
+                component: () => import("@/pages/notice/Index.vue"),
+                meta: { showFooter: true, showNavBar: true },
+                beforeEnter: checkLogined,
+            },
+            {
+                path: "questions",
+                name: "Questions",
                 children: [
                     {
                         path: "",
-                        name: "QuestionList",
-                        component: () => import("@/pages/question/List.vue"),
+                        name: "QuestionsList",
+                        component: () => import("@/pages/questions/List.vue"),
                     },
                     {
                         path: "question-detail/:id",
                         name: "QuestionDetail",
-                        component: () => import("@/pages/question/Detail.vue"),
+                        component: () => import("@/pages/questions/Detail.vue"),
                     },
                 ],
-                component: () => import("@/pages/question/Index.vue"),
+                component: () => import("@/pages/questions/Index.vue"),
                 meta: { showFooter: true, showNavBar: true },
             },
             {

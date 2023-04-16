@@ -5,17 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-// use Phpml\FeatureExtraction\StopWords;
-// use Phpml\Tokenization\WhitespaceTokenizer;
-// use Phpml\FeatureExtraction\TfIdfTransformer;
-// use Phpml\FeatureExtraction\TokenCountVectorizer;
-// use Phpml\Math\Distance\Cosine;
-// use Phpml\ModelManager;
-// use Phpml\NeuralNetwork\Layer;
-// use Phpml\NeuralNetwork\Node\Neuron;
-// use Phpml\NeuralNetwork\ActivationFunction\Sigmoid;
-// use Phpml\NeuralNetwork\ActivationFunction\HyperbolicTangent;
-
 class Tag extends Model
 {
     use HasFactory;
@@ -23,6 +12,11 @@ class Tag extends Model
     protected $fillable = [
         'name', 'slug',
     ];
+
+    public function questions()
+    {
+        return $this->belongsToMany(Question::class);
+    }
 
     public function posts()
     {
