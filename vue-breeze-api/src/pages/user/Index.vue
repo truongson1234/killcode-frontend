@@ -15,7 +15,8 @@
                                     class="profile-header-info flex justify-between">
                                     <div class="pl-3">
 
-                                        <h4 class="m-t-10 m-b-5 font-bold">{{ inforUser.name
+                                        <h4 class="m-t-10 m-b-5 font-bold">{{
+                                            inforUser.name
                                         }}</h4>
                                         <p class="inline-block mt-1 text-gray-600">
                                             {{ inforUser.email }}</p>
@@ -40,13 +41,13 @@
                                             <div class="relative h-full border-0">
                                                 <div class="absolute bg-white rounded-lg shadow z-20"
                                                     style="
-                                                                                            top: 50%;
-                                                                                            left: 50%;
-                                                                                            transform: translate(
-                                                                                                -50%,
-                                                                                                -50%
-                                                                                            );
-                                                                                        ">
+                                                                                                top: 50%;
+                                                                                                left: 50%;
+                                                                                                transform: translate(
+                                                                                                    -50%,
+                                                                                                    -50%
+                                                                                                );
+                                                                                            ">
                                                     <button type="button"
                                                         @click="closeModalEditProfile()"
                                                         class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white">
@@ -163,8 +164,11 @@
                                 role="tabpanel" aria-labelledby="nav-post-tab">
                                 <div class="flex flex-col items-center">
                                     <ol class="list-post-user">
-                                        <li class="border-l-2 border-blue-600"  v-for="(item, index) in postsToShow" :key="index"  >
-                                            <div class="md:flex flex-start" v-if="index < listPost.length">
+                                        <li class="border-l-2 border-blue-600"
+                                            v-for="(item, index) in postsToShow"
+                                            :key="listPost[index]">
+                                            <div class="md:flex flex-start"
+                                                v-if="index < listPost.length">
                                                 <div
                                                     class="bg-blue-600 w-6 h-6 flex items-center justify-center rounded-full -ml-3.5">
                                                     <svg aria-hidden="true"
@@ -179,22 +183,35 @@
                                                         </path>
                                                     </svg>
                                                 </div>
-                                                <div
-                                                    class="block p-6 rounded-lg bg-gray-100 max-w-md ml-6 mb-10" style="min-width:50rem">
+                                                <div class="block p-6 rounded-lg bg-gray-100 max-w-md ml-6 mb-10"
+                                                    style="min-width:50rem">
                                                     <div
                                                         class="flex justify-between mb-1">
                                                         <p href="#!"
-                                                            class="font-medium text-blue-600 focus:text-purple-800 duration-300 transition ease-in-out text-sm">{{ formatDateTimeHours(listPost[index].created_at) }}</p>
+                                                            class="font-medium text-blue-600 focus:text-purple-800 duration-300 transition ease-in-out text-sm">
+                                                            {{
+                                                                formatDateTimeHours(listPost[index].created_at)
+                                                            }}</p>
                                                         <p href="#!"
-                                                            class="font-medium text-blue-600 focus:text-purple-800 duration-300 transition ease-in-out text-sm">{{ formatDateTime(listPost[index].created_at) }}</p>
+                                                            class="font-medium text-blue-600 focus:text-purple-800 duration-300 transition ease-in-out text-sm">
+                                                            {{
+                                                                formatDateTime(listPost[index].created_at)
+                                                            }}
+                                                            </p>
                                                     </div>
-                                                    <PostItem :data="listPost[index]" :statusDate="false"/>
+                                                    <PostItem
+                                                        :data="listPost[index]"
+                                                        :statusDate="false" :deletePost="deletePost" />
                                                 </div>
                                             </div>
                                         </li>
                                     </ol>
-                                    <div v-if="postsToShow < listPost.length || listPost.length > postsToShow" class="">
-                                        <button @click="postsToShow += 1" class="bg-blue-600 text-sm py-1 px-2.5 text-white hover:bg-blue-700" style="border-radius: 3px;">Xem thêm</button>
+                                    <div v-if="postsToShow < listPost.length || listPost.length > postsToShow"
+                                        class="">
+                                        <button @click="postsToShow += 1"
+                                            class="bg-blue-600 text-sm py-1 px-2.5 text-white hover:bg-blue-700"
+                                            style="border-radius: 3px;">Xem
+                                            thêm</button>
                                     </div>
                                 </div>
                             </div>
@@ -215,8 +232,7 @@ import axios from 'axios';
 import { ref, onMounted, computed } from 'vue';
 import { useAuthStore } from "@/stores/auth";
 import { useUserStore } from "@/stores/user";
-import { pageLoading, pageLoaded, formatDateTimeHours, formatDateTime} from "@/assets/js/app.js"
-import { findProp } from '@vue/compiler-core';
+import { pageLoading, pageLoaded, formatDateTimeHours, formatDateTime } from "@/assets/js/app.js"
 import PostItem from "@/components/ui/PostItem.vue";
 import { useRoute } from "vue-router";
 const route = useRoute();
@@ -230,7 +246,7 @@ const formUpdateProfile = ref({
     email: '',
     // about: ''
 })
-const postsToShow = ref(1)
+const postsToShow = ref(2)
 const inforUser = computed(() => {
     return authStore.getInfoUser ?? ''
 })
@@ -244,11 +260,20 @@ const fetchData = () => {
                 item.author.avatar = 'http://localhost:8000/images/' + item.author.avatar
             });
             listPost.value = response.data.posts;
-            console.log(response.data.posts);
+            console.log(response.data.posts, postsToShow.value);
         })
         .catch((error) => {
             console.log(error);
         });
+}
+const deletePost = async (id_post, index) => {
+    await axios.delete(`api/posts/${id_post}`)
+        .then(res => {
+            listPost.value = listPost.value.filter((post) => post.id !== id_post);
+        })
+        .catch(err => {
+            console.log(err);
+        })
 }
 onMounted(async () => {
     pageLoading()
@@ -310,7 +335,6 @@ const updateProfile = async (formData) => {
 }
 </script>
 <style scoped>
-
 #modal-edit-user-role .backdrop-modal-edit-role {
     top: 0;
     left: 0;
@@ -455,11 +479,7 @@ const updateProfile = async (formData) => {
 .profile-content {
     padding: 25px;
     border-radius: 4px
-}
-
-</style>
-<style>
-.list-post-user .box-post {
+}</style>
+<style>.list-post-user .box-post {
     background: #ffff;
-}
-</style>
+}</style>

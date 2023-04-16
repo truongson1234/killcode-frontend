@@ -326,8 +326,8 @@ onMounted(async () => {
 });
 
 onBeforeUnmount(() => {
-    data.channel?.unbind?.();
-    data.pusher?.disconnect?.();
+    // data.channel?.unbind?.();
+    // data.pusher?.disconnect?.();
 });
 </script>
 
@@ -350,7 +350,7 @@ onBeforeUnmount(() => {
 
 .upper-space {
     padding-bottom: 6rem;
-    background: #dee1e2;
+    /* background: #dee1e2; */
 }
 
 .navbar .navbar__logo {

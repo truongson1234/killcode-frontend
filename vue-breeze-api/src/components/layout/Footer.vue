@@ -46,7 +46,7 @@
 <style>
 .under-space{
   padding-top: 3rem;
-  background: #dee1e2;
+  /* background: #dee1e2; */
 }
 .footer-dark {
   padding:50px 0;

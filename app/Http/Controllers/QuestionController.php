@@ -33,8 +33,8 @@ class QuestionController extends Controller
     {
         // tạo bài viết
         $question = new Question();
-        // $question->user_id = 3;
-        $question->user_id = auth()->user()->id;
+        $question->user_id = 1;
+        // $question->user_id = auth()->user()->id;
         $question->title = $request->input('title');
         $question->body = $request->input('body');
         $question->views = $request->input('views');
