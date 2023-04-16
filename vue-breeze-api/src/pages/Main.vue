@@ -292,7 +292,7 @@
 
 <script setup>
 import axios from 'axios'
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, onBeforeUnmount } from "vue";
 import { useAuthStore } from '@/stores/auth'
 import BtnLogin from "@/components/ui/BtnLogin.vue";
 import { formatDateTimeFB } from '@/assets/js/app.js'
@@ -446,8 +446,8 @@ onMounted(async () => {
   }
 });
 onBeforeUnmount(() => {
-    data.channel?.unbind?.();
-    data.pusher?.disconnect?.();
+    // data.channel?.unbind?.();
+    // data.pusher?.disconnect?.();
 });
 </script>
 
@@ -503,7 +503,7 @@ onBeforeUnmount(() => {
 
 .upper-space {
   padding-bottom: 6rem;
-  background: #dee1e2;
+  /* background: #dee1e2; */
 }
 
 .navbar__logo {
