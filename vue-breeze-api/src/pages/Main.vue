@@ -131,6 +131,9 @@
               </ul>
             </div>
           </div>
+          <div v-else class="sm:hidden">
+            <BtnLogin/>
+          </div>
         </div>
         <div class="hidden sm:ml-6 sm:block flex">
           <div class="flex">
