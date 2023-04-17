@@ -4,8 +4,8 @@
             <div class="flex items-center">
                 <div class="userimage"><img :src="author.avatar" alt="" /></div>
                 <div class="flex flex-col ml-2">
-                    <span class="username leading-5 text-blue-600 font-bold"><a href="javascript:;">{{
-                        author.name }}</a>
+                    <span class="username leading-5 text-blue-600 font-bold"
+                        ><a href="javascript:;">{{ author.name }}</a>
                     </span>
                     <span class="text-gray-500">
                         Đã đăng vào
@@ -16,7 +16,13 @@
             <h1 class="text-4xl font-bold title-post mt-4">{{ post.title }}</h1>
             <div class="prose mt-4" v-html="post.body"></div>
             <div class="list-tag">
-                <a href="" class="inline-flex items-center bg-blue-100 text-blue-800 text-sm font-medium mr-1 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300 " v-for="tag in tags" :key="tag.id">{{ tag.name }}</a>
+                <a
+                    href=""
+                    class="inline-flex items-center bg-blue-100 text-blue-800 text-sm font-medium mr-1 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300"
+                    v-for="tag in tags"
+                    :key="tag.id"
+                    >{{ tag.name }}</a
+                >
             </div>
             <h1>Lượt xem ({{ post.views_count }})</h1>
             <button
@@ -32,11 +38,11 @@
             </h2>
             <div class="space-y-4 box-users-comment">
                 <div v-if="comments && comments.length > 0">
-                    <comment 
+                    <comment
                         v-for="comment in comments"
                         :key="comment.id"
                         :comment="comment"
-                        :author="author"
+                        :author="comment.author"
                         :formatdate="formatDetailDateTime"
                     />
                 </div>
@@ -45,19 +51,42 @@
                 </div>
             </div>
             <div class="box-type-comment mt-4">
-                <form v-if="authStore.getInfoUser" @submit.prevent="sendCmt(payload)">
+                <form
+                    v-if="authStore.getInfoUser"
+                    @submit.prevent="sendCmt(payload)"
+                >
                     <div class="flex items-center space-x-3">
                         <div class="userimage self-start">
-                            <img :src="author.avatar" alt="" class="">
+                            <img
+                                :src="authStore.getInfoUser.avatar"
+                                alt=""
+                                class=""
+                            />
                         </div>
-                        <textarea class="w-full" v-model="payload.content" placeholder="Viêt bình luận..."></textarea>
+                        <textarea
+                            class="w-full"
+                            v-model="payload.content"
+                            placeholder="Viêt bình luận..."
+                        ></textarea>
                     </div>
                     <div class="flex">
-                        <button type="submit" class="ml-auto bg-blue-500 hover:bg-blue-700 text-white py-2 px-2.5 rounded mt-2 justify-self-end">Bình luận</button>
+                        <button
+                            type="submit"
+                            class="ml-auto bg-blue-500 hover:bg-blue-700 text-white py-2 px-2.5 rounded mt-2 justify-self-end"
+                        >
+                            Bình luận
+                        </button>
                     </div>
                 </form>
                 <div v-else class="text-center text-gray-500">
-                    <span class="">Đăng nhập để được bình luận! <router-link :to="{ name: 'Login' }" class="text-blue-500">Đăng nhập ngay.</router-link></span>
+                    <span class=""
+                        >Đăng nhập để được bình luận!
+                        <router-link
+                            :to="{ name: 'Login' }"
+                            class="text-blue-500"
+                            >Đăng nhập ngay.</router-link
+                        ></span
+                    >
                 </div>
             </div>
         </div>
@@ -129,19 +158,23 @@ onMounted(async () => {
     data.channel = data.pusher.subscribe("chanel-comments");
 
     data.channel.bind(`event-comment-${postId}`, (cmt) => {
-        comments.value.push(cmt);
+        cmt.author.avatar = "http://localhost:8000/images/" + cmt.author.avatar;
+        comments.value.unshift(cmt);
+        post.value.comments_count = post.value.comments_count + 1;
     });
     pageLoaded(1000);
 });
 
 const fetchData = () => {
     axios
-        .get('/api/posts/interactions/views', {
+        .get("/api/posts/interactions/views", {
             params: {
                 post_id: postId,
-            }
+            },
         })
-        .catch(e => {console.error(e);});
+        .catch((e) => {
+            console.error(e);
+        });
     axios
         .get(`/api/posts/${postId}`)
         .then((response) => {
@@ -152,9 +185,10 @@ const fetchData = () => {
             tags.value = response.data.tags;
             author.value = response.data.author;
             comments.value = response.data.comments;
-            comments.value.forEach(function(item) {
-                item.author.avatar = 'http://localhost:8000/images/' + item.author.avatar
-            })
+            comments.value.forEach(function (item) {
+                item.author.avatar =
+                    "http://localhost:8000/images/" + item.author.avatar;
+            });
             // console.log('detail-post', response.data.tags)
             comments.value.reverse();
         })
@@ -184,10 +218,12 @@ const handleLiked = () => {
                 post.value.likes_count = response.data.likes_count;
                 post.value.views_count = response.data.views_count;
             } else {
-                console.error('Lỗi');
+                console.error("Lỗi");
             }
         })
-        .catch(e=> {console.error(e);});
+        .catch((e) => {
+            console.error(e);
+        });
 };
 </script>
 <style>
@@ -231,6 +267,6 @@ const handleLiked = () => {
     padding: 1em;
     overflow: auto;
     background-color: #f6f8fa;
-    border-radius: 3px
+    border-radius: 3px;
 }
 </style>
