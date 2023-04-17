@@ -128,13 +128,13 @@ const fetchData = () => {
         .get(`/api/questions/${questionId}`)
         .then((response) => {
             post.value = response.data.question;
-            tags.value = response.data.question.tags;
+            tags.value = response.data.tags;
             author.value = response.data.author;
             comments.value = response.data.comments;
             comments.value.forEach(function(item) {
                 item.author.avatar = 'http://localhost:8000/images/' + item.author.avatar
             })
-            console.log('detail-question', response.data.comments)
+            console.log('detail-question', response.data)
             comments.value.reverse();
         })
         .catch((error) => {

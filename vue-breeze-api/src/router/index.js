@@ -151,6 +151,11 @@ const routes = [
                         name: "QuestionDetail",
                         component: () => import("@/pages/questions/Detail.vue"),
                     },
+                    {
+                        path: "/question-edit/:id",
+                        name: "QuestionEdit",
+                        component: () => import("@/pages/questions/Edit.vue"),
+                    },
                 ],
                 component: () => import("@/pages/questions/Index.vue"),
                 meta: { showFooter: true, showNavBar: true },
@@ -199,7 +204,7 @@ const routes = [
                         beforeEnter: checkLogined,
                     },
                     {
-                        path: "/edit-post/:id",
+                        path: "/post-edit/:id",
                         name: "PostEdit",
                         component: () => import("@/pages/posts/Edit.vue"),
                     },

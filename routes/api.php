@@ -79,6 +79,7 @@ Route::group(['prefix' => 'comments'], function () {
 Route::group(['prefix' => 'questions'], function () {
     Route::get('', 'App\Http\Controllers\QuestionController@index');
     Route::get('{id}', 'App\Http\Controllers\QuestionController@show');
+    Route::get('list-question-user/{id}', 'App\Http\Controllers\QuestionController@getQuestionByUser');
     Route::post('', 'App\Http\Controllers\QuestionController@store');
     Route::put('{id}', 'App\Http\Controllers\QuestionController@update');
     Route::delete('{id}', 'App\Http\Controllers\QuestionController@destroy');
