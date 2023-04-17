@@ -25,7 +25,7 @@
             <div class="space-y-4 box-users-comment">
                 <div v-if="comments && comments.length > 0">
                     <comment v-for="comment in comments" :key="comment.id"
-                        :comment="comment" :author="author"
+                        :comment="comment" :author="comment.author"
                         :formatdate="formatDetailDateTime" />
                 </div>
                 <div v-else class="text-center">
@@ -37,7 +37,7 @@
                     @submit.prevent="sendCmt(payload)">
                     <div class="flex items-center space-x-3">
                         <div class="userimage self-start">
-                            <img :src="author.avatar" alt="" class="">
+                            <img :src="authStore.getInfoUser.avatar" alt="" class="">
                         </div>
                         <textarea class="w-full" v-model="payload.content"
                             placeholder="Viêt bình luận..."></textarea>
@@ -117,6 +117,7 @@ onMounted(async () => {
     data.channel = data.pusher.subscribe("chanel-comments");
 
     data.channel.bind(`event-comment-${postId}`, (cmt) => {
+        cmt.author.avatar = 'http://localhost:8000/images/' + cmt.author.avatar
         comments.value.push(cmt);
     });
     pageLoaded(1000)
@@ -130,6 +131,9 @@ const fetchData = () => {
             tags.value = response.data.tags;
             author.value = response.data.author;
             comments.value = response.data.comments;
+            comments.value.forEach(function(item) {
+                item.author.avatar = 'http://localhost:8000/images/' + item.author.avatar
+            })
             // console.log('detail-post', response.data.tags)
             comments.value.reverse();
         })

@@ -41,7 +41,7 @@
                             </div>
                             <div class="">
                                 <router-link
-                                    :to="{ name: 'PostDetail', params: { id: notification.route.params.id } }"
+                                    :to="{ name: notification.route.name, params: { id: notification.route.params.id } }"
                                     v-for="(notification, index) in notifications"
                                     :key="notification.id"
                                     @click="readNotice(notification.id, notification.post_id, index)"
@@ -258,7 +258,7 @@ const fetchData = () => {
                     return item.sender.avatar = 'http://localhost:8000/images/' + item.sender.avatar
                 }
             })
-            // console.log('thong baooooo',response.data.data)
+            console.log('thong baooooo',notifications.value)
         })
         .catch((error) => {
             console.log(error);

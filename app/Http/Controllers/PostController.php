@@ -50,7 +50,8 @@ class PostController extends Controller
                 $comment->author = [
                     'id' => $comment->user->id,
                     'name' => $comment->user->name,
-                    'email' => $comment->user->avatar,
+                    'avatar' => $comment->user->avatar,
+                    'email' => $comment->user->email,
                 ];
                 unset($comment->user);
                 return $comment;

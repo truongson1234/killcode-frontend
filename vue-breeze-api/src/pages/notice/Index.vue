@@ -23,7 +23,7 @@
             </div>
         </div>
         <router-link
-            :to="{ name: 'PostDetail', params: { id: notification.route.params.id } }"
+            :to="{ name: notification.route.name, params: { id: notification.route.params.id } }"
             v-for="(notification, index) in displayedNotifications"
             :key="notification.id"
             @click="readNotice(notification.id, notification.post_id, index)"

@@ -90,7 +90,8 @@ class QuestionController extends Controller
                     'user_id' => $user->id,
                     'sender_id' => $data_notification['sender_id'],
                     'title' => $data_notification['title'],
-                    'content' => 'Có câu hỏi mới từ ' . $tagNames . '. Tựa đề: ' . $question->title,
+                    // 'content' => 'Có câu hỏi mới từ ' . $tagNames . '. Tựa đề: ' . $question->title,
+                    'content' => 'Có câu hỏi mới từ chủ đề <span class="font-bold">' . $tagNames .'</span>',
                     'type_notification' => $data_notification['type_notification'],
                     'route' => $data_notification['route'],
                     'read' => false,
@@ -131,29 +132,30 @@ class QuestionController extends Controller
                 $comment->author = [
                     'id' => $comment->user->id,
                     'name' => $comment->user->name,
-                    'email' => $comment->user->avatar,
+                    'email' => $comment->user->email,
+                    'avatar' => $comment->user->avatar,
                 ];
                 unset($comment->user);
                 return $comment;
             });
-            $answers = $question->answers
-                                ->take(5)
-                                ->each(function ($item, $key) {
-                                    $item->person = [
-                                        'name' => $item->user->name,
-                                        'avatar' => 'http://localhost:8000/images/' . $item->user->avatar,
-                                        'email' => $item->user->email
-                                    ];
-                                    unset($item->user);
-                                });
+            // $answers = $question->answers
+            //                     ->take(5)
+            //                     ->each(function ($item, $key) {
+            //                         $item->person = [
+            //                             'name' => $item->user->name,
+            //                             'avatar' => 'http://localhost:8000/images/' . $item->user->avatar,
+            //                             'email' => $item->user->email
+            //                         ];
+            //                         unset($item->user);
+            //                     });
 
-            unset($question->user);
-            unset($question->answers);
+            // unset($question->user);
+            // unset($question->answers);
 
             return response()->json([
                 'author' => $author,
                 'question' => $question,
-                'answers' => $answers,
+                // 'answers' => $answers,
                 'comments' => $comments
             ]);
         } catch (\Throwable $th) {
