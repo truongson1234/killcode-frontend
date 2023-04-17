@@ -8,6 +8,7 @@ use Pusher\Pusher;
 use App\Models\User;
 use App\Models\Answer;
 use App\Models\Question;
+use App\Models\Comment;
 use App\Models\Notification;
 
 class QuestionController extends Controller
@@ -17,6 +18,7 @@ class QuestionController extends Controller
         $data_query = Question::with('user', 'tags')->get();
         $questions = $data_query->map(function ($question) {
                 $question->author = [
+                    'id' => $question->user->id,
                     'name' => $question->user->name,
                     'email' => $question->user->email,
                     'avatar' => $question->user->avatar,
@@ -33,8 +35,8 @@ class QuestionController extends Controller
     {
         // tạo bài viết
         $question = new Question();
-        $question->user_id = 1;
-        // $question->user_id = auth()->user()->id;
+        // $question->user_id = 1;
+        $question->user_id = auth()->user()->id;
         $question->title = $request->input('title');
         $question->body = $request->input('body');
         $question->views = $request->input('views');
@@ -119,7 +121,21 @@ class QuestionController extends Controller
                 'avatar' => 'http://localhost:8000/images/' . $question->user->avatar,
                 'email' => $question->user->email,
             ];
-
+            $comments = Comment::with('user')
+            ->select('id', 'content', 'parent_id', 'post_id', 'user_id', 'created_at', 'updated_at')
+            ->where('post_id', $id)
+            ->orderBy('created_at', 'desc')
+            ->take(5)
+            ->get()
+            ->map(function ($comment) {
+                $comment->author = [
+                    'id' => $comment->user->id,
+                    'name' => $comment->user->name,
+                    'email' => $comment->user->avatar,
+                ];
+                unset($comment->user);
+                return $comment;
+            });
             $answers = $question->answers
                                 ->take(5)
                                 ->each(function ($item, $key) {
@@ -137,7 +153,8 @@ class QuestionController extends Controller
             return response()->json([
                 'author' => $author,
                 'question' => $question,
-                'answers' => $answers
+                'answers' => $answers,
+                'comments' => $comments
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -164,6 +181,8 @@ class QuestionController extends Controller
     {
         try {
             $question = Question::findOrFail($id);
+            $question->tags()->detach();
+            $question->comments()->delete();
             $question->delete();
 
             return response()->json([

@@ -7,10 +7,12 @@ export const useUserStore = defineStore("user", {
         authUser: null,
         authRoles: null,
         authPermissions: null,
-        userError:''
+        userError:'',
+        dataUser: null
     }),
     getters: {
         getInfoUser: (state) => state.authUser,
+        getInfoUserById: (state) => state.dataUser,
         getAuthRoles: (state) => state.authRoles,
         getAuthPermissions: (state) => state.authPermissions,
         getUserError: (state) => state.userError,
@@ -28,6 +30,17 @@ export const useUserStore = defineStore("user", {
                     this.authPermissions = data.data.permissions;
                     // console.log(data.data);
                 } else {
+                }
+            } catch (error) {
+                localStorage.removeItem("isAuthenticated");
+            }
+        },
+        async getUserById(id) {
+            try {
+                const data = await axios.get(`/api/user/${id}`);
+                if (data.data) {
+                    data.data.user.avatar = 'http://localhost:8000/images/' + data.data.user.avatar
+                    this.getInfoUserById = data.data.user;
                 }
             } catch (error) {
                 localStorage.removeItem("isAuthenticated");

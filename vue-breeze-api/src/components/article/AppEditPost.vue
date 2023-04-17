@@ -159,7 +159,7 @@ const handleUpdated = (payload) => {
         axios.put(`/api/posts/${postId}`, payload)
             .then(res => {
                 console.log(res);
-                router.push({ name: 'PostsDetail', params: { id: postId } })
+                router.push({ name: 'PostDetail', params: { id: postId } })
                 // .then(() => {router.go()})
             })
             .catch(err => {

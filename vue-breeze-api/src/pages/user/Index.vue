@@ -248,9 +248,10 @@ const formUpdateProfile = ref({
 })
 const postsToShow = ref(2)
 const inforUser = computed(() => {
-    return authStore.getInfoUser ?? ''
+    return dataUser.value || ''
 })
 const listPost = ref([])
+const dataUser = ref([])
 const userId = route.params.id;
 const fetchData = () => {
     axios
@@ -260,7 +261,9 @@ const fetchData = () => {
                 item.author.avatar = 'http://localhost:8000/images/' + item.author.avatar
             });
             listPost.value = response.data.posts;
-            console.log(response.data.posts, postsToShow.value);
+            response.data.user.avatar = 'http://localhost:8000/images/' + response.data.user.avatar
+            dataUser.value = response.data.user;
+            // console.log(dataUser.value);
         })
         .catch((error) => {
             console.log(error);
@@ -315,7 +318,10 @@ const updateProfile = async (formData) => {
     if (formUpdateProfile.value.name !== '' && formUpdateProfile.value.email !== undefined) {
         pageLoading()
         await userStore.handleUpdateProfile(formData)
-        await authStore.getUser()
+        await userStore.getUserById(userId)
+        .then(() => {
+            dataUser.value = userStore.getUserById
+        })
         pageLoaded()
         if (userStore.getUserError == 'success!') {
             Swal.fire({

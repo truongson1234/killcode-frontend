@@ -16,12 +16,12 @@ class SearchController extends Controller
         $sort_by = $request->input('sort_by', 'latest'); // mặc định sắp xếp theo bài viết mới nhất
         $keyword = $request->input('keyword');
     
-        $posts = Post::withCount('comments')->where(function ($query) use ($keyword) {
+        $posts = Post::withCount('comments')->with('tags')->where(function ($query) use ($keyword) {
             $query->where('title', 'like', "%$keyword%")
-                    ->orWhere('body', 'like', "%$keyword%");
+                ->orWhere('body', 'like', "%$keyword%");
         });
-
-        $questions = Question::withCount('answers')->where(function ($query) use ($keyword) {
+        
+        $questions = Question::withCount('answers')->with('tags')->where(function ($query) use ($keyword) {
             $query->where('title', 'like', "%$keyword%")
                     ->orWhere('body', 'like', "%$keyword%");
         });
@@ -70,11 +70,27 @@ class SearchController extends Controller
                 $tags->latest();
                 break;
         }
-    
-        // trả về kết quả dưới dạng một đối tượng JSON
+        $dataPosts = $posts->get()->map(function ($post) {
+            $post->author = [
+                'name' => $post->user->name,
+                'email' => $post->user->email,
+                'avatar' => $post->user->avatar,
+            ];
+            unset($post->user);
+            return $post;
+        });
+        $dataQuestion = $questions->get()->map(function ($question) {
+            $question->author = [
+                'name' => $question->user->name,
+                'email' => $question->user->email,
+                'avatar' => $question->user->avatar,
+            ];
+            unset($question->user);
+            return $question;
+        });
         return response()->json([
-            'posts' => $posts->get(),
-            'questions' => $questions->get(),
+            'posts' => $dataPosts,
+            'questions' => $dataQuestion,
             'tags' => $tags->get(),
         ]);
     }

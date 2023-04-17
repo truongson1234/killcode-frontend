@@ -30,7 +30,11 @@ const fetchData = () => {
     axios
         .get("/api/questions")
         .then((response) => {
+            response.data.forEach(item => {
+                item.author.avatar = 'http://localhost:8000/images/' + item.author.avatar
+            });
             questions.value = response.data
+            console.log('question', questions.value);
         })
         .catch((error) => {
             console.log(error);

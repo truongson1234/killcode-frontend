@@ -21,6 +21,7 @@ class PostController extends Controller
         $data_query = Post::with('user', 'tags')->get();
         $posts = $data_query->map(function ($post) {
                 $post->author = [
+                    'id' => $post->user->id,
                     'name' => $post->user->name,
                     'email' => $post->user->email,
                     'avatar' => $post->user->avatar,
@@ -47,6 +48,7 @@ class PostController extends Controller
             ->get()
             ->map(function ($comment) {
                 $comment->author = [
+                    'id' => $comment->user->id,
                     'name' => $comment->user->name,
                     'email' => $comment->user->avatar,
                 ];
@@ -69,8 +71,10 @@ class PostController extends Controller
 
     public function getPostByUser($id) {
         $data_query = Post::where('user_id', $id)->with('user', 'tags')->get();
+        $user = User::findOrFail($id);
         $posts = $data_query->map(function ($post) {
             $post->author = [
+                'id' => $post->user->id,
                 'name' => $post->user->name,
                 'email' => $post->user->email,
                 'avatar' => $post->user->avatar,
@@ -80,6 +84,7 @@ class PostController extends Controller
         });
         return response()->json([
             'posts' => $posts,
+            'user' => $user,
         ]);
     }
 
@@ -88,8 +93,8 @@ class PostController extends Controller
         try {
             // tạo bài viết
             $post = new Post();
-            $post->user_id = 1;
-            // $post->user_id = auth()->user()->id;
+            // $post->user_id = 1;
+            $post->user_id = auth()->user()->id;
             $post->title = $request->input('title');
             $post->body = $request->input('body');
             $post->views = $request->input('views');
@@ -107,7 +112,7 @@ class PostController extends Controller
                 'title' => 'Thông báo có bài viết mới',
                 'type_notification' => 'new post',
                 'route' => [
-                    'name' => 'PostsDetail',
+                    'name' => 'PostDetail',
                     'params' => [
                         'id' => $post->id
                     ]

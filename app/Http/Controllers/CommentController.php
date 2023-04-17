@@ -55,7 +55,7 @@ class CommentController extends Controller
                 'title' => 'Thông báo có bình luận mới',
                 'type_notification' => 'comment',
                 'route' => [
-                    'name' => 'PostsDetail',
+                    'name' => 'PostDetail',
                     'params' => [
                         'id' => $comment->post_id
                     ]

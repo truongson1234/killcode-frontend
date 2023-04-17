@@ -45,7 +45,7 @@
                 </div>
                 <div class="">
                   <router-link
-                    :to="{ name: 'PostsDetail', params: { id: notification.route.params.id } }"
+                    :to="{ name: 'PostDetail', params: { id: notification.route.params.id } }"
                     v-for="(notification, index) in notifications"
                     :key="notification.id"
                     @click="readNotice(notification.id, notification.post_id, index)"
@@ -99,7 +99,7 @@
                   </router-link>
                 </li>
                 <li>
-                  <router-link :to="{ name: 'PostsCreate' }"
+                  <router-link :to="{ name: 'PostCreate' }"
                     @click="hidePencilWrite"
                     class="px-3 py-2 flex items-center hover:bg-gray-100 hover:text-current">
                     <i class='bx bxs-pencil pr-1'></i>
@@ -108,7 +108,7 @@
                 </li>
                 <li>
 
-                  <router-link :to="{ name: 'PostsCreate' }"
+                  <router-link :to="{ name: 'PostCreate' }"
                     @click="hidePencilWrite"
                     class="px-3 py-2 flex items-center hover:bg-gray-100 hover:text-current">
                     <i class='bx bx-question-mark pr-1'></i> Đặt câu hỏi
@@ -132,7 +132,7 @@
             </div>
           </div>
           <div v-else class="sm:hidden">
-            <BtnLogin/>
+            <BtnLogin />
           </div>
         </div>
         <div class="hidden sm:ml-6 sm:block flex">
@@ -164,7 +164,7 @@
                   </div>
                   <div class="">
                     <router-link
-                      :to="{ name: 'PostsDetail', params: { id: notification.route.params.id } }"
+                      :to="{ name: 'PostDetail', params: { id: notification.route.params.id } }"
                       v-for="(notification, index) in notifications"
                       :key="notification.id"
                       @click="readNotice(notification.id, notification.post_id, index)"
@@ -198,13 +198,13 @@
                   class="pencil-write absolute right-0 mt-2 bg-white rounded-md shadow-lg overflow-hidden z-20 hidden"
                   style="width:10rem;">
                   <ul class="">
-                    <router-link :to="{ name: 'PostsCreate' }"
+                    <router-link :to="{ name: 'PostCreate' }"
                       @click="hidePencilWrite"
                       class="px-3 py-2 flex items-center hover:bg-gray-100 hover:text-current">
                       <i class='bx bxs-pencil pr-1'></i>
                       Viết bài
                     </router-link>
-                    <router-link :to="{ name: 'PostsCreate' }"
+                    <router-link :to="{ name: 'PostCreate' }"
                       @click="hidePencilWrite"
                       class="px-3 py-2 flex items-center hover:bg-gray-100 hover:text-current">
                       <i class='bx bx-question-mark pr-1'></i> Đặt câu hỏi
@@ -446,8 +446,8 @@ onMounted(async () => {
   }
 });
 onBeforeUnmount(() => {
-    // data.channel?.unbind?.();
-    // data.pusher?.disconnect?.();
+  // data.channel?.unbind?.();
+  // data.pusher?.disconnect?.();
 });
 </script>
 

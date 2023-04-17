@@ -3,19 +3,15 @@
         <div class="home row">
             <div class="col-12 col-md-9">
                 <div>
-                    <div class="flex">
-                        <label
-                            for="search-dropdown"
-                            class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
-                            >Your</label
-                        >
+                    <div class="flex relative">
                         <button
+                            @click="showDropdownSearch($event)"
                             id="dropdown-button"
                             data-dropdown-toggle="dropdown"
                             class="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-900 bg-gray-100 border border-gray-300 rounded-l-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600"
                             type="button"
                         >
-                            {{ searchPayload.sort_by }}
+                            {{ visionTextSortBy }}
                             <svg
                                 aria-hidden="true"
                                 class="w-4 h-4 ml-1"
@@ -31,11 +27,11 @@
                             </svg>
                         </button>
                         <div
-                            id="dropdown"
-                            class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
+                            id="dropdown-search"
+                            class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 absolute left-0 top-12"
                         >
                             <ul
-                                class="py-2 text-sm text-gray-700 dark:text-gray-200"
+                                class="text-sm text-gray-700 dark:text-gray-200"
                                 aria-labelledby="dropdown-button"
                             >
                                 <li>
@@ -107,14 +103,13 @@
                         <div class="relative w-full">
                             <input
                                 v-model="searchPayload.keyword"
-                                @keyup="handleSearch(searchPayload, dataRes)"
                                 type="search"
                                 id="search-dropdown"
                                 class="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-r-lg border-l-gray-50 border-l-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-l-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500"
                                 placeholder="Tìm kiếm Tags, Bài viết, Câu hỏi..."
                                 required
                             />
-                            <button
+                            <button @click="handleSearch(searchPayload, dataRes)"
                                 type="submit"
                                 class="absolute top-0 right-0 p-2.5 text-sm font-medium text-white bg-blue-700 rounded-r-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                             >
@@ -139,22 +134,7 @@
                     </div>
                 </div>
 
-                <h1>POSTS</h1>
-                <div class="" v-for="post in dataRes.posts" :key="post.id">
-                    <h3>{{ post.title }}</h3>
-                </div>
-                <h1>QUESTIONS</h1>
-                <div
-                    class=""
-                    v-for="question in dataRes.questions"
-                    :key="question.id"
-                >
-                    <h3>{{ question.title }}</h3>
-                </div>
-                <h1>TAGS</h1>
-                <div class="" v-for="tag in dataRes.tags" :key="tag.id">
-                    <h3>{{ tag.name }}</h3>
-                </div>
+                
             </div>
             <div class="d-none d-md-block col-md-3">
                 <p style="color: var(--color-dark-mode)">
@@ -176,12 +156,15 @@
 
 <script setup>
 import axios from "axios";
-import { ref, onMounted, onBeforeMount } from "vue";
+import { ref, onMounted, onBeforeMount, computed } from "vue";
 import { useAuthStore } from "@/stores/auth";
+import { useSearchStore } from "@/stores/search";
 import { pageLoading, pageLoaded } from "@/assets/js/app.js";
-import { initFlowbite } from "flowbite";
+import router from '@/router';
+import { lowerFirst } from "lodash-es";
 
 const authStore = useAuthStore();
+const searchStore = useSearchStore();
 
 const dataRes = ref({
     posts: [],
@@ -192,11 +175,25 @@ const searchPayload = ref({
     keyword: "",
     sort_by: "latest",
 });
-
+const visionTextSortBy = computed(() => {
+    if(searchPayload.value.sort_by == "latest") return "Mới nhất"
+    if(searchPayload.value.sort_by == "likes") return "Lượt thích"
+    if(searchPayload.value.sort_by == "views") return "Lượt xem"
+    if(searchPayload.value.sort_by == "comments") return "Bình luận"
+    if(searchPayload.value.sort_by == "interactions") return "Tương tác"
+})
 const changeSortBy = (sortBy, payload) => {
     payload.sort_by = sortBy;
 };
 
+const showDropdownSearch = (event) => {
+    event.stopPropagation();
+    if ($('#dropdown-search').first().is(":hidden")) {
+        $('#dropdown-search').slideDown(300);
+    } else {
+        $('#dropdown-search').slideUp(300);
+    }
+}
 const handleSearch = async (payload, res) => {
     await axios
         .get("/api/search", { 
@@ -206,10 +203,11 @@ const handleSearch = async (payload, res) => {
             }
         })
         .then((response) => {
-            console.log(response.data);
             res.posts = response.data.posts;
             res.questions = response.data.questions;
             res.tags = response.data.tags;
+            console.log(res);
+            searchStore.handleGetDataSearch(res)
         })
         .catch((error) => {
             console.log(error);
@@ -221,8 +219,12 @@ onBeforeMount(() => {
 });
 
 onMounted(async () => {
+    $(document).on('click', function (event) {
+        if (!$(event.target).closest('.showDropdownSearch').length) {
+            $('#dropdown-search').slideUp(300);
+        }
+    });
     pageLoaded();
-    initFlowbite();
 });
 </script>
 
