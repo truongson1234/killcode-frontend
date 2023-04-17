@@ -118,7 +118,7 @@ onMounted(async () => {
 
     data.channel.bind(`event-comment-${postId}`, (cmt) => {
         cmt.author.avatar = 'http://localhost:8000/images/' + cmt.author.avatar
-        comments.value.push(cmt);
+        comments.value.unshift(cmt);
     });
     pageLoaded(1000)
 });

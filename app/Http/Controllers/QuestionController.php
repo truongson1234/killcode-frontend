@@ -91,7 +91,7 @@ class QuestionController extends Controller
                     'sender_id' => $data_notification['sender_id'],
                     'title' => $data_notification['title'],
                     // 'content' => 'Có câu hỏi mới từ ' . $tagNames . '. Tựa đề: ' . $question->title,
-                    'content' => 'Có câu hỏi mới từ chủ đề <span class="font-bold">' . $tagNames .'</span>',
+                    'content' => 'Có câu hỏi mới từ chủ đề <span class="font-bold">' . $tagNames .'.</span>',
                     'type_notification' => $data_notification['type_notification'],
                     'route' => $data_notification['route'],
                     'read' => false,

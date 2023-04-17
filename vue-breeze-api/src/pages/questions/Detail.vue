@@ -118,7 +118,7 @@ onMounted(async () => {
 
     data.channel.bind(`event-comment-${questionId}`, (cmt) => {
         cmt.author.avatar = 'http://localhost:8000/images/' + cmt.author.avatar
-        comments.value.push(cmt);
+        comments.value.unshift(cmt);
     });
     pageLoaded(1000)
 });
@@ -135,7 +135,7 @@ const fetchData = () => {
                 item.author.avatar = 'http://localhost:8000/images/' + item.author.avatar
             })
             console.log('detail-question', response.data.comments)
-            // comments.value.reverse();
+            comments.value.reverse();
         })
         .catch((error) => {
             console.log(error);
