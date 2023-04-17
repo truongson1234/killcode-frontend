@@ -24,7 +24,6 @@ class QuestionController extends Controller
                     'avatar' => $question->user->avatar,
                 ];
                 unset($question->user);
-                unset($question->user_id);
                 return $question;
             });
             
@@ -181,21 +180,14 @@ class QuestionController extends Controller
 
     public function destroy($id)
     {
-        try {
-            $question = Question::findOrFail($id);
-            $question->tags()->detach();
-            $question->comments()->delete();
-            $question->delete();
+        $question = Question::findOrFail($id);
+        $question->tags()->detach();
+        $question->comments()->delete();
+        $question->delete();
 
-            return response()->json([
-                'status' => 1,
-                'message' => 'Xóa thành công câu hỏi id ' . $id,
-            ]);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'status' => 0,
-                'message' => 'Xóa thất bại câu hỏi id ' . $id,
-            ]);
-        }
+        return response()->json([
+            'status' => 1,
+            'message' => 'Xóa thành công câu hỏi id ' . $id,
+        ]);
     }
 }

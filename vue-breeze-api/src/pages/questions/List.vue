@@ -2,12 +2,9 @@
     <div class="wrapper container">
         <div class="row">
             <div class="col-12 col-md-9">
-                <div
-                    class="pb-3"
-                    v-for="(question) in questions"
-                    :key="question.id"
-                >
-                    <QuestionItem :data="question" />
+                <div class="pb-3" v-for="(question) in questions"
+                    :key="question.id">
+                    <QuestionItem :data="question" :deleteQuestion="deleteQuestion"/>
                 </div>
             </div>
             <div class="d-none d-md-block col-md-3">
@@ -40,7 +37,16 @@ const fetchData = () => {
             console.log(error);
         });
 }
-
+const deleteQuestion = async (id_question) => {
+    await axios.delete(`api/questions/${id_question}`)
+        .then(res => {
+            questions.value = questions.value.filter((post) => post.id !== id_question);
+            // console.log('ayeah', res);
+        })
+        .catch(err => {
+            console.log(err);
+        })
+}
 onMounted(() => {
     fetchData();
 })
