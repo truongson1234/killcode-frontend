@@ -9,7 +9,7 @@ class Post extends Model
 {
     use HasFactory;
     
-    protected $fillable = ['user_id', 'title', 'body', 'views', 'likes'];
+    protected $fillable = ['user_id', 'title', 'body'];
 
     public function user()
     {
@@ -24,5 +24,10 @@ class Post extends Model
     public function comments()
     {
         return $this->hasMany(Comment::class);
+    }
+
+    public function interactions()
+    {
+        return $this->hasMany(Interaction::class);
     }
 }

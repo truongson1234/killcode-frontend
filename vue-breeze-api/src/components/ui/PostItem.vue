@@ -46,12 +46,12 @@
         </div>
         <div class="box-post-engagement">
           <div class="engagements flex items-center">
-            <span class="engagements-text">{{ data.likes }}
+            <span class="engagements-text">{{ data.likes_count ? data.views_count : 0 }}
               <i class='bx bx-like fa-fw fa-lg m-r-3'></i></span>
-            <span class="engagements-text">{{ data.views }} <i
-                class='bx bx-show fa-fw fa-lg m-r-3'></i></span>
-            <span class="engagements-text">21 <i
-                class="bx bx-comment-detail fa-fw fa-lg m-r-3"></i></span>
+            <span class="engagements-text">{{ data.views_count ? data.views_count : 0 }}
+              <i class='bx bx-show fa-fw fa-lg m-r-3'></i></span>
+            <span class="engagements-text">{{ data.comments_count }} 
+              <i class="bx bx-comment-detail fa-fw fa-lg m-r-3"></i></span>
           </div>
         </div>
       </div>

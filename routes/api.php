@@ -66,8 +66,9 @@ Route::group(['prefix' => 'posts'], function () {
     Route::post('', 'App\Http\Controllers\PostController@store');
     Route::put('{id}', 'App\Http\Controllers\PostController@update');
     Route::delete('{id}', 'App\Http\Controllers\PostController@destroy');
-    // Likes
-    Route::put('like', 'App\Http\Controllers\PostController@like');
+    // Interactions
+    Route::get('interactions/views', 'App\Http\Controllers\InteractionController@incrementViews');
+    Route::post('interactions/liked', 'App\Http\Controllers\InteractionController@liked');
 
 });
 
@@ -84,6 +85,9 @@ Route::group(['prefix' => 'questions'], function () {
     Route::post('', 'App\Http\Controllers\QuestionController@store');
     Route::put('{id}', 'App\Http\Controllers\QuestionController@update');
     Route::delete('{id}', 'App\Http\Controllers\QuestionController@destroy');
+    // Interactions
+    Route::get('interactions/views', 'App\Http\Controllers\QuestionInteractionController@incrementViews');
+    Route::post('interactions/liked', 'App\Http\Controllers\QuestionInteractionController@liked');
 });
 
 Route::group(['prefix' => 'answers'], function () {

@@ -9,7 +9,7 @@ class Question extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'title', 'body', 'views', 'likes'];
+    protected $fillable = ['user_id', 'title', 'body'];
 
     public function user()
     {
@@ -24,5 +24,10 @@ class Question extends Model
     public function answers()
     {
         return $this->hasMany(Answer::class);
+    }
+
+    public function interactions()
+    {
+        return $this->hasMany(QuestionInteraction::class);
     }
 }

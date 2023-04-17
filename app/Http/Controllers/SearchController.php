@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\Post;
 use App\Models\Question;
 use App\Models\Tag;
+use App\Models\Interaction;
+use App\Models\QuestionInteraction;
 use Illuminate\Support\Facades\DB;
 
 class SearchController extends Controller
@@ -16,21 +18,53 @@ class SearchController extends Controller
         $sort_by = $request->input('sort_by', 'latest'); // mặc định sắp xếp theo bài viết mới nhất
         $keyword = $request->input('keyword');
     
-        $posts = Post::withCount('comments')->where(function ($query) use ($keyword) {
-            $query->where('title', 'like', "%$keyword%")
-                    ->orWhere('body', 'like', "%$keyword%");
-        });
+        $posts = Post::has('interactions')
+            ->with('interactions')
+            ->withCount('comments')
+            ->withCount(['interactions as likes_count' => function($query) {
+                $query->select(\DB::raw("SUM(liked) as likes_count"));
+            }])
+            ->withCount(['interactions as views_count' => function($query) {
+                $query->select(\DB::raw("SUM(views) as views_count"));
+            }]);
 
-        $questions = Question::withCount('answers')->where(function ($query) use ($keyword) {
-            $query->where('title', 'like', "%$keyword%")
-                    ->orWhere('body', 'like', "%$keyword%");
-        });
+        $postsWithoutInteractions = Post::doesntHave('interactions')
+            ->withCount('comments')
+            ->latest()
+            ->get()
+            ->map(function ($post) {
+                $post->likes_count = 0;
+                $post->views_count = 0;
+
+                return $post;
+            });
+
+        $questions = Question::has('interactions')
+            ->with('interactions')
+            ->withCount('answers')
+            ->withCount(['interactions as likes_count' => function($query) {
+                $query->select(\DB::raw("SUM(liked) as likes_count"));
+            }])
+            ->withCount(['interactions as views_count' => function($query) {
+                $query->select(\DB::raw("SUM(views) as views_count"));
+            }]);
+
+        $questionsWithoutInteractions = Question::doesntHave('interactions')
+            ->withCount('answers')
+            ->latest()
+            ->get()
+            ->map(function ($question) {
+                $question->likes_count = 0;
+                $question->views_count = 0;
+
+                return $question;
+            });
 
         $tags = Tag::withCount('followers', 'posts', 'questions')->where(function ($query) use ($keyword) {
             $query->where('name', 'like', "%$keyword%")
                     ->orWhere('slug', 'like', "%$keyword%");
         });
-    
+
         // sắp xếp theo thứ tự mong muốn
         switch ($sort_by) {
             case 'latest':
@@ -39,29 +73,29 @@ class SearchController extends Controller
                 $tags->latest();
                 break;
             case 'likes':
-                $posts->orderBy('likes', 'desc'); // sắp xếp theo số lượt thích giảm dần
-                $questions->orderBy('likes', 'desc');
+                $posts->orderByDesc('likes_count');
+                $questions->orderByDesc('likes_count');
                 break;
             case 'comments':
-                $posts->orderBy('comments_count', 'desc'); // sắp xếp theo số lượt bình luận giảm dần
-                $questions->orderBy('answers_count', 'desc');
+                $posts->orderByDesc('comments_count');
+                $questions->orderByDesc('answers_count');
                 break;
             case 'views':
-                $posts->orderBy('views', 'desc'); // sắp xếp theo số lượt xem giảm dần
-                $questions->orderBy('views', 'desc');
+                $posts->orderByDesc('views_count');
+                $questions->orderByDesc('views_count');
                 break;
             case 'interactions':
-                $posts->orderBy('comments_count', 'desc')
-                      ->orderBy('likes', 'desc')
-                      ->orderBy('views', 'desc')
-                      ->latest(); // sắp xếp theo số lượt tương tác (comments, likes, views) giảm dần
-                $questions->orderBy('answers_count', 'desc')
-                        ->orderBy('likes', 'desc')
-                        ->orderBy('views', 'desc')
+                $posts->orderByDesc('comments_count')
+                      ->orderByDesc('likes_count')
+                      ->orderByDesc('views_count')
+                      ->latest();
+                $questions->orderByDesc('answers_count')
+                        ->orderByDesc('likes_count')
+                        ->orderByDesc('views_count')
                         ->latest();
-                $tags->orderBy('followers_count', 'desc')
-                    ->orderBy('posts_count', 'desc')
-                    ->orderBy('questions_count', 'desc')
+                $tags->orderByDesc('followers_count')
+                    ->orderByDesc('posts_count')
+                    ->orderByDesc('questions_count')
                     ->latest();
                 break;
             default:
@@ -73,9 +107,11 @@ class SearchController extends Controller
     
         // trả về kết quả dưới dạng một đối tượng JSON
         return response()->json([
+            'tags' => $tags->get(),
             'posts' => $posts->get(),
             'questions' => $questions->get(),
-            'tags' => $tags->get(),
+            'posts_doesnt_interaction' => $postsWithoutInteractions,
+            'questions_doesnt_interaction' => $questionsWithoutInteractions,
         ]);
     }
 }

@@ -37,8 +37,6 @@ class QuestionController extends Controller
         // $question->user_id = auth()->user()->id;
         $question->title = $request->input('title');
         $question->body = $request->input('body');
-        $question->views = $request->input('views');
-        $question->likes = $request->input('likes');
         $question->save();
 
         // tạo followed tag

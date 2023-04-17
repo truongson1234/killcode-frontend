@@ -77,13 +77,10 @@ export default {
             axios
                 .get("/api/posts")
                 .then((response) => {
-                    response.data.data.forEach(item => {
-                        item.author.avatar = 'http://localhost:8000/images/' + item.author.avatar
-                    });
-                    this.posts = response.data.data;
-                    // this.currentPage = response.data.currentPage;
-                    // this.totalPages = response.data.totalPages;
-                    console.log(this.posts);
+                    this.posts = response.data;
+                    // // this.currentPage = response.data.currentPage;
+                    // // this.totalPages = response.data.totalPages;
+                    // console.log(this.posts);
                 })
                 .catch((error) => {
                     console.log(error);
