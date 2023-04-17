@@ -31,6 +31,7 @@ class PostController extends Controller
             
         $posts = $data_query->map(function ($post) {
                 $post->author = [
+                    'id' => $post->user->id,
                     'name' => $post->user->name,
                     'email' => $post->user->email,
                     'avatar' => 'http://localhost:8000/images/' . $post->user->avatar,
@@ -77,8 +78,10 @@ class PostController extends Controller
             ->get()
             ->map(function ($comment) {
                 $comment->author = [
+                    'id' => $comment->user->id,
                     'name' => $comment->user->name,
-                    'email' => $comment->user->avatar,
+                    'avatar' => $comment->user->avatar,
+                    'email' => $comment->user->email,
                 ];
                 unset($comment->user);
                 return $comment;
@@ -103,8 +106,10 @@ class PostController extends Controller
 
     public function getPostByUser($id) {
         $data_query = Post::where('user_id', $id)->with('user', 'tags')->get();
+        $user = User::findOrFail($id);
         $posts = $data_query->map(function ($post) {
             $post->author = [
+                'id' => $post->user->id,
                 'name' => $post->user->name,
                 'email' => $post->user->email,
                 'avatar' => $post->user->avatar,
@@ -114,6 +119,7 @@ class PostController extends Controller
         });
         return response()->json([
             'posts' => $posts,
+            'user' => $user,
         ]);
     }
 
@@ -122,8 +128,8 @@ class PostController extends Controller
         try {
             // tạo bài viết
             $post = new Post();
-            $post->user_id = 1;
-            // $post->user_id = auth()->user()->id;
+            // $post->user_id = 1;
+            $post->user_id = auth()->user()->id;
             $post->title = $request->input('title');
             $post->body = $request->input('body');
             $post->save();
@@ -139,7 +145,7 @@ class PostController extends Controller
                 'title' => 'Thông báo có bài viết mới',
                 'type_notification' => 'new post',
                 'route' => [
-                    'name' => 'PostsDetail',
+                    'name' => 'PostDetail',
                     'params' => [
                         'id' => $post->id
                     ]
@@ -177,7 +183,7 @@ class PostController extends Controller
                         'sender_id' => $data_notification['sender_id'],
                         'title' => $data_notification['title'],
                         // 'content' => 'Có bài viết mới từ ' . $tagNames . '. Tựa đề: ' . $post->title,
-                        'content' => 'Có bài viết mới từ chủ đề <span class="font-bold">' . $tagNames .'</span>',
+                        'content' => 'Có bài viết mới từ chủ đề <span class="font-bold">' . $tagNames .'.</span>',
                         'type_notification' => $data_notification['type_notification'],
                         'route' => $data_notification['route'],
                         'read' => false,

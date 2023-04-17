@@ -3,21 +3,29 @@
         <div class="flex items-center justify-between">
             <h4 class="text-lg font-bold">Thông báo</h4>
             <div class="relative">
-                <button class="text-gray-700 flex items-center" style="border-radius: 3px;" @click="showOptionNotification($event)">
-                    <i class='bx bx-dots-horizontal-rounded text-2xl' ></i>
+                <button class="text-gray-700 flex items-center"
+                    style="border-radius: 3px;"
+                    @click="showOptionNotification($event)">
+                    <i class='bx bx-dots-horizontal-rounded text-2xl'></i>
                 </button>
-                <div id="option-notification" class="hidden absolute z-20 bg-white rounded-md shadow-lg overflow-hidden" style="width: 20rem; left:-18.5rem">
+                <div id="option-notification"
+                    class="hidden absolute z-20 bg-white rounded-md shadow-lg overflow-hidden"
+                    style="width: 20rem; left:-18.5rem">
                     <ul>
-                        <button class="cursor-pointer px-2 py-2 text-md flex items-center" @click="readAllNotice(authStore.getInfoUser.id)">
-                            <i class='bx bx-check-double pr-1 text-lg'></i> Đánh dấu đọc tất cả thông báo
+                        <button
+                            class="cursor-pointer px-2 py-2 text-md flex items-center"
+                            @click="readAllNotice(authStore.getInfoUser.id)">
+                            <i class='bx bx-check-double pr-1 text-lg'></i> Đánh dấu
+                            đọc tất cả thông báo
                         </button>
                     </ul>
                 </div>
             </div>
         </div>
         <router-link
-            :to="{ name: 'PostsDetail', params: { id: notification.route.params.id } }"
-            v-for="(notification, index) in displayedNotifications" :key="notification.id"
+            :to="{ name: notification.route.name, params: { id: notification.route.params.id } }"
+            v-for="(notification, index) in displayedNotifications"
+            :key="notification.id"
             @click="readNotice(notification.id, notification.post_id, index)"
             class=" flex px-4 py-3 border-b hover:text-inherit -mx-2 hover:bg-gray-100"
             :class="[notification.read ? '' : 'bg-gray-100 ']">
@@ -28,7 +36,8 @@
                     <p class="text-gray-600 text-sm mx-2">
                         <span v-html="notification.content"></span>
                     </p>
-                    <p class="mx-2 text-gray-400 text-sm">{{ formatDateTimeFB(new Date(notification.created_at)) }}</p>
+                    <p class="mx-2 text-gray-400 text-sm">{{ formatDateTimeFB(new
+                        Date(notification.created_at)) }}</p>
                 </div>
             </div>
         </router-link>
@@ -42,7 +51,7 @@ import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 import Pusher from "pusher-js";
 import axios from "axios";
 import { useAuthStore } from "@/stores/auth";
-import {pageLoading, pageLoaded,formatDateTimeFB} from '@/assets/js/app.js'
+import { pageLoading, pageLoaded, formatDateTimeFB } from '@/assets/js/app.js'
 import VPagination from "@hennge/vue3-pagination";
 import "@hennge/vue3-pagination/dist/vue3-pagination.css";
 import "@/assets/admin/css/pagination-styles.css";
@@ -62,7 +71,7 @@ const infoAuth = computed(() => {
 });
 
 const displayedNotifications = computed(() => {
-    if(notifications.value != null) {
+    if (notifications.value != null) {
         var startIndex = (currentPage.value - 1) * itemPerPage.value;
         var endIndex = startIndex + itemPerPage.value;
         if (endIndex > notifications.value.length) {
@@ -72,7 +81,7 @@ const displayedNotifications = computed(() => {
     }
 })
 const totalPageNotication = computed(() => {
-    if(notifications.value != null) {
+    if (notifications.value != null) {
         return Math.ceil(notifications.value.length / itemPerPage.value);
     }
 })
@@ -83,32 +92,32 @@ const showOptionNotification = (event) => {
     event.stopPropagation();
     if ($('#option-notification').first().is(":hidden")) {
         $('#option-notification').slideDown(300);
-    }else {
+    } else {
         $('#option-notification').slideUp(300);
     }
 }
 const readNotice = async (id_notice, id_, index) => {
     await axios.put(`api/notifications/read-notice/${id_notice}`)
-    .then(res => {
-        notifications.value[index].read = true
-        // console.log(res)
-    })
-    .catch(err => {
-        console.log(err)
-    })
+        .then(res => {
+            notifications.value[index].read = true
+            // console.log(res)
+        })
+        .catch(err => {
+            console.log(err)
+        })
     $('#option-notification').slideUp(300);
 }
 const readAllNotice = async (user_id) => {
     await axios.put(`api/notifications/read-all-notice/${user_id}`)
-    .then(res => {
-        notifications.value.forEach(function(item) {
-            item.read = true
+        .then(res => {
+            notifications.value.forEach(function (item) {
+                item.read = true
+            })
+            // console.log(res)
         })
-        // console.log(res)
-    })
-    .catch(err => {
-        console.log(err)
-    })
+        .catch(err => {
+            console.log(err)
+        })
     $('#option-notification').slideUp(300);
 }
 const fetchData = () => {
@@ -131,7 +140,7 @@ const fetchData = () => {
 
 onMounted(async () => {
     pageLoading()
-    $(document).on('click', function(event) {
+    $(document).on('click', function (event) {
         if (!$(event.target).closest('.showOptionNotification').length) {
             $('#option-notification').slideUp(300);
         }
@@ -163,14 +172,14 @@ onMounted(async () => {
                 }
             })
             // notifications.value.reverse();
-            console.log('cc', notifications.value);
+            // console.log('cc', notifications.value);
         });
     }
     pageLoaded()
 });
 
 onBeforeUnmount(() => {
-    data.channel.unbind();
-    data.pusher.disconnect();
+    data.channel?.unbind?.();
+    data.pusher?.disconnect?.();
 });
 </script>

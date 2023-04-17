@@ -104,8 +104,24 @@ class SearchController extends Controller
                 $tags->latest();
                 break;
         }
-    
-        // trả về kết quả dưới dạng một đối tượng JSON
+        $dataPosts = $posts->get()->map(function ($post) {
+            $post->author = [
+                'name' => $post->user->name,
+                'email' => $post->user->email,
+                'avatar' => $post->user->avatar,
+            ];
+            unset($post->user);
+            return $post;
+        });
+        $dataQuestion = $questions->get()->map(function ($question) {
+            $question->author = [
+                'name' => $question->user->name,
+                'email' => $question->user->email,
+                'avatar' => $question->user->avatar,
+            ];
+            unset($question->user);
+            return $question;
+        });
         return response()->json([
             'tags' => $tags->get(),
             'posts' => $posts->get(),

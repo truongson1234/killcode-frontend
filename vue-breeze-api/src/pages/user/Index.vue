@@ -141,9 +141,26 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="profile-header-tab nav nav-tabs pl-0 bg-gray-100"
+                            <div class="profile-header-tab nav nav-tabs pl-0 border-b border-gray-200"
                                 id="nav-tab" role="tablist">
-                                <button class="nav-link active" id="nav-post-tab"
+                                <ul class="flex flex-wrap -mb-px" id="myTab"
+                                    data-tabs-toggle="#myTabContent" role="tablist">
+                                    <li class="mr-2" role="presentation">
+                                        <button
+                                            class="item-tab inline-block text-gray-500 hover:text-gray-600 hover:border-gray-300 rounded-t-lg py-3 px-4 text-sm font-medium text-center  border-b-2 dark:text-gray-400 dark:hover:text-gray-300 "
+                                            id="post-tab" data-tabs-target="#post" type="button"
+                                            role="tab" aria-controls="post" aria-selected="true">Bài
+                                            viết</button>
+                                    </li>
+                                    <li class="mr-2" role="presentation">
+                                        <button
+                                            class="item-tab inline-block text-gray-500 hover:text-gray-600 hover:border-gray-300 rounded-t-lg py-3 px-4 text-sm font-medium text-center  border-b-2 dark:text-gray-400 dark:hover:text-gray-300"
+                                            id="question-tab" data-tabs-target="#question"
+                                            type="button" role="tab" aria-controls="question"
+                                            aria-selected="false">Câu hỏi</button>
+                                    </li>
+                                </ul>
+                                <!-- <button class="nav-link active" id="nav-post-tab"
                                     data-bs-toggle="tab" data-bs-target="#nav-post"
                                     type="button" role="tab"
                                     aria-controls="nav-post"
@@ -152,16 +169,16 @@
                                     data-bs-toggle="tab"
                                     data-bs-target="#nav-question" type="button"
                                     role="tab" aria-controls="nav-question"
-                                    aria-selected="false">Câu hỏi</button>
+                                    aria-selected="false">Câu hỏi</button> -->
                             </div>
                         </div>
                     </div>
                     <!-- begin profile-content -->
                     <div class="profile-content">
-                        <div class="tab-content p-0">
+                        <div class="tab-content p-0" id="myTabContent">
                             <!-- begin #profile-post tab -->
-                            <div class="tab-pane fade show active" id="nav-post"
-                                role="tabpanel" aria-labelledby="nav-post-tab">
+                            <div class="hidden" id="post"
+                            role="tabpanel" aria-labelledby="post-tab">
                                 <div class="flex flex-col items-center">
                                     <ol class="list-post-user">
                                         <li class="border-l-2 border-blue-600"
@@ -215,9 +232,60 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="nav-question"
-                                role="tabpanel" aria-labelledby="nav-question-tab">
-                                <h2>adu</h2>
+                            <div class="" id="question"
+                            role="tabpanel" aria-labelledby="question-tab">
+                                <div class="flex flex-col items-center">
+                                    <ol class="list-question-user">
+                                        <li class="border-l-2 border-blue-600"
+                                            v-for="(item, index) in questionsToShow"
+                                            :key="listQuestion[index]">
+                                            <div class="md:flex flex-start"
+                                                v-if="index < listQuestion.length">
+                                                <div
+                                                    class="bg-blue-600 w-6 h-6 flex items-center justify-center rounded-full -ml-3.5">
+                                                    <svg aria-hidden="true"
+                                                        focusable="false"
+                                                        data-prefix="fas"
+                                                        class="text-white w-3 h-3"
+                                                        role="img"
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 448 512">
+                                                        <path fill="currentColor"
+                                                            d="M0 464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V192H0v272zm64-192c0-8.8 7.2-16 16-16h288c8.8 0 16 7.2 16 16v64c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16v-64zM400 64h-48V16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v48H160V16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v48H48C21.5 64 0 85.5 0 112v48h448v-48c0-26.5-21.5-48-48-48z">
+                                                        </path>
+                                                    </svg>
+                                                </div>
+                                                <div class="block p-6 rounded-lg bg-gray-100 max-w-md ml-6 mb-10"
+                                                    style="min-width:50rem">
+                                                    <div
+                                                        class="flex justify-between mb-1">
+                                                        <p href="#!"
+                                                            class="font-medium text-blue-600 focus:text-purple-800 duration-300 transition ease-in-out text-sm">
+                                                            {{
+                                                                formatDateTimeHours(listQuestion[index].created_at)
+                                                            }}</p>
+                                                        <p href="#!"
+                                                            class="font-medium text-blue-600 focus:text-purple-800 duration-300 transition ease-in-out text-sm">
+                                                            {{
+                                                                formatDateTime(listQuestion[index].created_at)
+                                                            }}
+                                                            </p>
+                                                    </div>
+                                                    <QuestionItem
+                                                        :data="listQuestion[index]"
+                                                        :statusDate="false" :deleteQuestion="deleteQuestion" />
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ol>
+                                    <div v-if="questionsToShow < listQuestion.length || listQuestion.length > questionsToShow"
+                                        class="">
+                                        <button @click="questionsToShow += 1"
+                                            class="bg-blue-600 text-sm py-1 px-2.5 text-white hover:bg-blue-700"
+                                            style="border-radius: 3px;">Xem
+                                            thêm</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -232,8 +300,10 @@ import axios from 'axios';
 import { ref, onMounted, computed } from 'vue';
 import { useAuthStore } from "@/stores/auth";
 import { useUserStore } from "@/stores/user";
+import { initFlowbite } from 'flowbite';
 import { pageLoading, pageLoaded, formatDateTimeHours, formatDateTime } from "@/assets/js/app.js"
 import PostItem from "@/components/ui/PostItem.vue";
+import QuestionItem from "@/components/ui/QuestionItem.vue";
 import { useRoute } from "vue-router";
 const route = useRoute();
 const authStore = useAuthStore();
@@ -246,13 +316,14 @@ const formUpdateProfile = ref({
     email: '',
     // about: ''
 })
-const postsToShow = ref(2)
+const postsToShow = ref(2), questionsToShow = ref(2)
 const inforUser = computed(() => {
-    return authStore.getInfoUser ?? ''
+    return dataUser.value || ''
 })
-const listPost = ref([])
+const listPost = ref([]), listQuestion = ref([])
+const dataUser = ref([])
 const userId = route.params.id;
-const fetchData = () => {
+const fetchDataPost = () => {
     axios
         .get(`/api/posts/list-post-user/${userId}`)
         .then((response) => {
@@ -260,13 +331,29 @@ const fetchData = () => {
                 item.author.avatar = 'http://localhost:8000/images/' + item.author.avatar
             });
             listPost.value = response.data.posts;
-            console.log(response.data.posts, postsToShow.value);
+            response.data.user.avatar = 'http://localhost:8000/images/' + response.data.user.avatar
+            dataUser.value = response.data.user;
+            // console.log(dataUser.value);
         })
         .catch((error) => {
             console.log(error);
         });
 }
-const deletePost = async (id_post, index) => {
+const fetchDataQuestion = () => {
+    axios
+        .get(`/api/questions/list-question-user/${userId}`)
+        .then((response) => {
+            response.data.questions.forEach(item => {
+                item.author.avatar = 'http://localhost:8000/images/' + item.author.avatar
+            });
+            listQuestion.value = response.data.questions;
+            // console.log(dataUser.value);
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+}
+const deletePost = async (id_post) => {
     await axios.delete(`api/posts/${id_post}`)
         .then(res => {
             listPost.value = listPost.value.filter((post) => post.id !== id_post);
@@ -275,12 +362,23 @@ const deletePost = async (id_post, index) => {
             console.log(err);
         })
 }
+const deleteQuestion = async (id_question) => {
+    await axios.delete(`api/questions/${id_question}`)
+        .then(res => {
+            listQuestion.value = listQuestion.value.filter((post) => post.id !== id_question);
+        })
+        .catch(err => {
+            console.log(err);
+        })
+}
 onMounted(async () => {
+    initFlowbite()
     pageLoading()
     $("#imageUpload").change(function () {
         readURL(this);
     });
-    fetchData()
+    fetchDataPost()
+    fetchDataQuestion()
     pageLoaded(1000)
 })
 const showModalEditProfile = (idUser, nameUser, mailUser) => {
@@ -315,7 +413,10 @@ const updateProfile = async (formData) => {
     if (formUpdateProfile.value.name !== '' && formUpdateProfile.value.email !== undefined) {
         pageLoading()
         await userStore.handleUpdateProfile(formData)
-        await authStore.getUser()
+        await userStore.getUserById(userId)
+        .then(() => {
+            dataUser.value = userStore.getUserById
+        })
         pageLoaded()
         if (userStore.getUserError == 'success!') {
             Swal.fire({
@@ -468,18 +569,24 @@ const updateProfile = async (formData) => {
 .profile-header .profile-header-tab {
     /* background: var(--color-light-mode); */
     list-style-type: none;
-    margin: -15px 0 0 135px;
+    margin: -15px 25px 0 135px;
     white-space: nowrap;
-    border-top: none;
-    border-bottom: none;
     border-radius: 0;
     margin-bottom: 3px;
+}
+.item-tab:not(.text-blue-600) {
+    border-color: transparent;
 }
 
 .profile-content {
     padding: 25px;
     border-radius: 4px
 }</style>
-<style>.list-post-user .box-post {
+<style>
+.list-post-user .box-post {
     background: #ffff;
-}</style>
+}
+.list-question-user .box-question {
+    background: #ffff;
+}
+</style>

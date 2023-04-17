@@ -33,7 +33,7 @@ const checkLogined = (to, from, next) => {
     } else {
         next("/home");
     }
-}
+};
 const routes = [
     //! ROUTES AUTH
     {
@@ -97,6 +97,13 @@ const routes = [
                 component: () => import("@/pages/Home.vue"),
                 meta: { showFooter: true, showNavBar: true },
             },
+            {
+                path: "search",
+                name: "Search",
+                component: () => import("@/pages/Search.vue"),
+                meta: { showFooter: true, showNavBar: true },
+                props: true,
+            },
 
             {
                 path: "test",
@@ -134,9 +141,20 @@ const routes = [
                         component: () => import("@/pages/questions/List.vue"),
                     },
                     {
-                        path: "question-detail/:id",
+                        path: "/create-question",
+                        name: "QuestionCreate",
+                        component: () => import("@/pages/questions/Create.vue"),
+                        beforeEnter: checkLogined,
+                    },
+                    {
+                        path: "/question-detail/:id",
                         name: "QuestionDetail",
                         component: () => import("@/pages/questions/Detail.vue"),
+                    },
+                    {
+                        path: "/question-edit/:id",
+                        name: "QuestionEdit",
+                        component: () => import("@/pages/questions/Edit.vue"),
                     },
                 ],
                 component: () => import("@/pages/questions/Index.vue"),
@@ -180,19 +198,19 @@ const routes = [
                         component: () => import("@/pages/posts/List.vue"),
                     },
                     {
-                        path: "/create-posts",
-                        name: "PostsCreate",
+                        path: "/create-post",
+                        name: "PostCreate",
                         component: () => import("@/pages/posts/Create.vue"),
                         beforeEnter: checkLogined,
                     },
                     {
-                        path: "/edit-posts/:id",
-                        name: "PostsEdit",
+                        path: "/post-edit/:id",
+                        name: "PostEdit",
                         component: () => import("@/pages/posts/Edit.vue"),
                     },
                     {
-                        path: "/posts-detail/:id",
-                        name: "PostsDetail",
+                        path: "/post-detail/:id",
+                        name: "PostDetail",
                         component: () => import("@/pages/posts/Detail.vue"),
                     },
                 ],
@@ -228,7 +246,6 @@ const routes = [
                 name: "AdminTags",
                 component: () => import("@/pages/admin/Tags.vue"),
             },
-            
         ],
         name: "Admin",
         components: {

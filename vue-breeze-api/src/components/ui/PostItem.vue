@@ -5,9 +5,10 @@
         v-if="data.user_id == idAuthor">
         <button @click="showToolPost($event, data.id)"><i
             class='bx bx-dots-horizontal-rounded text-gray-400'></i></button>
-        <div class="tool-post-container hidden bg-white absolute right-0 shadow-lg"
+        <div
+          class="tool-post-container hidden bg-white absolute right-0 shadow-lg"
           :class="`tool-post${data.id}`" style="min-width:15rem">
-          <router-link :to="{ name: 'PostsEdit', params: { id: data.id } }"
+          <router-link :to="{ name: 'PostEdit', params: { id: data.id } }"
             class="px-2 py-2 flex items-center hover:text-current hover:bg-gray-100 w-full">
             <i class='bx bx-edit text-gray-400 pr-1'></i> Chỉnh sửa bài viết
           </router-link>
@@ -19,8 +20,9 @@
       <div class="box-post-header flex items-center">
         <div class="userimage"><img :src="data.author.avatar" alt="" /></div>
         <div class="flex flex-col">
-          <span class="username leading-5"><a href="javascript:;">{{
-            data.author.name }}</a>
+          <span class="username leading-5">
+            <router-link :to="{ name: 'User', params: { id: data.author.id } }">{{
+              data.author.name }}</router-link>
           </span>
           <span class="time-post leading-3 text-slate-400" v-if="statusDate">
             đăng lúc
@@ -30,7 +32,7 @@
       </div>
       <div class="box-post-content">
         <p>
-          <router-link :to="{ name: 'PostsDetail', params: { id: data.id } }"
+          <router-link :to="{ name: 'PostDetail', params: { id: data.id } }"
             class="">
             {{ data.title }}
           </router-link>
@@ -102,7 +104,7 @@ onMounted(() => {
 
 <style scoped>
 .box-post {
-  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   position: relative;
   padding: 20px 25px;
   border-radius: 6px;
@@ -189,4 +191,5 @@ onMounted(() => {
 
 .box-post-engagement .engagements-text+.engagements-text {
   margin-left: 15px
-}</style>
+}
+</style>

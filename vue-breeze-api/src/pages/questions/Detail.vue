@@ -1,197 +1,85 @@
 <template>
-    <div class="wrapper container">
-        <main class="pt-8 pb-16 lg:pt-16 lg:pb-24 bg-white dark:bg-gray-900">
-            <div class="flex justify-between px-4 mx-auto max-w-screen-xl">
-                <article
-                    class="mx-auto w-full max-w-2xl format format-sm sm:format-base lg:format-lg format-blue dark:format-invert"
-                >
-                    <header class="mb-4 lg:mb-6 not-format">
-                        <address class="flex items-center mb-6 not-italic">
-                            <div
-                                class="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white"
-                            >
-                                <img
-                                    class="mr-4 w-16 h-16 rounded-full"
-                                    :src="author.avatar"
-                                    alt="Jese Leos"
-                                />
-                                <div>
-                                    <a
-                                        href="#"
-                                        rel="author"
-                                        class="text-xl font-bold text-gray-900 dark:text-white"
-                                        >{{ author.name }}</a
-                                    >
-                                    <p
-                                        class="text-base font-light text-gray-500 dark:text-gray-400"
-                                    >
-                                        Graphic Designer, educator & CEO
-                                        Flowbite
-                                    </p>
-                                    <p
-                                        class="text-base font-light text-gray-500 dark:text-gray-400"
-                                    >
-                                        <time
-                                            pubdate
-                                            datetime="2022-02-08"
-                                            title="February 8th, 2022"
-                                            >{{ question.created_at }}</time
-                                        >
-                                    </p>
-                                </div>
-                            </div>
-                        </address>
-                        <h1
-                            class="mb-4 text-3xl font-extrabold leading-tight text-gray-900 lg:mb-6 lg:text-4xl dark:text-white"
-                        >
-                            {{ question.title }}
-                        </h1>
-                    </header>
-                    <p class="lead mb-5">
-                        {{ question.body }}
-                    </p>
-                    <section class="not-format">
-                        <div class="flex justify-between items-center mb-6">
-                            <h2
-                                class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-white"
-                            >
-                                Thảo luận (20)
-                            </h2>
-                        </div>
-
-                        <form class="mb-6" @submit.prevent="sendAw(payload)">
-                            <div
-                                class="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700"
-                            >
-                                <label for="comment" class="sr-only"
-                                    >Your comment</label
-                                >
-                                <textarea
-                                    id="comment"
-                                    rows="6"
-                                    class="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 dark:text-white dark:placeholder-gray-400 dark:bg-gray-800"
-                                    placeholder="Write a comment..."
-                                    required
-                                    v-model="payload.content"
-                                ></textarea>
-                            </div>
-                            <button
-                                type="submit"
-                                class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
-                            >
-                                Trả lời
-                            </button>
-                        </form>
-
-                        <article
-                            class="p-6 mb-6 text-base bg-white rounded-lg dark:bg-gray-900"
-                            v-for="answer in answers"
-                            :key="answer.id"
-                        >
-                            <footer
-                                class="flex justify-between items-center mb-2"
-                            >
-                                <div class="flex items-center">
-                                    <p
-                                        class="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white"
-                                    >
-                                        <img
-                                            class="mr-2 w-6 h-6 rounded-full"
-                                            :src="answer.person.avatar"
-                                            alt="Michael Gough"
-                                        />{{ answer.person.name }}
-                                    </p>
-                                    <p
-                                        class="text-sm text-gray-600 dark:text-gray-400"
-                                    >
-                                        <time
-                                            pubdate
-                                            datetime="2022-02-08"
-                                            title="February 8th, 2022"
-                                            >{{ answer.created_at }}</time
-                                        >
-                                    </p>
-                                </div>
-                                <!-- <button
-                                    id="dropdownComment1Button"
-                                    data-dropdown-toggle="dropdownComment1"
-                                    class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-400 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50 dark:bg-gray-900 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-                                    type="button"
-                                >
-                                    <svg
-                                        class="w-5 h-5"
-                                        aria-hidden="true"
-                                        fill="currentColor"
-                                        viewBox="0 0 20 20"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                        <path
-                                            d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z"
-                                        ></path>
-                                    </svg>
-                                    <span class="sr-only"
-                                        >Comment settings</span
-                                    >
-                                </button> -->
-                                <!-- Dropdown menu -->
-                                <!-- <div
-                                    id="dropdownComment1"
-                                    class="hidden z-10 w-36 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600"
-                                >
-                                    <ul
-                                        class="py-1 text-sm text-gray-700 dark:text-gray-200"
-                                        aria-labelledby="dropdownMenuIconHorizontalButton"
-                                    >
-                                        <li>
-                                            <a
-                                                href="#"
-                                                class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                                >Edit</a
-                                            >
-                                        </li>
-                                        <li>
-                                            <a
-                                                href="#"
-                                                class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                                >Remove</a
-                                            >
-                                        </li>
-                                        <li>
-                                            <a
-                                                href="#"
-                                                class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                                >Report</a
-                                            >
-                                        </li>
-                                    </ul>
-                                </div> -->
-                            </footer>
-                            <p>
-                                {{ answer.content }}
-                            </p>
-                        </article>
-                    </section>
-                </article>
+    <div class="wrapper container detail-unique-question">
+        <div class="p-6">
+            <div class="flex items-center">
+                <div class="userimage"><img :src="author.avatar" alt="" /></div>
+                <div class="flex flex-col ml-2">
+                    <span class="username leading-5 text-blue-600 font-bold"><a
+                            href="javascript:;">{{
+                                author.name }}</a>
+                    </span>
+                    <span class="text-gray-500">
+                        Đã đăng vào
+                        {{ formatDetailDateTime(post.created_at) }}
+                    </span>
+                </div>
             </div>
-        </main>
+            <h1 class="text-4xl font-bold title-post mt-4">{{ post.title }}</h1>
+            <div class="prose mt-4" v-html="post.body"></div>
+            <div class="list-tag">
+                <a href=""
+                    class="inline-flex items-center bg-blue-100 text-blue-800 text-sm font-medium mr-1 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300 "
+                    v-for="tag in tags" :key="tag.id">{{ tag.name }}</a>
+            </div>
+            <h2 class="text-lg font-bold mb-3 mt-4">Bình luận</h2>
+            <div class="space-y-4 box-users-comment">
+                <div v-if="comments && comments.length > 0">
+                    <comment v-for="comment in comments" :key="comment.id"
+                        :comment="comment" :author="comment.author"
+                        :formatdate="formatDetailDateTime" />
+                </div>
+                <div v-else class="text-center">
+                    <span class="text-gray-500">Chưa có bình luận nào.</span>
+                </div>
+            </div>
+            <div class="box-type-comment mt-4">
+                <form v-if="authStore.getInfoUser"
+                    @submit.prevent="sendCmt(payload)">
+                    <div class="flex items-center space-x-3">
+                        <div class="userimage self-start">
+                            <img :src="authStore.getInfoUser.avatar" alt=""
+                                class="">
+                        </div>
+                        <textarea class="w-full" v-model="payload.content"
+                            placeholder="Viêt bình luận..."></textarea>
+                    </div>
+                    <div class="flex">
+                        <button type="submit"
+                            class="ml-auto bg-blue-500 hover:bg-blue-700 text-white py-2 px-2.5 rounded mt-2 justify-self-end">Bình
+                            luận</button>
+                    </div>
+                </form>
+                <div v-else class="text-center text-gray-500">
+                    <span class="">Đăng nhập để được bình luận! <router-link
+                            :to="{ name: 'Login' }" class="text-blue-500">Đăng nhập
+                            ngay.</router-link></span>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
 <script setup>
-import axios from "axios";
 import { onMounted, ref, computed } from "vue";
 import { useRoute } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
+import { pageLoading, pageLoaded, formatDetailDateTime } from '@/assets/js/app.js'
+import axios from "axios";
+import Pusher from "pusher-js";
+import Comment from "@/components/ui/Comment.vue";
 
 // lấy user_id
 const authStore = useAuthStore();
-
-const infoAuth = computed(() => {
-    return authStore.getInfoUser;
-});
 // lấy post_id
 const route = useRoute();
 const questionId = route.params.id;
+
+const isAdmin = computed(() => {
+    return authStore.getAuthRoles;
+});
+const infoAuth = computed(() => {
+    return authStore.getInfoUser;
+});
 
 const data = () => ({
     pusher: null,
@@ -204,44 +92,21 @@ const payload = ref({
     content: "",
 });
 
-const author = ref([]);
-const question = ref([]);
-const answers = ref([]);
-
-const fetchData = () => {
-    axios
-        .get(`/api/questions/${questionId}`)
-        .then((response) => {
-            console.log(response);
-            question.value = response.data.question;
-            author.value = response.data.author;
-            answers.value = response.data.answers;
-            answers.value.reverse();
-        })
-        .catch((error) => {
-            console.log(error);
-        });
-};
-
-const sendAw = async (payload) => {
-    if (payload.user_id && payload.content !== "") {
-        await axios.post('/api/answers', payload)
-        payload.content = ""
-    } else {
-        console.error("Lỗi");
-    }
-};
+const author = ref({});
+const post = ref({});
+const tags = ref({})
+const comments = ref([]);
 
 onMounted(async () => {
+    await pageLoading()
     await authStore.getToken();
     await authStore.getUser();
-
     // add user_id
     if (infoAuth.value) {
         payload.value.user_id = infoAuth.value.id;
     }
 
-    await fetchData();
+    await fetchData(questionId);
 
     // lắng nghe sự kiện
     data.pusher = new Pusher("100f9f72ec40accb9c52", {
@@ -249,12 +114,84 @@ onMounted(async () => {
         encrypted: true,
     });
 
-    data.channel = data.pusher.subscribe("chanel-answers");
+    data.channel = data.pusher.subscribe("chanel-comments");
 
-    data.channel.bind(`event-answer-${questionId}`, (aw) => {
-        answers.value.unshift(aw);
+    data.channel.bind(`event-comment-${questionId}`, (cmt) => {
+        cmt.author.avatar = 'http://localhost:8000/images/' + cmt.author.avatar
+        comments.value.unshift(cmt);
     });
+    pageLoaded(1000)
 });
-</script>
 
-<style scoped></style>
+const fetchData = () => {
+    axios
+        .get(`/api/questions/${questionId}`)
+        .then((response) => {
+            post.value = response.data.question;
+            tags.value = response.data.tags;
+            author.value = response.data.author;
+            comments.value = response.data.comments;
+            comments.value.forEach(function(item) {
+                item.author.avatar = 'http://localhost:8000/images/' + item.author.avatar
+            })
+            console.log('detail-question', response.data)
+            comments.value.reverse();
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+};
+
+const sendCmt = async (payload) => {
+    if (payload.user_id) {
+        await axios.post('/api/comments', payload)
+        payload.content = ""
+    } else {
+        console.error("Lỗi");
+    }
+};
+</script>
+<style>
+.detail-unique-question .userimage img {
+    width: 100%;
+}
+
+.detail-unique-question .userimage {
+    width: 50px;
+    height: 50px;
+    border-radius: 40px;
+    overflow: hidden;
+}
+
+.detail-unique-question .box-users-comment {
+    border: 1px solid #e2e7eb;
+    padding: 15px;
+    border-radius: 3px;
+}
+
+.detail-unique-question .box-type-comment {
+    border: 1px solid #e2e7eb;
+    padding: 15px;
+    border-radius: 3px;
+}
+
+.detail-unique-question .box-type-comment .userimage {
+    width: 45px;
+    height: 42px;
+}
+
+.detail-unique-question .box-type-comment textarea {
+    border-radius: 3px;
+    height: 100px;
+}
+
+.detail-unique-question .prose pre {
+    margin: 1em 0;
+    background-color: #f1f2f3;
+    border: 1px solid #e5e5e5;
+    padding: 1em;
+    overflow: auto;
+    background-color: #f6f8fa;
+    border-radius: 3px
+}
+</style>

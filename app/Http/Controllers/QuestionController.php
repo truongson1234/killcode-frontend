@@ -7,7 +7,9 @@ use Illuminate\Http\Request;
 use Pusher\Pusher;
 use App\Models\User;
 use App\Models\Answer;
+use App\Models\Comment;
 use App\Models\Question;
+use App\Models\Tag;
 use App\Models\Notification;
 
 class QuestionController extends Controller
@@ -17,12 +19,12 @@ class QuestionController extends Controller
         $data_query = Question::with('user', 'tags')->get();
         $questions = $data_query->map(function ($question) {
                 $question->author = [
+                    'id' => $question->user->id,
                     'name' => $question->user->name,
                     'email' => $question->user->email,
                     'avatar' => $question->user->avatar,
                 ];
                 unset($question->user);
-                unset($question->user_id);
                 return $question;
             });
             
@@ -33,8 +35,8 @@ class QuestionController extends Controller
     {
         // tạo bài viết
         $question = new Question();
-        $question->user_id = 1;
-        // $question->user_id = auth()->user()->id;
+        // $question->user_id = 1;
+        $question->user_id = auth()->user()->id;
         $question->title = $request->input('title');
         $question->body = $request->input('body');
         $question->save();
@@ -50,7 +52,7 @@ class QuestionController extends Controller
             'title' => 'Thông báo có câu hỏi mới',
             'type_notification' => 'new question',
             'route' => [
-                'name' => 'QuestionsDetail',
+                'name' => 'QuestionDetail',
                 'params' => [
                     'id' => $question->id
                 ]
@@ -86,7 +88,8 @@ class QuestionController extends Controller
                     'user_id' => $user->id,
                     'sender_id' => $data_notification['sender_id'],
                     'title' => $data_notification['title'],
-                    'content' => 'Có câu hỏi mới từ ' . $tagNames . '. Tựa đề: ' . $question->title,
+                    // 'content' => 'Có câu hỏi mới từ ' . $tagNames . '. Tựa đề: ' . $question->title,
+                    'content' => 'Có câu hỏi mới từ chủ đề <span class="font-bold">' . $tagNames .'.</span>',
                     'type_notification' => $data_notification['type_notification'],
                     'route' => $data_notification['route'],
                     'read' => false,
@@ -107,50 +110,81 @@ class QuestionController extends Controller
         ], 201);
     }
 
-    public function show($id)
-    {
-        try {
-            $question = Question::with('user', 'tags')->find($id);
-
-            $author = $question->author = [
+    public function getQuestionByUser($id) {
+        $data_query = Question::where('user_id', $id)->with('user', 'tags')->get();
+        $questions = $data_query->map(function ($question) {
+            $question->author = [
+                'id' => $question->user->id,
                 'name' => $question->user->name,
-                'avatar' => 'http://localhost:8000/images/' . $question->user->avatar,
                 'email' => $question->user->email,
+                'avatar' => $question->user->avatar,
             ];
-
-            $answers = $question->answers
-                                ->take(5)
-                                ->each(function ($item, $key) {
-                                    $item->person = [
-                                        'name' => $item->user->name,
-                                        'avatar' => 'http://localhost:8000/images/' . $item->user->avatar,
-                                        'email' => $item->user->email
-                                    ];
-                                    unset($item->user);
-                                });
-
             unset($question->user);
-            unset($question->answers);
-
-            return response()->json([
-                'author' => $author,
-                'question' => $question,
-                'answers' => $answers
-            ]);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'message' => 'Không tồn tại câu hỏi id ' . $id,
-            ]);
-        }
+            return $question;
+        });
+        return response()->json([
+            'questions' => $questions,
+        ]);
     }
 
-    public function update(Request $request, Question $question)
+    public function show($id)
     {
-        $question->update([
-            'title' => $request->title,
-            'body' => $request->body,
-        ]);
+        $question = Question::findOrFail($id);
+        $comments = Comment::with('user')
+        ->select('id', 'content', 'parent_id', 'post_id', 'user_id', 'created_at', 'updated_at')
+        ->where('post_id', $id)
+        ->orderBy('created_at', 'desc')
+        ->take(5)
+        ->get()
+        ->map(function ($comment) {
+            $comment->author = [
+                'id' => $comment->user->id,
+                'name' => $comment->user->name,
+                'email' => $comment->user->email,
+                'avatar' => $comment->user->avatar,
+            ];
+            unset($comment->user);
+            return $comment;
+        });
+        $author = User::findOrFail($question->user_id);
+        $author->avatar = 'http://localhost:8000/images/'. $author->avatar;
+        $tags = Tag::select('tags.*')
+            ->join('question_tag', 'question_tag.tag_id', '=', 'tags.id')
+            ->where('question_tag.question_id', $question->id)
+            ->get();
+        // $answers = $question->answers
+        //                     ->take(5)
+        //                     ->each(function ($item, $key) {
+        //                         $item->person = [
+        //                             'name' => $item->user->name,
+        //                             'avatar' => 'http://localhost:8000/images/' . $item->user->avatar,
+        //                             'email' => $item->user->email
+        //                         ];
+        //                         unset($item->user);
+        //                     });
 
+        // unset($question->user);
+        // unset($question->answers);
+
+        return response()->json([
+            'question' => $question,
+            'tags' => $tags,
+            'author' => $author,
+            'comments' => $comments
+        ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $question = Question::findOrFail($id);
+
+        $question->update([
+            'title' => $request->input('title'),
+            'body' => $request->input('body'),
+        ]);
+        $tagIds = $request->input('tag_ids');
+        $question->tags()->detach();
+        $question->tags()->attach($tagIds);
         return response()->json([
             'data' => $question,
             'status' => 1,
@@ -160,19 +194,14 @@ class QuestionController extends Controller
 
     public function destroy($id)
     {
-        try {
-            $question = Question::findOrFail($id);
-            $question->delete();
+        $question = Question::findOrFail($id);
+        $question->tags()->detach();
+        $question->comments()->delete();
+        $question->delete();
 
-            return response()->json([
-                'status' => 1,
-                'message' => 'Xóa thành công câu hỏi id ' . $id,
-            ]);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'status' => 0,
-                'message' => 'Xóa thất bại câu hỏi id ' . $id,
-            ]);
-        }
+        return response()->json([
+            'status' => 1,
+            'message' => 'Xóa thành công câu hỏi id ' . $id,
+        ]);
     }
 }

@@ -92,7 +92,7 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $roles = Role::all();
         $permissions = Permission::all();
-        return response()->json(['user_role' => $user->roles, 'user_permission' => $user->permissions, 'roles' => $roles, 'permissions' => $permissions]);
+        return response()->json(['user' => $user, 'user_role' => $user->roles, 'user_permission' => $user->permissions, 'roles' => $roles, 'permissions' => $permissions]);
     }
 
     /**

@@ -1,20 +1,20 @@
 <template>
-    <div class="create-post-unique">
+    <div class="create-question-unique">
         <div class="flex justify-between mb-6">
             <button @click="handleCreated(payload)" type="button"
                 class=" ml-auto text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">
-                Xuất bản bài viết
+                Xuất bản câu hỏi
             </button>
         </div>
         <div class="">
-            <input v-model="payload.title" placeholder="Tiêu đề bài viết" type="text"
+            <input v-model="payload.title" placeholder="Tiêu đề câu hỏi" type="text"
                 id="base-input"
                 class="bg-gray-50 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 :class="[statusTitle ? 'border-red-600' : '']"
                 @keyup="keyUpValidate('statusTitle', $event)" />
         </div>
         <div class="" v-if="statusTitle">
-            <span class="text-sm text-red-600">Vui lòng nhập tiêu đề bài viết</span>
+            <span class="text-sm text-red-600">Vui lòng nhập tiêu đề câu hỏi</span>
         </div>
 
         <div class="flex items-center mb-2 mt-2">
@@ -31,18 +31,18 @@
         </div>
         <div class="">
             <SearchTags :apiUrl="dataTags.url"
-                :placeholder="'Gắn thẻ bài viết của bạn. Tối đa 5 thẻ. Ít nhất 1 thẻ!'"
+                :placeholder="'Gắn thẻ câu hỏi của bạn. Tối đa 5 thẻ. Ít nhất 1 thẻ!'"
                 @add-item="addTag" :hightlight-border="statusTag" />
         </div>
         <div class="" v-if="statusTag">
-            <span class="text-sm text-red-600">Vui lòng gắn chủ đề cho bài viết</span>
+            <span class="text-sm text-red-600">Vui lòng gắn chủ đề cho câu hỏi</span>
         </div>
         <div class="mt-3">
             <ckeditor :editor="editor" v-model="payload.body" @input="checkCkeditor"
                 @focus="onEditorFocus" :config="editorConfig" />
         </div>
         <div class="" v-if="statusBody">
-            <span class="text-sm text-red-600">Vui lòng nội dung bài viết</span>
+            <span class="text-sm text-red-600">Vui lòng nhập nội dung câu hỏi</span>
         </div>
     </div>
 </template>
@@ -133,7 +133,7 @@ const handleCreated = (payload) => {
         payload.tag_ids.length < 1 ? statusTag.value = true : statusTag.value = false
         payload.body == '' ? (statusBody.value = true, $('.ck.ck-reset.ck-editor.ck-rounded-corners').attr('style', 'border: 1px solid red')) : (statusBody.value = false, $('.ck.ck-reset.ck-editor.ck-rounded-corners').removeAttr('style'))
     } else {
-        axios.post("/api/posts", payload).then((response) => {
+        axios.post("/api/questions", payload).then((response) => {
             console.log(response);
             if (response.data.status) {
                 // console.log(response.data)
@@ -146,7 +146,7 @@ const handleCreated = (payload) => {
 };
 </script>
 <style>
-.create-post-unique .ck.ck-editor__main>.ck-editor__editable {
+.create-question-unique .ck.ck-editor__main>.ck-editor__editable {
     height: 500px !important;
     ;
 }

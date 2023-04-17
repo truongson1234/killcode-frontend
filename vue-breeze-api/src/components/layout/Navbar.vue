@@ -41,7 +41,7 @@
                             </div>
                             <div class="">
                                 <router-link
-                                    :to="{ name: 'PostsDetail', params: { id: notification.route.params.id } }"
+                                    :to="{ name: notification.route.name, params: { id: notification.route.params.id } }"
                                     v-for="(notification, index) in notifications"
                                     :key="notification.id"
                                     @click="readNotice(notification.id, notification.post_id, index)"
@@ -60,23 +60,15 @@
                                                 Date(notification.created_at)) }}</p>
                                     </div>
                                 </router-link>
-                                <!-- <a href="#"
-                                    class="flex items-center px-4 py-3 hover:bg-gray-100 -mx-2">
-                                    <img class="h-8 w-8 rounded-full object-cover mx-1"
-                                        src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=398&q=80"
-                                        alt="avatar">
-                                    <p class="text-gray-600 text-sm mx-2">
-                                        <span class="font-bold" href="#">Abigail
-                                            Bennett</span> start following
-                                        you . 3h
-                                    </p>
-                                </a> -->
                             </div>
                             <router-link
                                 :to="{ name: 'ListAllNotice', params: { id: authStore.getInfoUser.id } }"
                                 class="block bg-gray-800 text-white text-center text-sm py-1.5 read-all-notification">Xem
                                 tất cả thông báo</router-link>
                         </div>
+                        <!-- <div v-else class="list-notification absolute right-0 mt-2 bg-white rounded-md shadow-lg overflow-hidden z-20 hidden" style="width:20rem;">
+                            <span class="text-center py-2 block font-bold text-gray-400">Hiện tại không có thông báo nào.</span>
+                        </div> -->
                     </div>
                     <div class="relative" v-if="authStore.getInfoUser">
                         <button @click="showPencilWrite($event)"
@@ -87,13 +79,13 @@
                         <div class="pencil-write absolute right-0 mt-2 bg-white rounded-md shadow-lg overflow-hidden z-20 hidden"
                             style="width:10rem;">
                             <ul class="">
-                                <router-link :to="{ name: 'PostsCreate' }"
+                                <router-link :to="{ name: 'PostCreate' }"
                                     @click="hidePencilWrite"
                                     class="px-3 py-2 flex items-center hover:bg-gray-100 hover:text-current">
                                     <i class='bx bxs-pencil pr-1'></i>
                                     Viết bài
                                 </router-link>
-                                <router-link :to="{ name: 'PostsCreate' }"
+                                <router-link :to="{ name: 'QuestionCreate' }"
                                     @click="hidePencilWrite"
                                     class="px-3 py-2 flex items-center hover:bg-gray-100 hover:text-current">
                                     <i class='bx bx-question-mark pr-1'></i> Đặt câu
@@ -266,7 +258,7 @@ const fetchData = () => {
                     return item.sender.avatar = 'http://localhost:8000/images/' + item.sender.avatar
                 }
             })
-            // console.log('thong baooooo',response.data.data)
+            // console.log('thong baooooo',notifications.value)
         })
         .catch((error) => {
             console.log(error);
@@ -309,12 +301,16 @@ onMounted(async () => {
 
         data.channel.bind('general-announcement', (notification) => {
             notifications.value.unshift(notification);
-            notifications.value.pop();
+            if (notifications.value.length > 5) {
+                notifications.value.pop();
+            }
         });
 
         data.channel.bind(`event-notification-${userId}`, (notification) => {
             notifications.value.unshift(notification);
-            notifications.value.pop();
+            if (notifications.value.length > 5) {
+                notifications.value.pop();
+            }
             notifications.value.map(function (item) {
                 if (item.sender.avatar.indexOf('http://localhost:8000/images/') == -1) {
                     return item.sender.avatar = 'http://localhost:8000/images/' + item.sender.avatar
@@ -326,8 +322,8 @@ onMounted(async () => {
 });
 
 onBeforeUnmount(() => {
-    // data.channel?.unbind?.();
-    // data.pusher?.disconnect?.();
+    data.channel?.unbind?.();
+    data.pusher?.disconnect?.();
 });
 </script>
 
