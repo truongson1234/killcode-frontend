@@ -1,6 +1,6 @@
 <template>
     <div class="p-3">
-        <h3 class="text-xl font-bold mb-2">{{ data.name }}</h3>
+        <router-link :to="{ name: 'TagDetail', params: {id: data.id} }" class="text-xl font-bold mb-2">{{ data.name }}</router-link>
         <p class="text-gray-500"><span>{{ data.followers_count }} bài viết</span></p>
         <p class="text-gray-500"><span>{{ data.followers_count }} câu hỏi</span></p>
         <p class="text-gray-500"><span>{{ data.followers_count }} người theo dõi</span></p>

@@ -1,5 +1,5 @@
 <template>
-  <div class="p-3">
+  <div class="p-3 pt-0 pb-4">
     <div class="box-post relative">
       <div class="absolute right-7 cursor-pointer"
         v-if="data.user_id == idAuthor">

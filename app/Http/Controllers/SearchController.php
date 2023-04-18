@@ -72,6 +72,7 @@ class SearchController extends Controller
         }
         $dataPosts = $posts->get()->map(function ($post) {
             $post->author = [
+                'id' => $post->user->id,
                 'name' => $post->user->name,
                 'email' => $post->user->email,
                 'avatar' => $post->user->avatar,
@@ -81,6 +82,7 @@ class SearchController extends Controller
         });
         $dataQuestion = $questions->get()->map(function ($question) {
             $question->author = [
+                'id' => $question->user->id,
                 'name' => $question->user->name,
                 'email' => $question->user->email,
                 'avatar' => $question->user->avatar,

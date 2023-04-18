@@ -16,8 +16,8 @@ class QuestionController extends Controller
 {
     public function index()
     {
-        $data_query = Question::with('user', 'tags')->get();
-        $questions = $data_query->map(function ($question) {
+        $questions = Question::with('user', 'tags')->get();
+        $questions = $questions->map(function ($question) {
                 $question->author = [
                     'id' => $question->user->id,
                     'name' => $question->user->name,
@@ -27,8 +27,42 @@ class QuestionController extends Controller
                 unset($question->user);
                 return $question;
             });
-            
-        return response()->json($questions);
+        $popular_tags = Tag::withCount('questions')->orderBy('questions_count', 'desc')->take(5)->get();
+        if(auth()->user()) {
+            $followedTags = User::findOrFail(auth()->user()->id)->tags()->pluck('tags.id');
+            $relatedQuestions = Question::whereHas('tags', function($query) use ($followedTags) {
+                $query->whereIn('tags.id', $followedTags);
+            })->get();
+            $relatedQuestions = $relatedQuestions->map(function($post) {
+                $post->author = [
+                    'id' => $post->user->id,
+                    'name' => $post->user->name,
+                    'email' => $post->user->email,
+                    'avatar' => $post->user->avatar,
+                ];
+                unset($post->user);
+                return $post;
+            });
+        }else {
+            $relatedQuestions = [];
+        }
+        $newQuestions = Question::with('user')->orderBy('created_at', 'desc')->take(5)->get();
+        $newQuestions = $newQuestions->map(function ($question) {
+            $question->author = [
+                'id' => $question->user->id,
+                'name' => $question->user->name,
+                'email' => $question->user->email,
+                'avatar' => $question->user->avatar,
+            ];
+            unset($question->user);
+            return $question;
+        });
+        return response()->json([
+            'data' => $questions,
+            'related_questions' => $relatedQuestions,
+            'new_questions' => $newQuestions,
+            'popular_tags' => $popular_tags
+        ]);
     }
 
     public function store(Request $request)

@@ -2,15 +2,25 @@
   <div class="tagname p-3">
     <h4 class="tagname__title text-center mb-3">Tag phổ biến</h4>
     <div class="tagname__list">
-      <div class="tagname__item" v-for="index in 6" :key="index">
-        <a href="#">Tagname {{ index }}</a>
-        <span> x {{ index * Math.floor(Math.random() * 10) }}</span>
+      <div class="tagname__item">
+        <a href="#">{{ data.name }}</a>
+        <span> x {{ data.posts_count }}</span>
       </div>
     </div>
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import { onMounted } from 'vue';
+const props = defineProps({
+    data: Object,
+});
+
+const data = props.data;
+onMounted(() => {
+  console.log(data);
+})
+</script>
 
 <style scoped>
 .tagname{

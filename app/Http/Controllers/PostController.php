@@ -29,9 +29,41 @@ class PostController extends Controller
                 unset($post->user);
                 return $post;
             });
-            
+        $popular_tags = Tag::withCount('posts')->orderBy('posts_count', 'desc')->take(5)->get();
+        if(auth()->user()) {
+            $followedTags = User::findOrFail(auth()->user()->id)->tags()->pluck('tags.id');
+            $relatedPosts = Post::whereHas('tags', function($query) use ($followedTags) {
+                $query->whereIn('tags.id', $followedTags);
+            })->get();
+            $relatedPosts = $relatedPosts->map(function($post) {
+                $post->author = [
+                    'id' => $post->user->id,
+                    'name' => $post->user->name,
+                    'email' => $post->user->email,
+                    'avatar' => $post->user->avatar,
+                ];
+                unset($post->user);
+                return $post;
+            });
+        }else {
+            $relatedPosts = [];
+        }
+        $newPosts = Post::with('user')->orderBy('created_at', 'desc')->take(5)->get();
+        $newPosts = $newPosts->map(function ($post) {
+            $post->author = [
+                'id' => $post->user->id,
+                'name' => $post->user->name,
+                'email' => $post->user->email,
+                'avatar' => $post->user->avatar,
+            ];
+            unset($post->user);
+            return $post;
+        });
         return response()->json([
-            'data' => $posts
+            'data' => $posts,
+            'popular_tags' => $popular_tags,
+            'related_posts' => $relatedPosts,
+            'new_posts' => $newPosts
         ]);
     }
 

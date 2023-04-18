@@ -1,43 +1,67 @@
 <template>
-    <div class="wrapper container py-5">
-        <div class="row">
-            <div class="col-12 col-md-9">
+    <div class="container">
+        <div class="grid grid-cols-4 gap-x-2 gap-y-5 mx-auto">
+            <div class="col-span-4 row-span-1 lg:col-span-3 lg:row-span-3">
                 <div class="" v-for="post in displayedItems" :key="post.id">
-                    <PostItem :data="post" :deletePost="deletePost"/>
+                    <PostItem :data="post" :deletePost="deletePost" />
+                </div>
+                <div v-if="posts.length > itemsPerPagePost">
+                    <v-pagination v-model="pagePost" :pages="totalPagesPost"
+                        :range-size="1" active-color="#0074FF" class="my-3"
+                        @update:modelValue="onPageChanged" />
                 </div>
             </div>
-            <div class="d-none d-md-block col-md-3">
-                <Tagsname />
+            <div
+                class="col-span-4 p-3 box-popular_tags h-100 row-span-1 lg:col-span-1 lg:row-span-1">
+                <h5 class="text-center pb-3 font-bold text-blue-500 ">Chủ đề phổ biến</h5>
+                <div v-for="item in popular_tags" :key="item.id">
+                    <div class="mb-2">
+                        <a
+                            class="inline-flex items-center bg-blue-100 text-blue-800 text-sm font-medium mr-1 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300 ">{{ item.name }}</a>
+                        <span>{{ item.posts_count }} bài viết</span>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div v-if="posts.length > itemsPerPagePost">
-            <v-pagination v-model="pagePost" :pages="totalPagesPost" :range-size="1"
-            active-color="#0074FF" class="my-3"
-            @update:modelValue="onPageChanged" />
+            <div
+                class="col-span-4 p-3 box-popular_tags h-100 row-span-1 lg:col-span-1 lg:row-span-1" v-if="related_posts && related_posts.length != 0">
+                <h5 class="text-center pb-3 font-bold text-blue-500">Bài viết liên quan</h5>
+                <div v-for="item in related_posts" :key="item.id">
+                    <PostSidebar :data="item"/>
+                </div>
+            </div>
+            <div
+                class="col-span-4 p-3 box-popular_tags h-100 row-span-1 lg:col-span-1 lg:row-span-1" v-if="new_posts && new_posts.length != 0">
+                <h5 class="text-center pb-3 font-bold text-blue-500">Bài viết mới nhất</h5>
+                <div v-for="item in new_posts" :key="item.id">
+                    <PostSidebar :data="item"/>
+                </div>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
 import axios from "axios";
-// import Pagination from "@/components/ui/MyPagination.vue";
 import PostItem from "@/components/ui/PostItem.vue";
-import Tagsname from "@/components/ui/Tags.vue";
+import PostSidebar from '@/components/ui/PostSidebar.vue'
 import VPagination from "@hennge/vue3-pagination";
 import "@hennge/vue3-pagination/dist/vue3-pagination.css";
 import "@/assets/admin/css/pagination-styles.css";
 export default {
     components: {
         PostItem,
-        Tagsname,
-        VPagination
+        VPagination,
+        PostSidebar
     },
     data() {
         return {
             posts: [], // danh sách bài viết
+            popular_tags: [], //*Danh sách tag phổ biến
             currentPage: 1,
+            related_posts: [], //Danh sách các bài viết liên quan
+            new_posts: [], //Danh sách các bài viết mới nhất
             pagePost: 1,
-            itemsPerPagePost: 3,
+            itemsPerPagePost: 5,
         };
     },
     mounted() {
@@ -81,9 +105,10 @@ export default {
                         item.author.avatar = 'http://localhost:8000/images/' + item.author.avatar
                     });
                     this.posts = response.data.data;
-                    // this.currentPage = response.data.currentPage;
-                    // this.totalPages = response.data.totalPages;
-                    console.log(this.posts);
+                    this.popular_tags = response.data.popular_tags;
+                    this.related_posts = response.data.related_posts;
+                    this.new_posts = response.data.new_posts;
+                    // console.log(this.related_posts);
                 })
                 .catch((error) => {
                     console.log(error);
@@ -109,3 +134,8 @@ export default {
     },
 };
 </script>
+<style scoped>
+.box-popular_tags {
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    border-radius: 6px;
+}</style>

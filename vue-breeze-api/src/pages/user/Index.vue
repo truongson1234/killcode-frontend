@@ -1,5 +1,5 @@
 <template>
-    <div class="wrapper">
+    <div class="wrapper overflow-hidden">
         <div class="row">
             <div class="col-md-12">
                 <div id="content" class="content content-full-width">
@@ -160,16 +160,6 @@
                                             aria-selected="false">Câu hỏi</button>
                                     </li>
                                 </ul>
-                                <!-- <button class="nav-link active" id="nav-post-tab"
-                                    data-bs-toggle="tab" data-bs-target="#nav-post"
-                                    type="button" role="tab"
-                                    aria-controls="nav-post"
-                                    aria-selected="true">Bài viết</button>
-                                <button class="nav-link" id="nav-question-tab"
-                                    data-bs-toggle="tab"
-                                    data-bs-target="#nav-question" type="button"
-                                    role="tab" aria-controls="nav-question"
-                                    aria-selected="false">Câu hỏi</button> -->
                             </div>
                         </div>
                     </div>
@@ -179,7 +169,7 @@
                             <!-- begin #profile-post tab -->
                             <div class="hidden" id="post"
                             role="tabpanel" aria-labelledby="post-tab">
-                                <div class="flex flex-col items-center">
+                                <div class="flex flex-col items-center" v-if="listPost && listPost.length != 0">
                                     <ol class="list-post-user">
                                         <li class="border-l-2 border-blue-600"
                                             v-for="(item, index) in postsToShow"
@@ -231,10 +221,13 @@
                                             thêm</button>
                                     </div>
                                 </div>
+                                <div v-else class="flex flex-col items-center">
+                                    <h5 class="text-gray-500">Không có bài viết nào</h5>
+                                </div>
                             </div>
                             <div class="" id="question"
                             role="tabpanel" aria-labelledby="question-tab">
-                                <div class="flex flex-col items-center">
+                                <div class="flex flex-col items-center" v-if="listQuestion && listQuestion.length != 0">
                                     <ol class="list-question-user">
                                         <li class="border-l-2 border-blue-600"
                                             v-for="(item, index) in questionsToShow"
@@ -285,6 +278,9 @@
                                             style="border-radius: 3px;">Xem
                                             thêm</button>
                                     </div>
+                                </div>
+                                <div v-else class="flex flex-col items-center">
+                                    <h5 class="text-gray-500">Không có câu hỏi nào</h5>
                                 </div>
                             </div>
                         </div>

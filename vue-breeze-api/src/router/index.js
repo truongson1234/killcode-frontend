@@ -180,8 +180,8 @@ const routes = [
                     //     component: () => import("@/pages/tags/Edit.vue"),
                     // },
                     {
-                        path: "/tags-detail/:id",
-                        name: "TagsDetail",
+                        path: "/tag-detail/:id",
+                        name: "TagDetail",
                         component: () => import("@/pages/tags/Detail.vue"),
                     },
                 ],

@@ -93,7 +93,6 @@ const payload = ref({
 })
 const statusTitle = ref(false), statusTag = ref(false), statusBody = ref(false), focusEditor = ref(false)
 const addTag = (data) => {
-    console.log(data);
     if (payload.value.tag_ids.length > 4) {
         // Swal.fire("Qúa nhiều tags rồi!", "Chỉ thêm được tối đa 5 tags.");
     } else if (!payload.value.tag_ids.find(i => i == data.id)) {
@@ -124,7 +123,6 @@ const removeTag = (id) => {
 }
 const keyUpValidate = (name, event) => {
     var val = event.target.value
-    console.log(val);
     name == 'statusTitle' && val == '' ? statusTitle.value = true : statusTitle.value = false
 }
 const handleCreated = (payload) => {
