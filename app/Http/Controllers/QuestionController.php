@@ -8,6 +8,7 @@ use Pusher\Pusher;
 use App\Models\User;
 use App\Models\Answer;
 use App\Models\Comment;
+use App\Models\Interaction;
 use App\Models\Question;
 use App\Models\Tag;
 use App\Models\Notification;
@@ -163,7 +164,30 @@ class QuestionController extends Controller
 
     public function show($id)
     {
-        $question = Question::findOrFail($id);
+        $question = Question::withCount('comments')
+            ->withCount(['interactions as likes_count' => function($query) {
+                $query->select(\DB::raw("SUM(liked) as likes_count"));
+            }])
+            ->withCount(['interactions as views_count' => function($query) {
+                $query->select(\DB::raw("SUM(views) as views_count"));
+            }])->findOrFail($id);
+
+        $viewers = [];
+        $interaction = Interaction::where('user_id', auth()->user()->id)->where('post_id', $id);
+        $liked = $interaction->exists() ? $interaction->first()->liked : 0;
+
+        if (Question::find($id)->interactions()->exists()) {
+            $viewers = $question->interactions->map(function ($viewer) {
+                $viewer->person = [
+                    'name' => $viewer->user->name,
+                    'avatar' => $viewer->user->avatar,
+                ];
+
+                unset($viewer->user);
+
+                return $viewer;
+            });
+        }
         $comments = Comment::with('user')
         ->select('id', 'content', 'parent_id', 'post_id', 'user_id', 'created_at', 'updated_at')
         ->where('post_id', $id)
@@ -202,6 +226,8 @@ class QuestionController extends Controller
 
         return response()->json([
             'question' => $question,
+            'liked' => $liked,
+            'viewers' => $viewers,
             'tags' => $tags,
             'author' => $author,
             'comments' => $comments

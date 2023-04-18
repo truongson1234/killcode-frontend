@@ -1,17 +1,34 @@
 <template>
     <div class="wrapper container detail-unique-question">
         <div class="p-6">
-            <div class="flex items-center">
-                <div class="userimage"><img :src="author.avatar" alt="" /></div>
-                <div class="flex flex-col ml-2">
-                    <span class="username leading-5 text-blue-600 font-bold"><a
-                            href="javascript:;">{{
-                                author.name }}</a>
-                    </span>
+            <div class="flex justify-between">
+                <div class="flex items-center">
+                    <div class="userimage"><img :src="author.avatar" alt="" /></div>
+                    <div class="ml-2">
+                        <span class="username leading-5 text-blue-600 font-bold"
+                            ><a href="javascript:;">{{ author.name }}</a>
+                        </span>
+                    </div>
+                </div>
+                <div>
                     <span class="text-gray-500">
                         Đã đăng vào
                         {{ formatDetailDateTime(post.created_at) }}
                     </span>
+                    <ul class="flex items-center justify-end">
+                        <li class="pr-4 text-gray-500 text-lg flex items-center">
+                            <i class="bx bx-show pr-1"></i>
+                            {{ post.views_count }}
+                        </li>
+                        <li class="pr-4 text-gray-500 text-lg flex items-center">
+                            <i class="bx bx-comment-detail pr-1"></i>
+                            {{ post.comments_count }}
+                        </li>
+                        <li class="pr-4 text-gray-500 text-lg flex items-center">
+                            <i class="bx bx-like pr-1"></i>
+                            {{ post.likes_count }}
+                        </li>
+                    </ul>
                 </div>
             </div>
             <h1 class="text-4xl font-bold title-post mt-4">{{ post.title }}</h1>
@@ -21,6 +38,13 @@
                     class="inline-flex items-center bg-blue-100 text-blue-800 text-sm font-medium mr-1 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300 "
                     v-for="tag in tags" :key="tag.id">{{ tag.name }}</a>
             </div>
+            <button
+                @click="handleLiked"
+                type="button"
+                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2.5 mt-3 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+            >
+                <span v-html="statusLike" class="flex" ></span>
+            </button>
             <h2 class="text-lg font-bold mb-3 mt-4">Bình luận</h2>
             <div class="space-y-4 box-users-comment">
                 <div v-if="comments && comments.length > 0">
@@ -92,9 +116,11 @@ const payload = ref({
     content: "",
 });
 
+const liked = ref(false);
 const author = ref({});
 const post = ref({});
-const tags = ref({})
+const viewers = ref({});
+const tags = ref({});
 const comments = ref([]);
 
 onMounted(async () => {
@@ -119,22 +145,36 @@ onMounted(async () => {
     data.channel.bind(`event-comment-${questionId}`, (cmt) => {
         cmt.author.avatar = 'http://localhost:8000/images/' + cmt.author.avatar
         comments.value.unshift(cmt);
+        post.value.comments_count = post.value.comments_count + 1;
     });
     pageLoaded(1000)
 });
-
+const statusLike = computed(() => {
+    return liked.value == false ?  "<i class='bx bx-like text-lg pr-1' ></i> Thích" : "<i class='bx bxs-like text-lg pr-1' ></i> Bỏ thích"
+})
 const fetchData = () => {
+    axios
+        .get("/api/questions/interactions/views", {
+            params: {
+                question_id: questionId,
+            },
+        })
+        .catch((e) => {
+            console.error(e);
+        });
     axios
         .get(`/api/questions/${questionId}`)
         .then((response) => {
             post.value = response.data.question;
+            liked.value = response.data.liked ? true : false;
+            viewers.value = response.data.viewers;
             tags.value = response.data.tags;
             author.value = response.data.author;
             comments.value = response.data.comments;
             comments.value.forEach(function(item) {
                 item.author.avatar = 'http://localhost:8000/images/' + item.author.avatar
             })
-            console.log('detail-question', response.data)
+            console.log('detail-question', response.data.viewers)
             comments.value.reverse();
         })
         .catch((error) => {
@@ -149,6 +189,25 @@ const sendCmt = async (payload) => {
     } else {
         console.error("Lỗi");
     }
+};
+const handleLiked = () => {
+    axios
+        .post("/api/questions/interactions/liked", {
+            question_id: questionId,
+        })
+        .then((response) => {
+            console.log(response.data);
+            if (response.data.status == 1) {
+                liked.value = response.data.liked;
+                post.value.likes_count = response.data.likes_count;
+                post.value.views_count = response.data.views_count;
+            } else {
+                console.error("Lỗi");
+            }
+        })
+        .catch((e) => {
+            console.error(e);
+        });
 };
 </script>
 <style>

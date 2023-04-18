@@ -101,9 +101,6 @@ export default {
             axios
                 .get("/api/posts")
                 .then((response) => {
-                    response.data.data.forEach(item => {
-                        item.author.avatar = 'http://localhost:8000/images/' + item.author.avatar
-                    });
                     this.posts = response.data.data;
                     this.popular_tags = response.data.popular_tags;
                     this.related_posts = response.data.related_posts;

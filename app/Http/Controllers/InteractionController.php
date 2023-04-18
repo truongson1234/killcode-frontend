@@ -19,16 +19,15 @@ class InteractionController extends Controller
         ]);
 
         $interaction->liked = $interaction->liked ? false : true;
-
         $interaction->save();
-
+        
         $interaction_counts = Post::withCount(['interactions as likes_count' => function($query) {
                                 $query->select(\DB::raw("SUM(liked) as likes_count"));
                             }])
                             ->withCount(['interactions as views_count' => function($query) {
                                 $query->select(\DB::raw("SUM(views) as views_count"));
                             }])->findOrFail($request->input('post_id'));
-
+        
         return response()->json([
             'liked' => $interaction->liked,
             'likes_count' => $interaction_counts->likes_count,

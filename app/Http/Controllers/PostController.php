@@ -88,7 +88,7 @@ class PostController extends Controller
             }])->findOrFail($id);
 
         $viewers = [];
-        $interaction = Interaction::where('user_id', 2)->where('post_id', $id);
+        $interaction = Interaction::where('user_id', auth()->user()->id)->where('post_id', $id);
         $liked = $interaction->exists() ? $interaction->first()->liked : 0;
 
         if (Post::find($id)->interactions()->exists()) {

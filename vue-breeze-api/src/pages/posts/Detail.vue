@@ -1,16 +1,34 @@
 <template>
     <div class="wrapper container detail-unique-post">
         <div class="p-6">
-            <div class="flex items-center">
-                <div class="userimage"><img :src="author.avatar" alt="" /></div>
-                <div class="flex flex-col ml-2">
-                    <span class="username leading-5 text-blue-600 font-bold"
-                        ><a href="javascript:;">{{ author.name }}</a>
-                    </span>
+            <div class="flex justify-between">
+                <div class="flex items-center">
+                    <div class="userimage"><img :src="author.avatar" alt="" /></div>
+                    <div class="ml-2">
+                        <span class="username leading-5 text-blue-600 font-bold"
+                            ><a href="javascript:;">{{ author.name }}</a>
+                        </span>
+                    </div>
+                </div>
+                <div>
                     <span class="text-gray-500">
                         Đã đăng vào
                         {{ formatDetailDateTime(post.created_at) }}
                     </span>
+                    <ul class="flex items-center justify-end">
+                        <li class="pr-4 text-gray-500 text-lg flex items-center">
+                            <i class="bx bx-show pr-1"></i>
+                            {{ post.views_count }}
+                        </li>
+                        <li class="pr-4 text-gray-500 text-lg flex items-center">
+                            <i class="bx bx-comment-detail pr-1"></i>
+                            {{ post.comments_count }}
+                        </li>
+                        <li class="pr-4 text-gray-500 text-lg flex items-center">
+                            <i class="bx bx-like pr-1"></i>
+                            {{ post.likes_count }}
+                        </li>
+                    </ul>
                 </div>
             </div>
             <h1 class="text-4xl font-bold title-post mt-4">{{ post.title }}</h1>
@@ -24,14 +42,12 @@
                     >{{ tag.name }}</a
                 >
             </div>
-            <h1>Lượt xem ({{ post.views_count }})</h1>
             <button
                 @click="handleLiked"
                 type="button"
-                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2.5 mt-3 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
             >
-                Tổng số ({{ post.likes_count }})
-                {{ liked ? "Unlike" : "Like" }}
+                <span v-html="statusLike" class="flex" ></span>
             </button>
             <h2 class="text-lg font-bold mb-3 mt-4">
                 Bình luận ({{ post.comments_count }})
@@ -165,6 +181,9 @@ onMounted(async () => {
     pageLoaded(1000);
 });
 
+const statusLike = computed(() => {
+    return liked.value == false ?  "<i class='bx bx-like text-lg pr-1' ></i> Thích" : "<i class='bx bxs-like text-lg pr-1' ></i> Bỏ thích"
+})
 const fetchData = () => {
     axios
         .get("/api/posts/interactions/views", {
