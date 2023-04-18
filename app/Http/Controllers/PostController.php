@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Post;
 use App\Models\Comment;
 use App\Models\Tag;
+use App\Models\Interaction;
 use App\Models\Notification;
 use Pusher\Pusher;
 use Pusher\PusherException;
@@ -18,13 +19,22 @@ class PostController extends Controller
 {
     public function index(Request $request)
     {
-        $data_query = Post::with('user', 'tags')->get();
+        $data_query = Post::with('user', 'tags')
+            ->withCount('comments')
+            ->withCount(['interactions as likes_count' => function($query) {
+                $query->select(\DB::raw("SUM(liked) as likes_count"));
+            }])
+            ->withCount(['interactions as views_count' => function($query) {
+                $query->select(\DB::raw("SUM(views) as views_count"));
+            }])
+            ->get();
+            
         $posts = $data_query->map(function ($post) {
                 $post->author = [
                     'id' => $post->user->id,
                     'name' => $post->user->name,
                     'email' => $post->user->email,
-                    'avatar' => $post->user->avatar,
+                    'avatar' => 'http://localhost:8000/images/' . $post->user->avatar,
                 ];
                 unset($post->user);
                 return $post;
@@ -69,8 +79,30 @@ class PostController extends Controller
 
     public function show($id)
     {
-        $post = Post::select('id', 'title', 'body', 'views', 'likes', 'created_at', 'updated_at', 'user_id')
-            ->findOrFail($id);
+        $post = Post::withCount('comments')
+            ->withCount(['interactions as likes_count' => function($query) {
+                $query->select(\DB::raw("SUM(liked) as likes_count"));
+            }])
+            ->withCount(['interactions as views_count' => function($query) {
+                $query->select(\DB::raw("SUM(views) as views_count"));
+            }])->findOrFail($id);
+
+        $viewers = [];
+        $interaction = Interaction::where('user_id', 2)->where('post_id', $id);
+        $liked = $interaction->exists() ? $interaction->first()->liked : 0;
+
+        if (Post::find($id)->interactions()->exists()) {
+            $viewers = $post->interactions->map(function ($viewer) {
+                $viewer->person = [
+                    'name' => $viewer->user->name,
+                    'avatar' => $viewer->user->avatar,
+                ];
+
+                unset($viewer->user);
+
+                return $viewer;
+            });
+        }
 
         $comments = Comment::with('user')
             ->select('id', 'content', 'parent_id', 'post_id', 'user_id', 'created_at', 'updated_at')
@@ -90,12 +122,16 @@ class PostController extends Controller
             });
         $author = User::findOrFail($post->user_id);
         $author->avatar = 'http://localhost:8000/images/'. $author->avatar;
+
         $tags = Tag::select('tags.*')
                 ->join('post_tag', 'post_tag.tag_id', '=', 'tags.id')
                 ->where('post_tag.post_id', $post->id)
                 ->get();
+
         return response()->json([
             'post' => $post,
+            'liked' => $liked,
+            'viewers' => $viewers,
             'comments' => $comments,
             'author' => $author,
             'tags' => $tags
@@ -130,8 +166,6 @@ class PostController extends Controller
             $post->user_id = auth()->user()->id;
             $post->title = $request->input('title');
             $post->body = $request->input('body');
-            $post->views = $request->input('views');
-            $post->likes = $request->input('likes');
             $post->save();
 
             // tạo followed tag

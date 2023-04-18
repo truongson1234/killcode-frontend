@@ -19,8 +19,6 @@ class CreateQuestionsTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->string('title');
             $table->text('body');
-            $table->integer('views')->default(0);
-            $table->integer('likes')->default(0);
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
