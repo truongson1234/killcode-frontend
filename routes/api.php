@@ -30,6 +30,7 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 
 Route::group(['prefix' => 'user'], function () {
     Route::post('update-profile', [UserController::class, 'updateProfile']);
+    Route::get('{id}', [UserController::class, 'getUserById']);
 });
 
 Route::get('/search', 'App\Http\Controllers\SearchController@search');
@@ -54,6 +55,7 @@ Route::group(['prefix' => 'notifications'], function () {
 // followed-tags api
 Route::group(['prefix' => 'followed-tags'], function () {
     Route::get('', 'App\Http\Controllers\FollowedTagController@index');//lấy ra những tags đã followed
+    Route::get('{id}', 'App\Http\Controllers\FollowedTagController@getFollowedTagById');//lấy ra tag hiện tại đã follow hay chưa 
     Route::post('', 'App\Http\Controllers\FollowedTagController@store');//followed
     Route::delete('', 'App\Http\Controllers\FollowedTagController@destroy');//unfollowed
 });
@@ -136,6 +138,7 @@ Route::group(['prefix' => 'users'], function () {
 //! API QUẢN LÍ CÁC THẺ CỦA ADMIN
 Route::group(['prefix' => 'admin/tags'], function () {
     Route::get('', [TagController::class, 'index']);
+    Route::get('{id_tag}', [TagController::class, 'show']);
     Route::post('', [TagController::class, 'store']);
     Route::delete('{id_tag}', [TagController::class, 'destroy']);
     Route::put('{id_tag}', [TagController::class, 'update']);

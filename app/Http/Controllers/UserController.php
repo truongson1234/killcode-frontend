@@ -47,6 +47,12 @@ class UserController extends Controller
         return response()->json(['error' => 'Email này đã tồn tại!'], 422);
 
     }
+
+    public function getUserById($id) {
+        $user = User::findOrFail($id);
+        $user->avatar = 'http://localhost:8000/images/'.$user->avatar;
+        return response()->json(['user' => $user]);
+    }
     /**
      * Display a listing of the resource.
      *

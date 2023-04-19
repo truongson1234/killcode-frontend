@@ -57,6 +57,7 @@ const fetchData = () => {
             questions.value = response.data.data
             popular_tags.value = response.data.popular_tags
             new_questions.value = response.data.new_questions
+            // console.log('new_ques', new_questions.value);
         })
         .catch((error) => {
             console.log(error);

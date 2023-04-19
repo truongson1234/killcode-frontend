@@ -25,11 +25,52 @@ class TagController extends Controller
     public function show($id)
     {
         $tag = Tag::findOrFail($id);
+        // Số bài viết, câu hỏi và người theo dõi tag 
         $post_count = $tag->posts()->count();
+        $question_count = $tag->questions()->count();
+        $followers = $tag->followers()->count();
+
+        // Danh bài viết, câu hỏi, người theo dõi tag
+        $posts = $tag->posts()->with('tags')->get();
+        $posts = $posts->map(function($post) {
+            $post->author = [
+                'id' => $post->user->id,
+                'name' => $post->user->name,
+                'email' => $post->user->email,
+                'avatar' => 'http://localhost:8000/images/'.$post->user->avatar,
+            ];
+            unset($post->user);
+            return $post;
+        });
+
+        //Tag phổ biến
+        $popular_tags = Tag::withCount('posts')->orderBy('posts_count', 'desc')->take(10)->get();
+
+        $questions = $tag->questions()->with('tags')->get();
+        $questions = $questions->map(function($question) {
+            $question->author = [
+                'id' => $question->user->id,
+                'name' => $question->user->name,
+                'email' => $question->user->email,
+                'avatar' => 'http://localhost:8000/images/'.$question->user->avatar,
+            ];
+            unset($question->user);
+            return $question;
+        });
+        $followeds = $tag->followers()->get();
+        foreach($followeds as $followed) {
+            $followed->avatar = 'http://localhost:8000/images/'.$followed->avatar;
+
+        }
 
         return response()->json([
-            'tag' => $tag,
-            'post_count' => $post_count
+            'post_count' => $post_count,
+            'question_count' => $question_count,
+            'followers' => $followers,
+            'popular_tags' => $popular_tags,
+            'posts' => $posts,
+            'questions' => $questions,
+            'followeds' => $followeds,
         ]);
     }
 

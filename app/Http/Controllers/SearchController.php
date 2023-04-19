@@ -19,7 +19,7 @@ class SearchController extends Controller
         $keyword = $request->input('keyword');
     
         $posts = Post::has('interactions')
-            ->with('interactions')
+            ->with('interactions', 'tags')
             ->withCount('comments')
             ->withCount(['interactions as likes_count' => function($query) {
                 $query->select(\DB::raw("SUM(liked) as likes_count"));
@@ -40,7 +40,7 @@ class SearchController extends Controller
             });
 
         $questions = Question::has('interactions')
-            ->with('interactions')
+            ->with('interactions', 'tags')
             ->withCount('answers')
             ->withCount(['interactions as likes_count' => function($query) {
                 $query->select(\DB::raw("SUM(liked) as likes_count"));
@@ -114,7 +114,7 @@ class SearchController extends Controller
             unset($post->user);
             return $post;
         });
-        $dataQuestion = $questions->get()->map(function ($question) {
+        $dataQuestions = $questions->get()->map(function ($question) {
             $question->author = [
                 'id' => $question->user->id,
                 'name' => $question->user->name,
@@ -126,8 +126,8 @@ class SearchController extends Controller
         });
         return response()->json([
             'tags' => $tags->get(),
-            'posts' => $posts->get(),
-            'questions' => $questions->get(),
+            'posts' => $dataPosts,
+            'questions' => $dataQuestions,
             'posts_doesnt_interaction' => $postsWithoutInteractions,
             'questions_doesnt_interaction' => $questionsWithoutInteractions,
         ]);

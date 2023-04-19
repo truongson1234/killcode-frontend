@@ -31,7 +31,7 @@ export const useSearchStore = defineStore("search", {
                 })
                 .then((response) => {
                     this.dataSearch = response.data;
-                    console.log(this.dataSearch);
+                    console.log(payload, this.dataSearch);
                     this.dataSearch.posts.forEach(function (item) {
                         item.author.avatar =
                             "http://localhost:8000/images/" + item.author.avatar;

@@ -5,8 +5,8 @@
                 <div class="flex items-center">
                     <div class="userimage"><img :src="author.avatar" alt="" /></div>
                     <div class="ml-2">
-                        <span class="username leading-5 text-blue-600 font-bold"
-                            ><a href="javascript:;">{{ author.name }}</a>
+                        <span class="username leading-5 text-blue-600 font-bold"><a
+                                href="javascript:;">{{ author.name }}</a>
                         </span>
                     </div>
                 </div>
@@ -38,12 +38,9 @@
                     class="inline-flex items-center bg-blue-100 text-blue-800 text-sm font-medium mr-1 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300 "
                     v-for="tag in tags" :key="tag.id">{{ tag.name }}</a>
             </div>
-            <button
-                @click="handleLiked"
-                type="button"
-                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2.5 mt-3 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-            >
-                <span v-html="statusLike" class="flex" ></span>
+            <button @click="handleLiked" type="button"
+                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2.5 mt-3 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                <span v-html="statusLike" class="flex"></span>
             </button>
             <h2 class="text-lg font-bold mb-3 mt-4">Bình luận</h2>
             <div class="space-y-4 box-users-comment">
@@ -91,7 +88,7 @@ import { pageLoading, pageLoaded, formatDetailDateTime } from '@/assets/js/app.j
 import axios from "axios";
 import Pusher from "pusher-js";
 import Comment from "@/components/ui/Comment.vue";
-
+import router from "@/router";
 // lấy user_id
 const authStore = useAuthStore();
 // lấy post_id
@@ -150,7 +147,7 @@ onMounted(async () => {
     pageLoaded(1000)
 });
 const statusLike = computed(() => {
-    return liked.value == false ?  "<i class='bx bx-like text-lg pr-1' ></i> Thích" : "<i class='bx bxs-like text-lg pr-1' ></i> Bỏ thích"
+    return liked.value == false ? "<i class='bx bx-like text-lg pr-1' ></i> Thích" : "<i class='bx bxs-like text-lg pr-1' ></i> Bỏ thích"
 })
 const fetchData = () => {
     axios
@@ -171,10 +168,10 @@ const fetchData = () => {
             tags.value = response.data.tags;
             author.value = response.data.author;
             comments.value = response.data.comments;
-            comments.value.forEach(function(item) {
+            comments.value.forEach(function (item) {
                 item.author.avatar = 'http://localhost:8000/images/' + item.author.avatar
             })
-            console.log('detail-question', response.data.viewers)
+            console.log('detail-question', response.data)
             comments.value.reverse();
         })
         .catch((error) => {
@@ -191,23 +188,41 @@ const sendCmt = async (payload) => {
     }
 };
 const handleLiked = () => {
-    axios
-        .post("/api/questions/interactions/liked", {
-            question_id: questionId,
-        })
-        .then((response) => {
-            console.log(response.data);
-            if (response.data.status == 1) {
-                liked.value = response.data.liked;
-                post.value.likes_count = response.data.likes_count;
-                post.value.views_count = response.data.views_count;
-            } else {
-                console.error("Lỗi");
+    if (authStore.getInfoUser != null) {
+        axios
+            .post("/api/questions/interactions/liked", {
+                question_id: questionId,
+            })
+            .then((response) => {
+                console.log(response.data);
+                if (response.data.status == 1) {
+                    liked.value = response.data.liked;
+                    post.value.likes_count = response.data.likes_count;
+                    post.value.views_count = response.data.views_count;
+                } else {
+                    console.error("Lỗi");
+                }
+            })
+            .catch((e) => {
+                console.error(e);
+            });
+    } else {
+        Swal.fire({
+            title: "",
+            text: 'Vui lòng đăng nhập để có thể thích chủ đề!',
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#aaa8a5",
+            confirmButtonText: "Đăng nhập",
+            cancelButtonText: "Hủy",
+        }).then(result => {
+            if (result.isConfirmed) {
+                router.push({ name: 'Login' })
+                    .then(() => { router.go() })
             }
         })
-        .catch((e) => {
-            console.error(e);
-        });
+    }
 };
 </script>
 <style>

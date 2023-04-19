@@ -1,5 +1,5 @@
 <template>
-  <div class="p-3 pt-0 pb-4">
+  <div class="p-3 pt-0 pb-4 main-box-post">
     <div class="box-post relative">
       <div class="absolute right-7 cursor-pointer"
         v-if="data.user_id == idAuthor">
@@ -52,7 +52,7 @@
               <i class='bx bx-like fa-fw fa-lg m-r-3'></i></span>
             <span class="engagements-text">{{ data.views_count ? data.views_count : 0 }}
               <i class='bx bx-show fa-fw fa-lg m-r-3'></i></span>
-            <span class="engagements-text">{{ data.comments_count }} 
+            <span class="engagements-text">{{ data.comments_count ? data.comments_count : 0 }} 
               <i class="bx bx-comment-detail fa-fw fa-lg m-r-3"></i></span>
           </div>
         </div>

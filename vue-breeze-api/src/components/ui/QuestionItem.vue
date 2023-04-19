@@ -1,5 +1,5 @@
 <template>
-  <div class="p-3">
+  <div class="p-3 pt-0 pb-4">
     <div class="box-question relative">
       <div class="absolute right-7 cursor-pointer"
         v-if="data.user_id == idAuthor">
@@ -48,11 +48,11 @@
         </div>
         <div class="box-question-engagement">
           <div class="engagements flex items-center">
-            <span class="engagements-text">{{ data.likes }}
+            <span class="engagements-text">{{ data.likes_count ? data.likes_count : 0 }}
               <i class='bx bx-like fa-fw fa-lg m-r-3'></i></span>
-            <span class="engagements-text">{{ data.views }} <i
+            <span class="engagements-text">{{ data.views_count ? data.views_count : 0 }} <i
                 class='bx bx-show fa-fw fa-lg m-r-3'></i></span>
-            <span class="engagements-text">21 <i
+            <span class="engagements-text">{{ data.comments_count ? data.comments_count : 0 }} <i
                 class="bx bx-comment-detail fa-fw fa-lg m-r-3"></i></span>
           </div>
         </div>

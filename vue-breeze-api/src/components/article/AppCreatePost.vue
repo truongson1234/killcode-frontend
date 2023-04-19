@@ -124,7 +124,6 @@ const removeTag = (id) => {
 }
 const keyUpValidate = (name, event) => {
     var val = event.target.value
-    console.log(val);
     name == 'statusTitle' && val == '' ? statusTitle.value = true : statusTitle.value = false
 }
 const handleCreated = (payload) => {
@@ -137,7 +136,7 @@ const handleCreated = (payload) => {
             console.log(response);
             if (response.data.status) {
                 // console.log(response.data)
-                router.push({ name: 'PostDetail', params: { id: response.data.data.id } })
+                // router.push({ name: 'PostDetail', params: { id: response.data.data.id } })
                 // .then(() => { router.go() })
 
             }

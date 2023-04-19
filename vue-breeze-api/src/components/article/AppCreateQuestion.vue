@@ -135,7 +135,7 @@ const handleCreated = (payload) => {
             console.log(response);
             if (response.data.status) {
                 // console.log(response.data)
-                router.push({ name: 'PostDetail', params: { id: response.data.data.id } })
+                // router.push({ name: 'PostDetail', params: { id: response.data.data.id } })
                 // .then(() => { router.go() })
 
             }

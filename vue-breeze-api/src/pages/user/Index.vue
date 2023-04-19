@@ -41,13 +41,13 @@
                                             <div class="relative h-full border-0">
                                                 <div class="absolute bg-white rounded-lg shadow z-20"
                                                     style="
-                                                                                                top: 50%;
-                                                                                                left: 50%;
-                                                                                                transform: translate(
-                                                                                                    -50%,
-                                                                                                    -50%
-                                                                                                );
-                                                                                            ">
+                                                                                                        top: 50%;
+                                                                                                        left: 50%;
+                                                                                                        transform: translate(
+                                                                                                            -50%,
+                                                                                                            -50%
+                                                                                                        );
+                                                                                                    ">
                                                     <button type="button"
                                                         @click="closeModalEditProfile()"
                                                         class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white">
@@ -55,7 +55,7 @@
                                                             class="bx bx-x text-xl"></i>
                                                     </button>
                                                     <form
-                                                        @submit.prevent="updateProfile(formUpdateProfile)">
+                                                        @submit.prevent="updateProfile(formUpdateProfile, userId)">
                                                         <div class="px-4 py-4 lg:px-5"
                                                             style="width: 550px">
                                                             <h3
@@ -148,15 +148,19 @@
                                     <li class="mr-2" role="presentation">
                                         <button
                                             class="item-tab inline-block text-gray-500 hover:text-gray-600 hover:border-gray-300 rounded-t-lg py-3 px-4 text-sm font-medium text-center  border-b-2 dark:text-gray-400 dark:hover:text-gray-300 "
-                                            id="post-tab" data-tabs-target="#post" type="button"
-                                            role="tab" aria-controls="post" aria-selected="true">Bài
+                                            id="post-tab" data-tabs-target="#post"
+                                            type="button" role="tab"
+                                            aria-controls="post"
+                                            aria-selected="true">Bài
                                             viết</button>
                                     </li>
                                     <li class="mr-2" role="presentation">
                                         <button
                                             class="item-tab inline-block text-gray-500 hover:text-gray-600 hover:border-gray-300 rounded-t-lg py-3 px-4 text-sm font-medium text-center  border-b-2 dark:text-gray-400 dark:hover:text-gray-300"
-                                            id="question-tab" data-tabs-target="#question"
-                                            type="button" role="tab" aria-controls="question"
+                                            id="question-tab"
+                                            data-tabs-target="#question"
+                                            type="button" role="tab"
+                                            aria-controls="question"
                                             aria-selected="false">Câu hỏi</button>
                                     </li>
                                 </ul>
@@ -167,9 +171,10 @@
                     <div class="profile-content">
                         <div class="tab-content p-0" id="myTabContent">
                             <!-- begin #profile-post tab -->
-                            <div class="hidden" id="post"
-                            role="tabpanel" aria-labelledby="post-tab">
-                                <div class="flex flex-col items-center" v-if="listPost && listPost.length != 0">
+                            <div class="hidden" id="post" role="tabpanel"
+                                aria-labelledby="post-tab">
+                                <div class="flex flex-col items-center"
+                                    v-if="listPost && listPost.length != 0">
                                     <ol class="list-post-user">
                                         <li class="border-l-2 border-blue-600"
                                             v-for="(item, index) in postsToShow"
@@ -190,10 +195,9 @@
                                                         </path>
                                                     </svg>
                                                 </div>
-                                                <div class="block p-6 rounded-lg bg-gray-100 max-w-md ml-6 mb-10"
-                                                    style="min-width:50rem">
+                                                <div class="tab-post block p-6 rounded-lg bg-gray-100 max-w-md ml-6 mb-10">
                                                     <div
-                                                        class="flex justify-between mb-1">
+                                                        class="flex justify-between mb-2">
                                                         <p href="#!"
                                                             class="font-medium text-blue-600 focus:text-purple-800 duration-300 transition ease-in-out text-sm">
                                                             {{
@@ -204,11 +208,12 @@
                                                             {{
                                                                 formatDateTime(listPost[index].created_at)
                                                             }}
-                                                            </p>
+                                                        </p>
                                                     </div>
                                                     <PostItem
                                                         :data="listPost[index]"
-                                                        :statusDate="false" :deletePost="deletePost" />
+                                                        :statusDate="false"
+                                                        :deletePost="deletePost" />
                                                 </div>
                                             </div>
                                         </li>
@@ -222,12 +227,14 @@
                                     </div>
                                 </div>
                                 <div v-else class="flex flex-col items-center">
-                                    <h5 class="text-gray-500">Không có bài viết nào</h5>
+                                    <h5 class="text-gray-500">Không có bài viết nào
+                                    </h5>
                                 </div>
                             </div>
-                            <div class="" id="question"
-                            role="tabpanel" aria-labelledby="question-tab">
-                                <div class="flex flex-col items-center" v-if="listQuestion && listQuestion.length != 0">
+                            <div class="" id="question" role="tabpanel"
+                                aria-labelledby="question-tab">
+                                <div class="flex flex-col items-center"
+                                    v-if="listQuestion && listQuestion.length != 0">
                                     <ol class="list-question-user">
                                         <li class="border-l-2 border-blue-600"
                                             v-for="(item, index) in questionsToShow"
@@ -248,10 +255,9 @@
                                                         </path>
                                                     </svg>
                                                 </div>
-                                                <div class="block p-6 rounded-lg bg-gray-100 max-w-md ml-6 mb-10"
-                                                    style="min-width:50rem">
+                                                <div class="tab-post block p-6 rounded-lg bg-gray-100 max-w-md ml-6 mb-10">
                                                     <div
-                                                        class="flex justify-between mb-1">
+                                                        class="flex justify-between mb-2">
                                                         <p href="#!"
                                                             class="font-medium text-blue-600 focus:text-purple-800 duration-300 transition ease-in-out text-sm">
                                                             {{
@@ -262,11 +268,12 @@
                                                             {{
                                                                 formatDateTime(listQuestion[index].created_at)
                                                             }}
-                                                            </p>
+                                                        </p>
                                                     </div>
                                                     <QuestionItem
                                                         :data="listQuestion[index]"
-                                                        :statusDate="false" :deleteQuestion="deleteQuestion" />
+                                                        :statusDate="false"
+                                                        :deleteQuestion="deleteQuestion" />
                                                 </div>
                                             </div>
                                         </li>
@@ -280,7 +287,8 @@
                                     </div>
                                 </div>
                                 <div v-else class="flex flex-col items-center">
-                                    <h5 class="text-gray-500">Không có câu hỏi nào</h5>
+                                    <h5 class="text-gray-500">Không có câu hỏi nào
+                                    </h5>
                                 </div>
                             </div>
                         </div>
@@ -319,6 +327,15 @@ const inforUser = computed(() => {
 const listPost = ref([]), listQuestion = ref([])
 const dataUser = ref([])
 const userId = route.params.id;
+const fetchDataUser = (userId) => {
+    axios.get(`api/user/${userId}`)
+        .then(response => {
+            dataUser.value = response.data.user;
+        })
+        .catch(err => {
+            console.log(err);
+        })
+}
 const fetchDataPost = () => {
     axios
         .get(`/api/posts/list-post-user/${userId}`)
@@ -327,8 +344,6 @@ const fetchDataPost = () => {
                 item.author.avatar = 'http://localhost:8000/images/' + item.author.avatar
             });
             listPost.value = response.data.posts;
-            response.data.user.avatar = 'http://localhost:8000/images/' + response.data.user.avatar
-            dataUser.value = response.data.user;
             // console.log(dataUser.value);
         })
         .catch((error) => {
@@ -373,8 +388,10 @@ onMounted(async () => {
     $("#imageUpload").change(function () {
         readURL(this);
     });
+    fetchDataUser(userId)
     fetchDataPost()
     fetchDataQuestion()
+
     pageLoaded(1000)
 })
 const showModalEditProfile = (idUser, nameUser, mailUser) => {
@@ -404,15 +421,14 @@ const readURL = (input) => {
         reader.readAsDataURL(input.files[0]);
     }
 }
-const updateProfile = async (formData) => {
+const updateProfile = async (formData, userId) => {
 
     if (formUpdateProfile.value.name !== '' && formUpdateProfile.value.email !== undefined) {
         pageLoading()
-        await userStore.handleUpdateProfile(formData)
-        await userStore.getUserById(userId)
-        .then(() => {
-            dataUser.value = userStore.getUserById
-        })
+        await userStore.handleUpdateProfile(formData, userId)
+        await fetchDataUser(userId)
+        await fetchDataPost()
+        await fetchDataQuestion()
         pageLoaded()
         if (userStore.getUserError == 'success!') {
             Swal.fire({
@@ -570,6 +586,7 @@ const updateProfile = async (formData) => {
     border-radius: 0;
     margin-bottom: 3px;
 }
+
 .item-tab:not(.text-blue-600) {
     border-color: transparent;
 }
@@ -577,11 +594,27 @@ const updateProfile = async (formData) => {
 .profile-content {
     padding: 25px;
     border-radius: 4px
-}</style>
+}
+.tab-post {
+    min-width: 50rem;
+}
+@media (max-width: 976px) {
+    .tab-post {
+        min-width: 40rem;
+    }
+}
+@media (max-width: 768px) {
+    .tab-post {
+        min-width: 30rem;
+        margin-bottom: 0;
+    }
+}
+</style>
 <style>
 .list-post-user .box-post {
     background: #ffff;
 }
+
 .list-question-user .box-question {
     background: #ffff;
 }

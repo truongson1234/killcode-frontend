@@ -36,22 +36,22 @@ export const useUserStore = defineStore("user", {
             }
         },
         async getUserById(id) {
-            try {
-                const data = await axios.get(`/api/user/${id}`);
-                if (data.data) {
-                    data.data.user.avatar = 'http://localhost:8000/images/' + data.data.user.avatar
-                    this.getInfoUserById = data.data.user;
-                }
-            } catch (error) {
-                localStorage.removeItem("isAuthenticated");
-            }
+                await axios.get(`/api/user/${id}`)
+                .then(res => {
+                    this.dataUser = res.data.user;
+                })
+                .catch (error => {
+                    console.log(error);
+                    // localStorage.removeItem("isAuthenticated");
+                })
         },
-        async handleUpdateProfile(formData) {
+        async handleUpdateProfile(formData, id) {
             try {
                 await axios
                     .post("api/user/update-profile", formData)
                     .then((res) => {
                         // console.log(res);
+                        this.getUserById(id)
                         this.userError = 'success!'
                     });
             } catch (error) {

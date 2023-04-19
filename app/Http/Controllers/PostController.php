@@ -58,7 +58,12 @@ class PostController extends Controller
         }else {
             $relatedPosts = [];
         }
-        $newPosts = Post::with('user')->orderBy('created_at', 'desc')->take(5)->get();
+        $newPosts = Post::with('user')->withCount(['interactions as likes_count' => function($query) {
+                        $query->select(\DB::raw("SUM(liked) as likes_count"));
+                    }])
+                    ->withCount(['interactions as views_count' => function($query) {
+                        $query->select(\DB::raw("SUM(views) as views_count"));
+                    }])->orderBy('created_at', 'desc')->take(5)->get();
         $newPosts = $newPosts->map(function ($post) {
             $post->author = [
                 'id' => $post->user->id,
@@ -88,8 +93,12 @@ class PostController extends Controller
             }])->findOrFail($id);
 
         $viewers = [];
-        $interaction = Interaction::where('user_id', auth()->user()->id)->where('post_id', $id);
-        $liked = $interaction->exists() ? $interaction->first()->liked : 0;
+        if(auth()->user()) {
+            $interaction = Interaction::where('user_id', auth()->user()->id)->where('post_id', $id);
+            $liked = $interaction->exists() ? $interaction->first()->liked : 0;
+        }else {
+            $liked = 0;
+        }
 
         if (Post::find($id)->interactions()->exists()) {
             $viewers = $post->interactions->map(function ($viewer) {
