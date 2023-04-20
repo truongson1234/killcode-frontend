@@ -1,79 +1,87 @@
 <template>
-    <div class="wrapper container detail-unique-question">
-        <div class="p-6">
-            <div class="flex justify-between">
-                <div class="flex items-center">
-                    <div class="userimage"><img :src="author.avatar" alt="" /></div>
-                    <div class="ml-2">
-                        <span class="username leading-5 text-blue-600 font-bold"><a
-                                href="javascript:;">{{ author.name }}</a>
-                        </span>
-                    </div>
-                </div>
-                <div>
-                    <span class="text-gray-500">
-                        Đã đăng vào
-                        {{ formatDetailDateTime(post.created_at) }}
-                    </span>
-                    <ul class="flex items-center justify-end">
-                        <li class="pr-4 text-gray-500 text-lg flex items-center">
-                            <i class="bx bx-show pr-1"></i>
-                            {{ post.views_count }}
-                        </li>
-                        <li class="pr-4 text-gray-500 text-lg flex items-center">
-                            <i class="bx bx-comment-detail pr-1"></i>
-                            {{ post.comments_count }}
-                        </li>
-                        <li class="pr-4 text-gray-500 text-lg flex items-center">
-                            <i class="bx bx-like pr-1"></i>
-                            {{ post.likes_count }}
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <h1 class="text-4xl font-bold title-post mt-4">{{ post.title }}</h1>
-            <div class="prose mt-4" v-html="post.body"></div>
-            <div class="list-tag">
-                <a href=""
-                    class="inline-flex items-center bg-blue-100 text-blue-800 text-sm font-medium mr-1 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300 "
-                    v-for="tag in tags" :key="tag.id">{{ tag.name }}</a>
-            </div>
-            <button @click="handleLiked" type="button"
-                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2.5 mt-3 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-                <span v-html="statusLike" class="flex"></span>
-            </button>
-            <h2 class="text-lg font-bold mb-3 mt-4">Bình luận</h2>
-            <div class="space-y-4 box-users-comment">
-                <div v-if="comments && comments.length > 0">
-                    <comment v-for="comment in comments" :key="comment.id"
-                        :comment="comment" :author="comment.author"
-                        :formatdate="formatDetailDateTime" />
-                </div>
-                <div v-else class="text-center">
-                    <span class="text-gray-500">Chưa có bình luận nào.</span>
-                </div>
-            </div>
-            <div class="box-type-comment mt-4">
-                <form v-if="authStore.getInfoUser"
-                    @submit.prevent="sendCmt(payload)">
-                    <div class="flex items-center space-x-3">
-                        <div class="userimage self-start">
-                            <img :src="authStore.getInfoUser.avatar" alt=""
-                                class="">
+    <div class="container detail-unique-question">
+        <div class="grid grid-cols-4 gap-x-7 gap-y-5 mx-auto">
+            <div class="main-detail-question col-span-4 row-span-1 lg:col-span-3 lg:row-span-3">
+                <div class="flex justify-between">
+                    <div class="flex items-center">
+                        <div class="userimage"><img :src="author.avatar" alt="" /></div>
+                        <div class="ml-2">
+                            <span class="username leading-5 text-blue-600 font-bold"><a
+                                    href="javascript:;">{{ author.name }}</a>
+                            </span>
                         </div>
-                        <textarea class="w-full" v-model="payload.content"
-                            placeholder="Viêt bình luận..."></textarea>
                     </div>
-                    <div class="flex">
-                        <button type="submit"
-                            class="ml-auto bg-blue-500 hover:bg-blue-700 text-white py-2 px-2.5 rounded mt-2 justify-self-end">Bình
-                            luận</button>
+                    <div>
+                        <span class="text-gray-500">
+                            Đã đăng vào
+                            {{ formatDetailDateTime(post.created_at) }}
+                        </span>
+                        <ul class="flex items-center justify-end">
+                            <li class="pr-4 text-gray-500 text-lg flex items-center">
+                                <i class="bx bx-show pr-1"></i>
+                                {{ post.views_count }}
+                            </li>
+                            <li class="pr-4 text-gray-500 text-lg flex items-center">
+                                <i class="bx bx-comment-detail pr-1"></i>
+                                {{ post.comments_count }}
+                            </li>
+                            <li class="pr-4 text-gray-500 text-lg flex items-center">
+                                <i class="bx bx-like pr-1"></i>
+                                {{ post.likes_count }}
+                            </li>
+                        </ul>
                     </div>
-                </form>
-                <div v-else class="text-center text-gray-500">
-                    <span class="">Đăng nhập để được bình luận! <router-link
-                            :to="{ name: 'Login' }" class="text-blue-500">Đăng nhập
-                            ngay.</router-link></span>
+                </div>
+                <h1 class="text-4xl font-bold title-post mt-4">{{ post.title }}</h1>
+                <div class="prose mt-4" v-html="post.body"></div>
+                <div class="list-tag">
+                    <a href=""
+                        class="inline-flex items-center bg-blue-100 text-blue-800 text-sm font-medium mr-1 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300 "
+                        v-for="tag in tags" :key="tag.id">{{ tag.name }}</a>
+                </div>
+                <button @click="handleLiked" type="button"
+                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2.5 mt-3 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                    <span v-html="statusLike" class="flex"></span>
+                </button>
+                <h2 class="text-lg font-bold mb-3 mt-4">Bình luận</h2>
+                <div class="space-y-4 box-users-comment">
+                    <div v-if="comments && comments.length > 0">
+                        <comment v-for="comment in comments" :key="comment.id"
+                            :comment="comment" :author="comment.author"
+                            :formatdate="formatDetailDateTime" />
+                    </div>
+                    <div v-else class="text-center">
+                        <span class="text-gray-500">Chưa có bình luận nào.</span>
+                    </div>
+                </div>
+                <div class="box-type-comment mt-4">
+                    <form v-if="authStore.getInfoUser"
+                        @submit.prevent="sendCmt(payload)">
+                        <div class="flex items-center space-x-3">
+                            <div class="userimage self-start">
+                                <img :src="authStore.getInfoUser.avatar" alt=""
+                                    class="">
+                            </div>
+                            <textarea class="w-full" v-model="payload.content"
+                                placeholder="Viêt bình luận..."></textarea>
+                        </div>
+                        <div class="flex">
+                            <button type="submit"
+                                class="ml-auto bg-blue-500 hover:bg-blue-700 text-white py-2 px-2.5 rounded mt-2 justify-self-end">Bình
+                                luận</button>
+                        </div>
+                    </form>
+                    <div v-else class="text-center text-gray-500">
+                        <span class="">Đăng nhập để được bình luận! <router-link
+                                :to="{ name: 'Login' }" class="text-blue-500">Đăng nhập
+                                ngay.</router-link></span>
+                    </div>
+                </div>
+            </div>
+            <div class="main-related-questions col-span-4 p-3 box-popular_tags h-100 row-span-1 lg:col-span-1 lg:row-span-1">
+                <h5 class="text-center pb-3 font-bold text-blue-500">Câu hỏi liên quan</h5>
+                <div v-for="question in related_questions" :key="question.id">
+                    <QuestionSidebar :data="question"/>
                 </div>
             </div>
         </div>
@@ -89,6 +97,7 @@ import axios from "axios";
 import Pusher from "pusher-js";
 import Comment from "@/components/ui/Comment.vue";
 import router from "@/router";
+import QuestionSidebar from "@/components/ui/QuestionSidebar.vue";
 // lấy user_id
 const authStore = useAuthStore();
 // lấy post_id
@@ -119,6 +128,7 @@ const post = ref({});
 const viewers = ref({});
 const tags = ref({});
 const comments = ref([]);
+const related_questions = ref([]);
 
 onMounted(async () => {
     await pageLoading()
@@ -168,10 +178,11 @@ const fetchData = () => {
             tags.value = response.data.tags;
             author.value = response.data.author;
             comments.value = response.data.comments;
+            related_questions.value = response.data.related_questions;
             comments.value.forEach(function (item) {
                 item.author.avatar = 'http://localhost:8000/images/' + item.author.avatar
             })
-            console.log('detail-question', response.data)
+            // console.log('detail-question', response.data.related_questions)
             comments.value.reverse();
         })
         .catch((error) => {
@@ -225,6 +236,12 @@ const handleLiked = () => {
     }
 };
 </script>
+<style scoped>
+.main-related-questions {
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    border-radius: 6px;
+}
+</style>
 <style>
 .detail-unique-question .userimage img {
     width: 100%;

@@ -74,6 +74,7 @@ class PostController extends Controller
             unset($post->user);
             return $post;
         });
+
         return response()->json([
             'data' => $posts,
             'popular_tags' => $popular_tags,
@@ -136,14 +137,42 @@ class PostController extends Controller
                 ->join('post_tag', 'post_tag.tag_id', '=', 'tags.id')
                 ->where('post_tag.post_id', $post->id)
                 ->get();
-
+        
+        // Lấy ra các bài viết liên quan đến post 
+        $currentPost = Post::with('tags')->findOrFail($id)->tags->map(function($tag) {
+                    $tag->id = $tag->pivot->tag_id;
+                    unset($tag->name);
+                    unset($tag->slug);
+                    unset($tag->pivot);
+                    return $tag;
+                });
+        $relatedPosts = Post::where('id', '<>', $id)->whereHas('tags', function($query) use ($currentPost) {
+                            $query->whereIn('tags.id', $currentPost);
+                            })->with('tags')->withCount('comments')->withCount(['interactions as likes_count' => function($query) {
+                            $query->select(\DB::raw("SUM(liked) as likes_count"));
+                            }])
+                            ->withCount(['interactions as views_count' => function($query) {
+                            $query->select(\DB::raw("SUM(views) as views_count"));
+                            }])->take(5)->get();
+        $relatedPosts = $relatedPosts->map(function($post) {
+            $post->author = [
+            'id' => $post->user->id,
+            'name' => $post->user->name,
+            'email' => $post->user->email,
+            'avatar' => $post->user->avatar,
+            ];
+            unset($post->user);
+            unset($post->interactions);
+            return $post;
+        });
         return response()->json([
             'post' => $post,
             'liked' => $liked,
             'viewers' => $viewers,
             'comments' => $comments,
             'author' => $author,
-            'tags' => $tags
+            'tags' => $tags,
+            'related_posts' => $relatedPosts
         ]);
     }
 

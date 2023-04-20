@@ -188,6 +188,7 @@ class QuestionController extends Controller
         if(auth()->user()) {
             $interaction = QuestionInteraction::where('user_id', auth()->user()->id)->where('question_id', $id);
             $liked = $interaction->exists() ? $interaction->first()->liked : 0;
+
         }else {
             $liked = 0;
         }
@@ -239,14 +240,41 @@ class QuestionController extends Controller
 
         // unset($question->user);
         // unset($question->answers);
-
+        // Lấy ra các bài viết liên quan đến post 
+        $currentQuestion = Question::with('tags')->findOrFail($id)->tags->map(function($tag) {
+                            $tag->id = $tag->pivot->tag_id;
+                            unset($tag->name);
+                            unset($tag->slug);
+                            unset($tag->pivot);
+                            return $tag;
+                        });
+        $relatedQuestions = Question::where('id', '<>', $id)->whereHas('tags', function($query) use ($currentQuestion) {
+            $query->whereIn('tags.id', $currentQuestion);
+        })->with('tags')->withCount('comments')->withCount(['interactions as likes_count' => function($query) {
+            $query->select(\DB::raw("SUM(liked) as likes_count"));
+        }])
+        ->withCount(['interactions as views_count' => function($query) {
+            $query->select(\DB::raw("SUM(views) as views_count"));
+        }])->take(5)->get();
+        $relatedQuestions = $relatedQuestions->map(function($question) {
+            $question->author = [
+                'id' => $question->user->id,
+                'name' => $question->user->name,
+                'email' => $question->user->email,
+                'avatar' => $question->user->avatar,
+            ];
+            unset($question->user);
+            unset($question->interactions);
+            return $question;
+        });
         return response()->json([
-            'question' => $question,
-            'liked' => $liked,
-            'viewers' => $viewers,
-            'tags' => $tags,
-            'author' => $author,
-            'comments' => $comments
+            // 'question' => $question,
+            // 'liked' => $liked,
+            // 'viewers' => $viewers,
+            // 'tags' => $tags,
+            // 'author' => $author,
+            // 'comments' => $comments,
+            'related_questions' => $relatedQuestions
         ]);
     }
 
