@@ -19,7 +19,11 @@ class SearchController extends Controller
         $keyword = $request->input('keyword');
     
         $posts = Post::has('interactions')
-            ->with('interactions', 'tags')
+            ->where(function ($query) use ($keyword) {
+                $query->where('title', 'like', "%$keyword%")
+                        ->orWhere('body', 'like', "%$keyword%");
+            })
+            ->with('interactions','tags')
             ->withCount('comments')
             ->withCount(['interactions as likes_count' => function($query) {
                 $query->select(\DB::raw("SUM(liked) as likes_count"));
@@ -29,6 +33,10 @@ class SearchController extends Controller
             }]);
 
         $postsWithoutInteractions = Post::doesntHave('interactions')
+            ->where(function ($query) use ($keyword) {
+                $query->where('title', 'like', "%$keyword%")
+                        ->orWhere('body', 'like', "%$keyword%");
+            })
             ->withCount('comments')
             ->latest()
             ->get()
@@ -40,7 +48,11 @@ class SearchController extends Controller
             });
 
         $questions = Question::has('interactions')
-            ->with('interactions', 'tags')
+            ->where(function ($query) use ($keyword) {
+                $query->where('title', 'like', "%$keyword%")
+                        ->orWhere('body', 'like', "%$keyword%");
+            })
+            ->with('interactions','tags')
             ->withCount('answers')
             ->withCount(['interactions as likes_count' => function($query) {
                 $query->select(\DB::raw("SUM(liked) as likes_count"));
@@ -50,6 +62,10 @@ class SearchController extends Controller
             }]);
 
         $questionsWithoutInteractions = Question::doesntHave('interactions')
+            ->where(function ($query) use ($keyword) {
+                $query->where('title', 'like', "%$keyword%")
+                        ->orWhere('body', 'like', "%$keyword%");
+            })
             ->withCount('answers')
             ->latest()
             ->get()
