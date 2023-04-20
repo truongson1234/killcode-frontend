@@ -19,6 +19,10 @@ class SearchController extends Controller
         $keyword = $request->input('keyword');
     
         $posts = Post::has('interactions')
+            ->where(function ($query) use ($keyword) {
+                $query->where('title', 'like', "%$keyword%")
+                        ->orWhere('body', 'like', "%$keyword%");
+            })
             ->with('interactions')
             ->withCount('comments')
             ->withCount(['interactions as likes_count' => function($query) {
@@ -29,6 +33,10 @@ class SearchController extends Controller
             }]);
 
         $postsWithoutInteractions = Post::doesntHave('interactions')
+            ->where(function ($query) use ($keyword) {
+                $query->where('title', 'like', "%$keyword%")
+                        ->orWhere('body', 'like', "%$keyword%");
+            })
             ->withCount('comments')
             ->latest()
             ->get()
@@ -40,6 +48,10 @@ class SearchController extends Controller
             });
 
         $questions = Question::has('interactions')
+            ->where(function ($query) use ($keyword) {
+                $query->where('title', 'like', "%$keyword%")
+                        ->orWhere('body', 'like', "%$keyword%");
+            })
             ->with('interactions')
             ->withCount('answers')
             ->withCount(['interactions as likes_count' => function($query) {
@@ -50,6 +62,10 @@ class SearchController extends Controller
             }]);
 
         $questionsWithoutInteractions = Question::doesntHave('interactions')
+            ->where(function ($query) use ($keyword) {
+                $query->where('title', 'like', "%$keyword%")
+                        ->orWhere('body', 'like', "%$keyword%");
+            })
             ->withCount('answers')
             ->latest()
             ->get()
