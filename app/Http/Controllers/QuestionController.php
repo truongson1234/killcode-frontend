@@ -268,12 +268,12 @@ class QuestionController extends Controller
             return $question;
         });
         return response()->json([
-            // 'question' => $question,
-            // 'liked' => $liked,
-            // 'viewers' => $viewers,
-            // 'tags' => $tags,
-            // 'author' => $author,
-            // 'comments' => $comments,
+            'question' => $question,
+            'liked' => $liked,
+            'viewers' => $viewers,
+            'tags' => $tags,
+            'author' => $author,
+            'comments' => $comments,
             'related_questions' => $relatedQuestions
         ]);
     }

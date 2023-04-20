@@ -182,7 +182,7 @@ const fetchData = () => {
             comments.value.forEach(function (item) {
                 item.author.avatar = 'http://localhost:8000/images/' + item.author.avatar
             })
-            // console.log('detail-question', response.data.related_questions)
+            // console.log('detail-question', comments.value)
             comments.value.reverse();
         })
         .catch((error) => {

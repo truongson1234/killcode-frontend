@@ -27,6 +27,7 @@
                         <button @click="showNotifications($event)"
                             class="relative z-10 block rounded-md bg-white pl-3 pr-1 py-2 focus:outline-none">
                             <i class='bx bxs-bell h-5 w-5 text-gray-800'></i>
+                            <div class="icon-unique-bell" :class="[!statusDotBell ? 'hidden' : '']"></div>
                         </button>
 
                         <div class="list-notification absolute right-0 mt-2 bg-white rounded-md shadow-lg overflow-hidden z-20 hidden"
@@ -182,14 +183,14 @@ const data = () => ({
     channel: null,
 });
 
-var navbarEl = ref(false);
+var navbarEl = ref(true);
+const statusDotBell = ref(false)
 const isAdmin = computed(() => {
     return authStore.getAuthRoles;
 });
 const infoAuth = computed(() => {
     return authStore.getInfoUser;
 });
-
 const notifications = ref([]);
 
 const showMenuRepon = () => {
@@ -229,6 +230,13 @@ const readNotice = async (id_notice, id_, index) => {
     await axios.put(`api/notifications/read-notice/${id_notice}`)
         .then(res => {
             notifications.value[index].read = true
+            notifications.value.some((item) => {
+                if (item.read === false) {
+                    statusDotBell.value = true
+                    return true;
+                }
+                statusDotBell.value = false
+            });
             // console.log(res)
         })
         .catch(err => {
@@ -242,6 +250,7 @@ const readAllNotice = async (user_id) => {
             notifications.value.forEach(function (item) {
                 item.read = true
             })
+            statusDotBell.value = false
             // console.log(res)
         })
         .catch(err => {
@@ -253,6 +262,13 @@ const fetchData = () => {
         .post('/api/notifications/my-notice')
         .then((response) => {
             notifications.value = response.data.data;
+            notifications.value.forEach(function(item) {
+                if(item.read == false) {
+                    statusDotBell.value = true 
+                    // console.log(item,statusDotBell.value);
+                    return
+                }
+            })
             notifications.value.map(function (item) {
                 if (item.sender.avatar.indexOf('http://localhost:8000/images/') == -1) {
                     return item.sender.avatar = 'http://localhost:8000/images/' + item.sender.avatar
@@ -301,6 +317,7 @@ onMounted(async () => {
 
         data.channel.bind('general-announcement', (notification) => {
             notifications.value.unshift(notification);
+            statusDotBell.value = true
             if (notifications.value.length > 5) {
                 notifications.value.pop();
             }
@@ -308,6 +325,7 @@ onMounted(async () => {
 
         data.channel.bind(`event-notification-${userId}`, (notification) => {
             notifications.value.unshift(notification);
+            statusDotBell.value = true
             if (notifications.value.length > 5) {
                 notifications.value.pop();
             }
@@ -328,6 +346,16 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
+.icon-unique-bell:after {
+    position: absolute;
+    content: '';
+    top: 20%;
+    right: 15%;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: red;
+}
 .navbar {
     position: fixed;
     top: 0;
