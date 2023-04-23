@@ -27,11 +27,11 @@
                                             <i class='bx bx-user-plus  pr-1'></i>
                                             <span>Theo dõi</span>
                                         </a> -->
-                                        <button
+                                        <button v-if="authUser != null && inforUser.id == authUser.id"
                                             @click="showModalEditProfile(inforUser.id, inforUser.name, inforUser.email)"
-                                            class="btn btn-sm btn-secondary mb-2 inline-flex items-center text-base">
-                                            <i class='bx bxs-pencil pr-1'></i>
-                                            <span>Chỉnh sửa thông tin cá nhân</span>
+                                            class="btn btn-sm btn-secondary mb-2 inline-flex items-center text-sm lg:text-base">
+                                            <i class='bx bxs-pencil md: pr-1'></i>
+                                            <span class="hidden md:block">Chỉnh sửa thông tin cá nhân</span>
                                         </button>
                                         <div id="modal-edit-user-role"
                                             class="hidden fixed top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] md:h-full">
@@ -56,8 +56,8 @@
                                                     </button>
                                                     <form
                                                         @submit.prevent="updateProfile(formUpdateProfile, userId)">
-                                                        <div class="px-4 py-4 lg:px-5"
-                                                            style="width: 550px">
+                                                        <div class="px-4 py-4 lg:px-5 cc"
+                                                            >
                                                             <h3
                                                                 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
                                                                 Chỉnh sửa thông tin
@@ -126,7 +126,7 @@
                                                             </div>
 
                                                         </div>
-                                                        <div class="px-4 pb-2 lg:px-5"
+                                                        <div class="px-4 pb-4 lg:px-5"
                                                             style="width: 450px">
                                                             <button type="submit"
                                                                 class="btn btn-primary bg-blue-600">Cập
@@ -141,13 +141,13 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="profile-header-tab nav nav-tabs pl-0 border-b border-gray-200"
+                            <div class="profile-header-tab nav nav-tabs pl-0 border-b border-gray-200 "
                                 id="nav-tab" role="tablist">
                                 <ul class="flex flex-wrap -mb-px" id="myTab"
                                     data-tabs-toggle="#myTabContent" role="tablist">
                                     <li class="mr-2" role="presentation">
                                         <button
-                                            class="item-tab inline-block text-gray-500 hover:text-gray-600 hover:border-gray-300 rounded-t-lg py-3 px-4 text-sm font-medium text-center  border-b-2 dark:text-gray-400 dark:hover:text-gray-300 "
+                                            class="item-tab inline-block text-gray-500 hover:text-gray-600 hover:border-gray-300 rounded-t-lg md:py-3 sm:py-1 px-4 text-sm font-medium text-center  border-b-2 dark:text-gray-400 dark:hover:text-gray-300 "
                                             id="post-tab" data-tabs-target="#post"
                                             type="button" role="tab"
                                             aria-controls="post"
@@ -156,7 +156,7 @@
                                     </li>
                                     <li class="mr-2" role="presentation">
                                         <button
-                                            class="item-tab inline-block text-gray-500 hover:text-gray-600 hover:border-gray-300 rounded-t-lg py-3 px-4 text-sm font-medium text-center  border-b-2 dark:text-gray-400 dark:hover:text-gray-300"
+                                            class="item-tab inline-block text-gray-500 hover:text-gray-600 hover:border-gray-300 rounded-t-lg md:py-3 sm:py-1 px-4 text-sm font-medium text-center  border-b-2 dark:text-gray-400 dark:hover:text-gray-300"
                                             id="question-tab"
                                             data-tabs-target="#question"
                                             type="button" role="tab"
@@ -221,7 +221,7 @@
                                     <div v-if="postsToShow < listPost.length || listPost.length > postsToShow"
                                         class="">
                                         <button @click="postsToShow += 1"
-                                            class="bg-blue-600 text-sm py-1 px-2.5 text-white hover:bg-blue-700"
+                                            class="view-more bg-blue-600 text-sm py-1 px-2.5 text-white hover:bg-blue-700"
                                             style="border-radius: 3px;">Xem
                                             thêm</button>
                                     </div>
@@ -324,6 +324,9 @@ const postsToShow = ref(2), questionsToShow = ref(2)
 const inforUser = computed(() => {
     return dataUser.value || ''
 })
+const authUser = computed(() => {
+    return authStore.getInfoUser
+})
 const listPost = ref([]), listQuestion = ref([])
 const dataUser = ref([])
 const userId = route.params.id;
@@ -391,7 +394,8 @@ onMounted(async () => {
     fetchDataUser(userId)
     fetchDataPost()
     fetchDataQuestion()
-
+    await authStore.getToken()
+    await authStore.getUser()
     pageLoaded(1000)
 })
 const showModalEditProfile = (idUser, nameUser, mailUser) => {
@@ -598,6 +602,9 @@ const updateProfile = async (formData, userId) => {
 .tab-post {
     min-width: 50rem;
 }
+#modal-edit-user-role form  {
+    width: 550px;
+}
 @media (max-width: 976px) {
     .tab-post {
         min-width: 40rem;
@@ -608,6 +615,39 @@ const updateProfile = async (formData, userId) => {
         min-width: 30rem;
         margin-bottom: 0;
     }
+    .view-more {
+        margin-top: 1.5rem  ;
+    }
+    .profile-header-img {
+        width: 80px;
+        height: 80px;
+    }
+    .profile-header-tab {
+        margin-left: 30px!important;
+    }
+}
+@media (min-width: 640px) {
+    
+}
+@media (max-width: 639px) {
+    .profile-header-img {
+        width: 60px;
+        height: 60px;
+    }
+    .profile-header-tab {
+        margin-left: 95px!important;
+    }
+    #modal-edit-user-role form {
+        width: 400px;
+    }
+    #modal-edit-user-role form .avatar-preview {
+        width: 150px;
+        height: 150px;
+    }
+    #modal-edit-user-role form .avatar-profile-edit {
+        max-width: 220px;
+    }
+    
 }
 </style>
 <style>

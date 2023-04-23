@@ -41,18 +41,18 @@
       <div class="flex items-center justify-between mt-2">
         <div class="box-tags">
           <a href="#"
-            class="inline-flex items-center bg-blue-100 text-blue-800 text-sm font-medium mr-1 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300 "
+            class="inline-flex items-center bg-blue-100 text-blue-800 text-xs md:text-sm font-medium mr-1 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300 "
             v-for="(data, index) in data.tags" :key="index">
             {{ data.name }}
           </a>
         </div>
         <div class="box-question-engagement">
           <div class="engagements flex items-center">
-            <span class="engagements-text">{{ data.likes_count ? data.likes_count : 0 }}
+            <span class="engagements-text flex items-center">{{ data.likes_count ? data.likes_count : 0 }}
               <i class='bx bx-like fa-fw fa-lg m-r-3'></i></span>
-            <span class="engagements-text">{{ data.views_count ? data.views_count : 0 }} <i
+            <span class="engagements-text flex items-center">{{ data.views_count ? data.views_count : 0 }} <i
                 class='bx bx-show fa-fw fa-lg m-r-3'></i></span>
-            <span class="engagements-text">{{ data.comments_count ? data.comments_count : 0 }} <i
+            <span class="engagements-text flex items-center">{{ data.comments_count ? data.comments_count : 0 }} <i
                 class="bx bx-comment-detail fa-fw fa-lg m-r-3"></i></span>
           </div>
         </div>
