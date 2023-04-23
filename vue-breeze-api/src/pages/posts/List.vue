@@ -1,5 +1,14 @@
 <template>
     <div class="container">
+        <div class="flex items-center sort-data">
+            <label for="">Sắp xếp theo:</label>
+            <select id="countries" class="bg-gray-50 border-0 text-gray-900 text-sm rounded-lg focus:ring-transparent p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" @change="sortPost($event)">
+                <option selected value="new" class="form-select-option py-2">Mới nhất</option>
+                <option value="view" class="form-select-option py-2">Lượt xem nhiều nhất</option>
+                <option value="like" class="form-select-option py-2">Đánh giá nhiều nhất</option>
+                <option value="comment" class="form-select-option py-2">Bình luận nhiều nhất</option>
+            </select>
+        </div>
         <div class="grid grid-cols-4 gap-x-2 gap-y-5 mx-auto">
             <div class="col-span-4 row-span-1 lg:col-span-3 lg:row-span-3">
                 <div class="" v-for="post in displayedItems" :key="post.id">
@@ -87,6 +96,21 @@ export default {
         }
     },
     methods: {
+        sortPost(event){
+            var key = event.target.value
+            if(key == 'view') {
+                return this.posts.sort((a,b) => b.views_count - a.views_count)
+            }
+            if(key == 'new') {
+                return this.posts.sort((a,b) => new Date(b.created_at) - new Date(a.created_at))
+            }
+            if(key == 'like') {
+                return this.posts.sort((a,b) => b.likes_count - a.likes_count)
+            }
+            if(key == 'comment') {
+                return this.posts.sort((a,b) => b.comments_count - a.comments_count)
+            }
+        },
         async deletePost(id_post) {
             await axios.delete(`api/posts/${id_post}`)
                 .then(res => {
