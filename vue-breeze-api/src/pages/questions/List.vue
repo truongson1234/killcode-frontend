@@ -1,34 +1,51 @@
 <template>
     <div class="container">
+        <div class="flex items-center sort-data">
+            <label for="">Sắp xếp theo:</label>
+            <select id="countries"
+                class="bg-gray-50 border-0 text-gray-900 text-sm rounded-lg focus:ring-transparent p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                @change="sortQuestion($event)">
+                <option selected value="new" class="form-select-option py-2">Mới
+                    nhất</option>
+                <option value="view" class="form-select-option py-2">Lượt xem nhiều
+                    nhất</option>
+                <option value="like" class="form-select-option py-2">Đánh giá nhiều
+                    nhất</option>
+                <option value="comment" class="form-select-option py-2">Bình luận
+                    nhiều nhất</option>
+            </select>
+        </div>
         <div class="grid grid-cols-4 gap-x-2 gap-y-5 mx-auto">
             <div class="col-span-4 row-span-1 lg:col-span-3 lg:row-span-3">
-                <div v-for="question in displayQuesitons"
-                    :key="question.id">
+                <div v-for="question in displayQuesitons" :key="question.id">
                     <QuestionItem :data="question"
                         :deleteQuestion="deleteQuestion" />
                 </div>
                 <div v-if="questions && questions.length > itemPerPage">
                     <v-pagination v-model="pageQuestion" :pages="totalPages"
-                    :range-size="1" active-color="#0074FF" class="my-3"
-                    @update:modelValue="onPageChanged" />
+                        :range-size="1" active-color="#0074FF" class="my-3"
+                        @update:modelValue="onPageChanged" />
                 </div>
             </div>
             <div
                 class="col-span-4 p-3 box-popular_tags h-100 row-span-1 lg:col-span-1 lg:row-span-1">
-                <h5 class="text-center pb-3 font-bold text-blue-500 ">Chủ đề phổ biến</h5>
+                <h5 class="text-center pb-3 font-bold text-blue-500 ">Chủ đề phổ
+                    biến</h5>
                 <div v-for="item in popular_tags" :key="item.id">
                     <div class="mb-2">
                         <a
-                            class="inline-flex items-center bg-blue-100 text-blue-800 text-sm font-medium mr-1 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300 ">{{ item.name }}</a>
+                            class="inline-flex items-center bg-blue-100 text-blue-800 text-sm font-medium mr-1 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300 ">{{
+                                item.name }}</a>
                         <span>{{ item.questions_count }} câu hỏi</span>
                     </div>
                 </div>
             </div>
-            <div
-                class="col-span-4 p-3 box-popular_tags h-100 row-span-1 lg:col-span-1 lg:row-span-1" v-if="new_questions && new_questions.length != 0">
-                <h5 class="text-center pb-3 font-bold text-blue-500">Câu hỏi mới nhất</h5>
+            <div class="col-span-4 p-3 box-popular_tags h-100 row-span-1 lg:col-span-1 lg:row-span-1"
+                v-if="new_questions && new_questions.length != 0">
+                <h5 class="text-center pb-3 font-bold text-blue-500">Câu hỏi mới
+                    nhất</h5>
                 <div v-for="item in new_questions" :key="item.id">
-                    <QuestionSidebar :data="item"/>
+                    <QuestionSidebar :data="item" />
                 </div>
             </div>
         </div>
@@ -88,6 +105,21 @@ const totalPages = computed(() => {
         return Math.ceil(questions.value.length / itemPerPage.value)
     }
 })
+const sortQuestion = (event) => {
+    var key = event.target.value
+    if (key == 'view') {
+        return questions.value.sort((a, b) => b.views_count - a.views_count)
+    }
+    if (key == 'new') {
+        return questions.value.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+    }
+    if (key == 'like') {
+        return questions.value.sort((a, b) => b.likes_count - a.likes_count)
+    }
+    if (key == 'comment') {
+        return questions.value.sort((a, b) => b.comments_count - a.comments_count)
+    }
+}
 const onPageChanged = (page) => {
     return currentPage.value = page
 }
@@ -97,8 +129,7 @@ onMounted(() => {
 
 </script>
 
-<style scoped>
-.box-popular_tags {
+<style scoped>.box-popular_tags {
     box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
     border-radius: 6px;
 }</style>

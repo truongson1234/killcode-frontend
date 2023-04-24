@@ -1,11 +1,27 @@
 <template>
     <div>
         <div class="upper-space"></div>
-        <header class="navbar" :class="{ open: navbarEl }">
+        <header class="navbar relative" :class="{ open: navbarEl }">
+            <div class="navbar-navigation-mobile hidden absolute left-0 top-16 p-4 bg-white w-full">
+                <ul class="text-center text-gray-900">
+                    <li class="py-2 hover:bg-gray-600 hover:text-white">
+                        <router-link :to="{ name: 'TagsList' }" class="hover:text-inherit">Chủ
+                            đề</router-link>
+                    </li>
+                    <li class="py-2 hover:bg-gray-600 hover:text-white">
+                        <router-link :to="{ name: 'QuestionsList' }" class="hover:text-inherit">Câu
+                            hỏi</router-link>
+                    </li>
+                    <li class="py-2 hover:bg-gray-600 hover:text-white">
+                        <router-link :to="{ name: 'PostsList' }" class="hover:text-inherit">Bài
+                            viết</router-link>
+                    </li>
+                </ul>
+            </div>
             <div class="container">
                 <router-link class="navbar__logo"
                     :to="{ name: 'Home' }">Killcode</router-link>
-                <div class="navbar__group ">
+                <div class="navbar__group">
                     <ul class="navbar__navigation flex items-center">
                         <li>
                             <router-link :to="{ name: 'TagsList' }">Chủ
@@ -23,11 +39,13 @@
                                 viết</router-link>
                         </li>
                     </ul>
+                    
                     <div class="relative" v-if="authStore.getInfoUser">
                         <button @click="showNotifications($event)"
                             class="relative z-10 block rounded-md bg-white pl-3 pr-1 py-2 focus:outline-none">
                             <i class='bx bxs-bell h-5 w-5 text-gray-800'></i>
-                            <div class="icon-unique-bell" :class="[!statusDotBell ? 'hidden' : '']"></div>
+                            <div class="icon-unique-bell"
+                                :class="[!statusDotBell ? 'hidden' : '']"></div>
                         </button>
 
                         <div class="list-notification absolute right-0 mt-2 bg-white rounded-md shadow-lg overflow-hidden z-20 hidden"
@@ -159,8 +177,8 @@
                             </div>
                             <!--  -->
                         </template>
-                        <i class="navbar__toggle-menu bx bx-menu"
-                            @click="showMenuRepon"></i>
+                        <i class="navbar__toggle-menu bx bx-menu text-gray-800"
+                            @click="showMenuRepon($event)"></i>
                     </div>
                 </div>
             </div>
@@ -193,8 +211,13 @@ const infoAuth = computed(() => {
 });
 const notifications = ref([]);
 
-const showMenuRepon = () => {
-    navbarEl.value = !navbarEl.value;
+const showMenuRepon = (event) => {
+    event.stopPropagation();
+    if ($('.navbar-navigation-mobile').first().is(":hidden")) {
+        $('.navbar-navigation-mobile').slideDown(300);
+    } else {
+        $('.navbar-navigation-mobile').slideUp(300);
+    }
 };
 const showNotifications = (event) => {
     event.stopPropagation();
@@ -262,9 +285,9 @@ const fetchData = () => {
         .post('/api/notifications/my-notice')
         .then((response) => {
             notifications.value = response.data.data;
-            notifications.value.forEach(function(item) {
-                if(item.read == false) {
-                    statusDotBell.value = true 
+            notifications.value.forEach(function (item) {
+                if (item.read == false) {
+                    statusDotBell.value = true
                     // console.log(item,statusDotBell.value);
                     return
                 }
@@ -288,6 +311,9 @@ onMounted(async () => {
         }
         if (!$(event.target).closest('.showNotifications').length) {
             $('.list-notification').slideUp(300);
+        }
+        if (!$(event.target).closest('.showMenuRepon').length) {
+            $('.navbar-navigation-mobile').slideUp(300);
         }
         if (!$(event.target).closest('.showPencilWrite').length) {
             $('.pencil-write').slideUp(300);
@@ -346,6 +372,9 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
+.navbar .navbar-navigation-mobile {
+    box-shadow: 0px 8px 16px 0px rgba(146, 146, 146, 0.2);
+}
 .icon-unique-bell:after {
     position: absolute;
     content: '';
@@ -356,6 +385,7 @@ onBeforeUnmount(() => {
     border-radius: 50%;
     background: red;
 }
+
 .navbar {
     position: fixed;
     top: 0;
@@ -519,24 +549,6 @@ onBeforeUnmount(() => {
     }
 
     .navbar .navbar__navigation {
-        position: absolute;
-        opacity: 0;
-        visibility: hidden;
-        left: 100%;
+        display: none;
     }
-
-    .navbar.open .navbar__navigation {
-        top: 70px;
-        opacity: 1;
-        visibility: visible;
-        left: 0;
-        display: flex;
-        flex-direction: column;
-        background: var(--color-dark-mode);
-        width: 100%;
-        height: calc(100vh - 70px);
-        padding: 40px !important;
-        border-top: 1px solid rgba(0, 0, 0, 0.05);
-    }
-}
-</style>
+}</style>
