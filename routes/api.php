@@ -28,9 +28,16 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     ];
 });
 
+Route::group(['prefix' => 'dashboard'], function () {
+    Route::group(['prefix' => 'statistical'], function () {
+        Route::get('', 'App\Http\Controllers\Admin\StatisticalController@index');
+    });
+    Route::group(['prefix' => 'posts'], function () {
+        Route::get('', 'App\Http\Controllers\Admin\PostController@index');
+    });
+});
+
 Route::group(['prefix' => 'user'], function () {
-    Route::post('update-profile', [UserController::class, 'updateProfile']);
-    Route::get('{id}', [UserController::class, 'getUserById']);
 });
 
 Route::get('/search', 'App\Http\Controllers\SearchController@search');

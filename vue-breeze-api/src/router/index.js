@@ -246,6 +246,22 @@ const routes = [
                 name: "AdminTags",
                 component: () => import("@/pages/admin/Tags.vue"),
             },
+            {
+                path: "users",
+                name: "AdminUsers",
+                component: () => import("@/pages/admin/Users.vue"),
+            },
+            {
+                path: "posts",
+                name: "AdminPosts",
+                component: () => import("@/pages/admin/Posts.vue"),
+            },
+            {
+                path: "questions",
+                name: "AdminQuestions",
+                component: () => import("@/pages/admin/Questions.vue"),
+            },
+            
         ],
         name: "Admin",
         components: {
