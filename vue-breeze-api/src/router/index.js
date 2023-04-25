@@ -218,8 +218,20 @@ const routes = [
                 meta: { showFooter: true, showNavBar: true },
             },
             {
-                path: "user/:id",
+                path: "user",
                 name: "User",
+                children: [
+                    {
+                        path: "/user/:id",
+                        name: "Profile",
+                        component: () => import("@/pages/user/Profile.vue"),
+                    },
+                    {
+                        path: ":id/post/drafts",
+                        name: "PostDrafts",
+                        component: () => import("@/pages/user/PostDrafts.vue"),
+                    },
+                ],
                 component: () => import("@/pages/user/Index.vue"),
                 meta: { showFooter: true, showNavBar: true },
                 // beforeEnter: checkLogined,
@@ -261,7 +273,6 @@ const routes = [
                 name: "AdminQuestions",
                 component: () => import("@/pages/admin/Questions.vue"),
             },
-            
         ],
         name: "Admin",
         components: {

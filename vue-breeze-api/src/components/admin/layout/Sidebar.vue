@@ -48,7 +48,8 @@ const route = useRoute()
                         :class="route.name == 'AdminTags' ? 'active' : ''">
                         <div
                             class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                <i class='bx bxs-purchase-tag text-success text-sm opacity-10' style="padding-bottom: 6px"></i>
+                            <i class='bx bxs-purchase-tag text-success text-sm opacity-10'
+                                style="padding-bottom: 6px"></i>
                         </div>
                         <span class="nav-link-text ms-1">Thẻ</span>
                     </router-link>
@@ -60,7 +61,8 @@ const route = useRoute()
                         Account pages</h6>
                 </li>
                 <li class="nav-item">
-                    <router-link class="nav-link " :to="{ name: 'User', params: {id: authStore.getInfoUser.id} }">
+                    <router-link class="nav-link "
+                        :to="{ name: 'Profile', params: {id: authStore.getInfoUser.id} }">
                         <div
                             class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                             <i
@@ -73,22 +75,22 @@ const route = useRoute()
                     <button class="nav-link" @click="authStore.handleLogout()">
                         <div
                             class="icon icon-shape icon-sm text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class='bx bxs-log-out text-dark text-sm opacity-10' style="padding-bottom: 6px"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">Đăng xuất</span>
-                    </button>
-                </li>
+                            <i class='bx bxs-log-out text-dark text-sm opacity-10'
+                            style="padding-bottom: 6px"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Đăng xuất</span>
+                </button>
+            </li>
             <!-- <li class="nav-item">
             <router-link :to="{ name: 'Home' }" class="nav-link " href="">
                 <div class="icon-sm text-center me-2 d-flex align-items-center justify-content-center ">
                 <i class='bx bxs-home text-lg' ></i>
-                        </div>
-                        <div class="h-full">
-                            <span class="nav-link-text ms-1">Home</span>
-                        </div>
-                    </router-link>
-                    </li> -->
+                            </div>
+                            <div class="h-full">
+                                <span class="nav-link-text ms-1">Home</span>
+                            </div>
+                        </router-link>
+                        </li> -->
             </ul>
         </div>
-    </aside>
-</template>
+</aside></template>

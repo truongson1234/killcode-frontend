@@ -11,10 +11,31 @@
                             </span>
                         </div>
                     </div>
-                    <div>
+                    <div  v-if="post.status_id == 2">
+                        <span class="text-gray-500">
+                            <span><i class='bx bxs-lock-alt' ></i>Bản nháp - </span>
+                            Sửa đổi lần cuối khhoảng
+                            {{ formatDateTimeFB(new Date(post.updated_at)) }}
+                        </span>
+                        <!-- <ul class="flex items-center justify-end">
+                            <li class="pr-4 text-gray-500 text-lg flex items-center">
+                                <i class="bx bx-show pr-1"></i>
+                                {{ post.views_count }}
+                            </li>
+                            <li class="pr-4 text-gray-500 text-lg flex items-center">
+                                <i class="bx bx-comment-detail pr-1"></i>
+                                {{ post.comments_count }}
+                            </li>
+                            <li class="pr-4 text-gray-500 text-lg flex items-center">
+                                <i class="bx bx-like pr-1"></i>
+                                {{ post.likes_count }}
+                            </li>
+                        </ul> -->
+                    </div>
+                    <div  v-else>
                         <span class="text-gray-500">
                             Đã đăng vào
-                            {{ formatDetailDateTime(post.created_at) }}
+                            {{ formatDetailDateTime(post.updated_at) }}
                         </span>
                         <ul class="flex items-center justify-end">
                             <li class="pr-4 text-gray-500 text-lg flex items-center">
@@ -125,6 +146,7 @@ import {
     pageLoading,
     pageLoaded,
     formatDetailDateTime,
+    formatDateTimeFB,
 } from "@/assets/js/app.js";
 import axios from "axios";
 import Pusher from "pusher-js";

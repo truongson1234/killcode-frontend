@@ -2,18 +2,22 @@
     <div>
         <div class="upper-space"></div>
         <header class="navbar relative" :class="{ open: navbarEl }">
-            <div class="navbar-navigation-mobile hidden absolute left-0 top-16 p-4 bg-white w-full">
+            <div
+                class="navbar-navigation-mobile hidden absolute left-0 top-16 p-4 bg-white w-full">
                 <ul class="text-center text-gray-900">
                     <li class="py-2 hover:bg-gray-600 hover:text-white">
-                        <router-link :to="{ name: 'TagsList' }" class="hover:text-inherit">Chủ
+                        <router-link :to="{ name: 'TagsList' }"
+                            class="hover:text-inherit">Chủ
                             đề</router-link>
                     </li>
                     <li class="py-2 hover:bg-gray-600 hover:text-white">
-                        <router-link :to="{ name: 'QuestionsList' }" class="hover:text-inherit">Câu
+                        <router-link :to="{ name: 'QuestionsList' }"
+                            class="hover:text-inherit">Câu
                             hỏi</router-link>
                     </li>
                     <li class="py-2 hover:bg-gray-600 hover:text-white">
-                        <router-link :to="{ name: 'PostsList' }" class="hover:text-inherit">Bài
+                        <router-link :to="{ name: 'PostsList' }"
+                            class="hover:text-inherit">Bài
                             viết</router-link>
                     </li>
                 </ul>
@@ -39,7 +43,7 @@
                                 viết</router-link>
                         </li>
                     </ul>
-                    
+
                     <div class="relative" v-if="authStore.getInfoUser">
                         <button @click="showNotifications($event)"
                             class="relative z-10 block rounded-md bg-white pl-3 pr-1 py-2 focus:outline-none">
@@ -75,8 +79,8 @@
                                                 v-html="notification.content"></span>
                                         </p>
                                         <p class="text-xs mx-2 text-gray-400">{{
-                                            formatDateTimeFB(new
-                                                Date(notification.created_at)) }}</p>
+                                                                                    formatDateTimeFB(new
+                                                                                    Date(notification.created_at)) }}</p>
                                     </div>
                                 </router-link>
                             </div>
@@ -137,18 +141,27 @@
                                         <div class="flex flex-col pl-1.5">
                                             <span
                                                 class="text-blue-500 text-md font-bold">{{
-                                                    infoAuth.name }}</span>
+                                                                                                infoAuth.name }}</span>
                                             <span class="text-gray-500 text-sm">{{
-                                                infoAuth.email }}</span>
+                                                                                            infoAuth.email }}</span>
                                         </div>
                                     </li>
                                     <li>
                                         <router-link
                                             class="navbar__ dropdown-item flex items-center"
                                             @click="hideItemDropdownIconUser"
-                                            :to="{ name: 'User', params: { id: infoAuth.id } }">
+                                            :to="{ name: 'Profile', params: { id: infoAuth.id } }">
                                             <i class='bx bxs-user pr-1.5'></i> Hồ sơ
                                             cá nhân
+                                        </router-link>
+                                    </li>
+                                    <li>
+                                        <router-link
+                                            class="navbar__ dropdown-item flex items-center"
+                                            @click="hideItemDropdownIconUser"
+                                            :to="{ name: 'PostDrafts', params: { id: infoAuth.id } }">
+                                            <i class='bx bxs-notepad pr-1.5'></i>
+                                            Quản lí nội dung
                                         </router-link>
                                     </li>
                                     <li v-if="isAdmin.indexOf('admin') != -1">
@@ -375,6 +388,7 @@ onBeforeUnmount(() => {
 .navbar .navbar-navigation-mobile {
     box-shadow: 0px 8px 16px 0px rgba(146, 146, 146, 0.2);
 }
+
 .icon-unique-bell:after {
     position: absolute;
     content: '';

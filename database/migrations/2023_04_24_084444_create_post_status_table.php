@@ -17,7 +17,7 @@ class CreatePostStatusTable extends Migration
             $table->id();
             $table->string('name');
             $table->text('describe');
-            $table->boolean('is_default')->default(0);;
+            $table->boolean('is_default')->default(0);
             $table->timestamps();
         });
     }

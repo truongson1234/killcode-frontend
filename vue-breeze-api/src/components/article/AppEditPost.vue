@@ -95,7 +95,7 @@ const payload = ref({
     tags: []
 
 });
-const statusTitle = ref(false), statusTag = ref(false), statusBody = ref(false), focusEditor = ref(false)
+const statusTitle = ref(false), statusTag = ref(false), statusBody = ref(false), focusEditor = ref(false), statusSaveDraft = ref(true)
 const checkCkeditor = () => {
     if (focusEditor.value) {
         payload.value.post.body == '' ? (statusBody.value = true, $('.ck.ck-reset.ck-editor.ck-rounded-corners').attr('style', 'border: 1px solid red')) : (statusBody.value = false, $('.ck.ck-reset.ck-editor.ck-rounded-corners').removeAttr('style'))
@@ -157,7 +157,8 @@ const handleUpdated = (payload) => {
     } else {
         axios.put(`/api/posts/${postId}`, payload)
             .then(res => {
-                console.log(res);
+                // console.log(res);
+                statusSaveDraft.value = false
                 router.push({ name: 'PostDetail', params: { id: postId } })
                 .then(() => {router.go()})
             })
@@ -166,4 +167,33 @@ const handleUpdated = (payload) => {
             })
     }
 };
+router.beforeEach((to, from, next) => {
+    if (from.name === 'PostEdit') {
+        if (payload.value.post.title != '' && payload.value.post.tag_ids.length > 0 && payload.value.post.body != '' && statusSaveDraft.value == true) {
+            // Swal.fire({
+            //     title: "Bạn đang muốn rời đi trong khi bài viết chưa xuất bản.",
+            //     text: `Bạn có muốn lưu bài viết này dưới dạng bản nháp không?`,
+            //     icon: "warning",
+            //     showCancelButton: true,
+            //     confirmButtonColor: "#3085d6",
+            //     cancelButtonColor: "#A6A6A6",
+            //     confirmButtonText: "Lưu",
+            //     cancelButtonText: "Hủy",
+            // })
+            const confirmNavigation = confirm('Bạn có muốn lưu lại bài viết?');
+
+            if (!confirmNavigation) {
+                next(false);
+                return;
+            } else {
+                axios.put(`/api/posts/draft/${postId}`, payload.value.post)
+                // .then((response) => {
+                //      console.log(response.data)
+                // });
+            }
+
+        }
+    }
+    next()
+});
 </script>

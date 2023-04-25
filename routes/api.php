@@ -37,13 +37,11 @@ Route::group(['prefix' => 'dashboard'], function () {
     });
 });
 
-Route::group(['prefix' => 'user'], function () {
-});
 
 Route::get('/search', 'App\Http\Controllers\SearchController@search');
 
 // Get user by id
-Route::group(['prefix' => 'users'], function () {
+Route::group(['prefix' => 'user-detail'], function () {
     Route::get('{id}', 'App\Http\Controllers\UserController@show');
 });
 
@@ -75,6 +73,9 @@ Route::group(['prefix' => 'posts'], function () {
     Route::post('', 'App\Http\Controllers\PostController@store');
     Route::put('{id}', 'App\Http\Controllers\PostController@update');
     Route::delete('{id}', 'App\Http\Controllers\PostController@destroy');
+    Route::post('draft', 'App\Http\Controllers\PostController@draftPost');
+    Route::get('draft/{id_user}', 'App\Http\Controllers\PostController@getDraftPostByUser');
+    Route::put('draft/{id_post}', 'App\Http\Controllers\PostController@updateDraftPost');
     // Interactions
     Route::get('interactions/views', 'App\Http\Controllers\InteractionController@incrementViews');
     Route::post('interactions/liked', 'App\Http\Controllers\InteractionController@liked');

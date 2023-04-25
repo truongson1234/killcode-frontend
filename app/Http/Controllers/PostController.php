@@ -27,6 +27,7 @@ class PostController extends Controller
             ->withCount(['interactions as views_count' => function($query) {
                 $query->select(\DB::raw("SUM(views) as views_count"));
             }])
+            ->orderBy('created_at', 'desc')->where('status_id', 1)
             ->get();
             
         $posts = $data_query->map(function ($post) {
@@ -177,7 +178,7 @@ class PostController extends Controller
     }
 
     public function getPostByUser($id) {
-        $data_query = Post::where('user_id', $id)->with('user', 'tags')->get();
+        $data_query = Post::where('user_id', $id)->with('user', 'tags')->orderBy('created_at', 'desc')->where('status_id', 1)->get();
         $user = User::findOrFail($id);
         $posts = $data_query->map(function ($post) {
             $post->author = [
@@ -204,6 +205,7 @@ class PostController extends Controller
             $post->user_id = auth()->user()->id;
             $post->title = $request->input('title');
             $post->body = $request->input('body');
+            $post->status_id = 1;
             $post->save();
 
             // tạo followed tag
@@ -284,25 +286,148 @@ class PostController extends Controller
             ]);
         }
     }
+    public function draftPost(Request $request)
+    {
+        try {
+            // tạo bài viết
+            $post = new Post();
+            // $post->user_id = 1;
+            $post->user_id = auth()->user()->id;
+            $post->title = $request->input('title');
+            $post->body = $request->input('body');
+            $post->status_id = 2;
+            $post->save();
+
+            // tạo followed tag
+            $tagIds = $request->input('tag_ids');
+
+            $post->tags()->attach($tagIds);
+
+            // Tạo thông báo
+            $data_notification = [
+                'sender_id' => $post->user_id,
+                'title' => 'Thông báo có bài viết mới',
+                'type_notification' => 'new post',
+                'route' => [
+                    'name' => 'PostDetail',
+                    'params' => [
+                        'id' => $post->id
+                    ]
+                ]
+            ];
+
+            $pusher = new Pusher(
+                env('PUSHER_APP_KEY'),
+                env('PUSHER_APP_SECRET'),
+                env('PUSHER_APP_ID'),
+                [
+                    'cluster' => env('PUSHER_APP_CLUSTER'),
+                    'encrypted' => true
+                ]
+            );
+
+            // lấy tất cả các user đã follow các tag trong post
+            $users = User::whereIn('id', function($query) use($tagIds) {
+                $query->select('user_id')
+                    ->from('followed_tags')
+                    ->whereIn('tag_id', $tagIds);
+            })->with('tags')->get();
+
+            if ($users->count()) {
+
+                // gửi thông báo tới user đang follow tag trong post
+                foreach ($users as $user) {
+                    $tagNames = $user->tags->whereIn('id', $tagIds)
+                        ->take(3)
+                        ->pluck('name')
+                        ->implode(', ');
+
+                    $notification = new Notification([
+                        'user_id' => $user->id,
+                        'sender_id' => $data_notification['sender_id'],
+                        'title' => $data_notification['title'],
+                        // 'content' => 'Có bài viết mới từ ' . $tagNames . '. Tựa đề: ' . $post->title,
+                        'content' => 'Có bài viết mới từ chủ đề <span class="font-bold">' . $tagNames .'.</span>',
+                        'type_notification' => $data_notification['type_notification'],
+                        'route' => $data_notification['route'],
+                        'read' => false,
+                    ]);
+        
+                    $notification->save();
+
+                    $notification['user'] = $notification->user;
+                    $notification['sender'] = $notification->sender;
+
+                    $pusher->trigger('chanel-notification', 'event-notification-' . $user->id, $notification->toArray());
+                }
+            }            
+
+            return response()->json([
+                'data' => $post,
+                'status' => 1,
+                'message' => 'Lưu bản nháp thành công.'
+            ], 201);
+
+        } catch (ApiErrorException $exception) {
+            return response()->json([
+                'data' => [],
+                'status' => 0,
+                'message' => $exception->getMessage()
+            ]);
+        }
+    }
+
+    public function getDraftPostByUser($id) 
+    {
+        $user = User::findOrFail($id);
+        $posts = Post::where('user_id', $id)->where('status_id', 2)->with('tags')->orderBy('created_at', 'desc')->get();
+        return response()->json(['data' => $posts]);
+    }
 
     public function update(Request $request, $id)
     {
-        // Update post data in database
+        $post = Post::findOrFail($id);
+        // $post->update($request->all());
+        if($post->status_id == 2) {
+            $post->update([
+                'title' => $request->input('title'),
+                'body' => $request->input('body'),
+                'updated_at' => now(),
+                'status_id' => 1,
+            ]);
+        }else {
+            $post->update([
+                'title' => $request->input('title'),
+                'body' => $request->input('body'),
+                'updated_at' => now()
+            ]);
+        }
+        $tagIds = $request->input('tag_ids');
+        $post->tags()->detach();
+        $post->tags()->attach($tagIds);
+        return response()->json([
+            'data' => $post,
+            'status' => 1,
+            'message' => 'Cập nhật thành công.'
+        ]);
+    }
+    public function updateDraftPost(Request $request, $id)
+    {
         $post = Post::findOrFail($id);
         // $post->update($request->all());
         $post->update([
             'title' => $request->input('title'),
             'body' => $request->input('body'),
+            'updated_at' => now()
         ]);
-        // tạo followed tag
+
         $tagIds = $request->input('tag_ids');
         $post->tags()->detach();
         $post->tags()->attach($tagIds);
-        // Return updated post data
         return response()->json([
             'data' => $post,
             'status' => 1,
-            'message' => 'Cập nhật thành công.'
+            'message' => 'Cập nhật bản nháp thành công.'
         ]);
     }
 

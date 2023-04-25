@@ -21,8 +21,9 @@
         <div class="userimage"><img :src="data.author.avatar" alt="" /></div>
         <div class="flex flex-col">
           <span class="username leading-5">
-            <router-link :to="{ name: 'User', params: { id: data.author.id } }">{{
-              data.author.name }}</router-link>
+            <router-link
+              :to="{ name: 'Profile', params: { id: data.author.id } }">{{
+                            data.author.name }}</router-link>
           </span>
           <span class="time-question leading-3 text-slate-400" v-if="statusDate">
             đăng lúc
@@ -48,11 +49,14 @@
         </div>
         <div class="box-question-engagement">
           <div class="engagements flex items-center">
-            <span class="engagements-text flex items-center">{{ data.likes_count ? data.likes_count : 0 }}
+            <span class="engagements-text flex items-center">{{ data.likes_count ?
+                          data.likes_count : 0 }}
               <i class='bx bx-like fa-fw fa-lg m-r-3'></i></span>
-            <span class="engagements-text flex items-center">{{ data.views_count ? data.views_count : 0 }} <i
+            <span class="engagements-text flex items-center">{{ data.views_count ?
+                          data.views_count : 0 }} <i
                 class='bx bx-show fa-fw fa-lg m-r-3'></i></span>
-            <span class="engagements-text flex items-center">{{ data.comments_count ? data.comments_count : 0 }} <i
+            <span class="engagements-text flex items-center">{{
+                          data.comments_count ? data.comments_count : 0 }} <i
                 class="bx bx-comment-detail fa-fw fa-lg m-r-3"></i></span>
           </div>
         </div>
