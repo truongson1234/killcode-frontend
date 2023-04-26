@@ -431,6 +431,14 @@ class PostController extends Controller
         ]);
     }
 
+    public function searchDraftPost(Request $request, $id) {
+        $keyword = $request->input('title');
+        $draftPosts = Post::where('title', 'like', "%$keyword%")
+                            ->where('user_id', $id)->where('status_id', 2)
+                            ->with('tags')->orderBy('updated_at', 'desc')->get();
+        return response()->json(['data' => $draftPosts]);
+    }
+
     public function destroy($id)
     {
         $post = Post::findOrFail($id);

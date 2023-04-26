@@ -9,7 +9,7 @@ class Question extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'title', 'body'];
+    protected $fillable = ['user_id', 'title', 'body', 'status_id'];
 
     public function user()
     {
@@ -34,5 +34,9 @@ class Question extends Model
     public function interactions()
     {
         return $this->hasMany(QuestionInteraction::class);
+    }
+    public function status()
+    {
+        return $this->hasOne(PostStatus::class, 'status_id');
     }
 }

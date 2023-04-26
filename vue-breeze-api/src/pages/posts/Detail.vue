@@ -17,20 +17,6 @@
                             Sửa đổi lần cuối khhoảng
                             {{ formatDateTimeFB(new Date(post.updated_at)) }}
                         </span>
-                        <!-- <ul class="flex items-center justify-end">
-                            <li class="pr-4 text-gray-500 text-lg flex items-center">
-                                <i class="bx bx-show pr-1"></i>
-                                {{ post.views_count }}
-                            </li>
-                            <li class="pr-4 text-gray-500 text-lg flex items-center">
-                                <i class="bx bx-comment-detail pr-1"></i>
-                                {{ post.comments_count }}
-                            </li>
-                            <li class="pr-4 text-gray-500 text-lg flex items-center">
-                                <i class="bx bx-like pr-1"></i>
-                                {{ post.likes_count }}
-                            </li>
-                        </ul> -->
                     </div>
                     <div  v-else>
                         <span class="text-gray-500">

@@ -81,6 +81,7 @@ const editorConfig = {
 
 const route = useRoute();
 const postId = route.params.id;
+const authId = route.params.auth;
 const dataTags = ref({
     url: "/api/tags",
     tags: [],

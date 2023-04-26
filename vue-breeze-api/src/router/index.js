@@ -34,6 +34,22 @@ const checkLogined = (to, from, next) => {
         next("/home");
     }
 };
+// Kiểm tra xem người dùng đang đăng nhập hiện tại có được phép edit bài viết hay không 
+const checkAuthorPost = async (to, from, next) => {
+    const authStore = useAuthStore();
+    if(authStore.getInfoUser != null) {
+        const authId = authStore.getInfoUser.id;
+        const paramAuthId = to.params.auth;
+    
+        if (authId === parseInt(paramAuthId)) {
+            next();
+        } else {
+            next("/home");
+        }
+    }else {
+        next("/home");
+    }
+};
 const routes = [
     //! ROUTES AUTH
     {
@@ -152,9 +168,10 @@ const routes = [
                         component: () => import("@/pages/questions/Detail.vue"),
                     },
                     {
-                        path: "/question-edit/:id",
+                        path: "/question-edit/:id/auth/:auth",
                         name: "QuestionEdit",
                         component: () => import("@/pages/questions/Edit.vue"),
+                        beforeEnter: checkAuthorPost,
                     },
                 ],
                 component: () => import("@/pages/questions/Index.vue"),
@@ -204,9 +221,10 @@ const routes = [
                         beforeEnter: checkLogined,
                     },
                     {
-                        path: "/post-edit/:id",
+                        path: "/post-edit/:id/auth/:auth",
                         name: "PostEdit",
                         component: () => import("@/pages/posts/Edit.vue"),
+                        beforeEnter: checkAuthorPost,
                     },
                     {
                         path: "/post-detail/:id",
@@ -227,9 +245,10 @@ const routes = [
                         component: () => import("@/pages/user/Profile.vue"),
                     },
                     {
-                        path: ":id/post/drafts",
+                        path: "post/drafts",
                         name: "PostDrafts",
                         component: () => import("@/pages/user/PostDrafts.vue"),
+                        beforeEnter: checkLogined,
                     },
                 ],
                 component: () => import("@/pages/user/Index.vue"),

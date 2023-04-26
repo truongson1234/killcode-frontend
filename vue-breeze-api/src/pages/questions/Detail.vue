@@ -11,29 +11,36 @@
                             </span>
                         </div>
                     </div>
-                    <div>
+                    <div  v-if="question.status_id == 2">
+                        <span class="text-gray-500">
+                            <span><i class='bx bxs-lock-alt' ></i>Bản nháp - </span>
+                            Sửa đổi lần cuối khhoảng
+                            {{ formatDateTimeFB(new Date(question.updated_at)) }}
+                        </span>
+                    </div>
+                    <div  v-else>
                         <span class="text-gray-500">
                             Đã đăng vào
-                            {{ formatDetailDateTime(post.created_at) }}
+                            {{ formatDetailDateTime(question.updated_at) }}
                         </span>
                         <ul class="flex items-center justify-end">
                             <li class="pr-4 text-gray-500 text-lg flex items-center">
                                 <i class="bx bx-show pr-1"></i>
-                                {{ post.views_count }}
+                                {{ question.views_count }}
                             </li>
                             <li class="pr-4 text-gray-500 text-lg flex items-center">
                                 <i class="bx bx-comment-detail pr-1"></i>
-                                {{ post.comments_count }}
+                                {{ question.comments_count }}
                             </li>
                             <li class="pr-4 text-gray-500 text-lg flex items-center">
                                 <i class="bx bx-like pr-1"></i>
-                                {{ post.likes_count }}
+                                {{ question.likes_count }}
                             </li>
                         </ul>
                     </div>
                 </div>
-                <h1 class="text-4xl font-bold title-post mt-4">{{ post.title }}</h1>
-                <div class="prose mt-4" v-html="post.body"></div>
+                <h1 class="text-4xl font-bold title-post mt-4">{{ question.title }}</h1>
+                <div class="prose mt-4" v-html="question.body"></div>
                 <div class="list-tag">
                     <a href=""
                         class="inline-flex items-center bg-blue-100 text-blue-800 text-sm font-medium mr-1 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300 "
@@ -92,7 +99,7 @@
 import { onMounted, ref, computed } from "vue";
 import { useRoute } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
-import { pageLoading, pageLoaded, formatDetailDateTime } from '@/assets/js/app.js'
+import { pageLoading, pageLoaded, formatDetailDateTime, formatDateTimeFB } from '@/assets/js/app.js'
 import axios from "axios";
 import Pusher from "pusher-js";
 import Comment from "@/components/ui/Comment.vue";
@@ -124,7 +131,7 @@ const payload = ref({
 
 const liked = ref(false);
 const author = ref({});
-const post = ref({});
+const question = ref({});
 const viewers = ref({});
 const tags = ref({});
 const comments = ref([]);
@@ -152,7 +159,7 @@ onMounted(async () => {
     data.channel.bind(`event-comment-${questionId}`, (cmt) => {
         cmt.author.avatar = 'http://localhost:8000/images/' + cmt.author.avatar
         comments.value.unshift(cmt);
-        post.value.comments_count = post.value.comments_count + 1;
+        question.value.comments_count = question.value.comments_count + 1;
     });
     pageLoaded(1000)
 });
@@ -172,7 +179,7 @@ const fetchData = () => {
     axios
         .get(`/api/questions/${questionId}`)
         .then((response) => {
-            post.value = response.data.question;
+            question.value = response.data.question;
             liked.value = response.data.liked ? true : false;
             viewers.value = response.data.viewers;
             tags.value = response.data.tags;
@@ -208,8 +215,8 @@ const handleLiked = () => {
                 console.log(response.data);
                 if (response.data.status == 1) {
                     liked.value = response.data.liked;
-                    post.value.likes_count = response.data.likes_count;
-                    post.value.views_count = response.data.views_count;
+                    question.value.likes_count = response.data.likes_count;
+                    question.value.views_count = response.data.views_count;
                 } else {
                     console.error("Lỗi");
                 }

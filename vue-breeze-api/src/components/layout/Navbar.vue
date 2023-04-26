@@ -159,7 +159,7 @@
                                         <router-link
                                             class="navbar__ dropdown-item flex items-center"
                                             @click="hideItemDropdownIconUser"
-                                            :to="{ name: 'PostDrafts', params: { id: infoAuth.id } }">
+                                            :to="{ name: 'PostDrafts'}">
                                             <i class='bx bxs-notepad pr-1.5'></i>
                                             Quản lí nội dung
                                         </router-link>

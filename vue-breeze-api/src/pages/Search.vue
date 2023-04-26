@@ -120,19 +120,20 @@
             <div id="myTabContent">
                 <div class="pt-2 rounded-lg dark:bg-gray-800 hidden" id="post"
                     role="tabpanel" aria-labelledby="post-tab">
-                    <div class="flex items-center sort-data mb-2">
-                        <label for="">Sắp xếp theo:</label>
-                        <select id="countries" class="bg-gray-50 border-0 text-gray-900 text-sm rounded-lg focus:ring-transparent p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" @change="sortPost($event)">
-                            <option selected value="new" class="form-select-option py-2">Mới nhất</option>
-                            <option value="view" class="form-select-option py-2">Lượt xem nhiều nhất</option>
-                            <option value="like" class="form-select-option py-2">Đánh giá nhiều nhất</option>
-                            <option value="comment" class="form-select-option py-2">Bình luận nhiều nhất</option>
-                        </select>
-                    </div>
-                    <div
-                        v-if="dataSearch && dataSearch.posts && dataSearch.posts.length != 0">
-                        <div v-for="post in displayItemPost" :key="post.id">
-                            <PostItem :data="post" :deletePost="deletePost" />
+                    <div  v-if="dataSearch && dataSearch.posts && dataSearch.posts.length != 0">
+                        <div class="flex items-center sort-data mb-2">
+                            <label for="">Sắp xếp theo:</label>
+                            <select id="countries" class="bg-gray-50 border-0 text-gray-900 text-sm rounded-lg focus:ring-transparent p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" @change="sortPost($event)">
+                                <option selected value="new" class="form-select-option py-2">Mới nhất</option>
+                                <option value="view" class="form-select-option py-2">Lượt xem nhiều nhất</option>
+                                <option value="like" class="form-select-option py-2">Đánh giá nhiều nhất</option>
+                                <option value="comment" class="form-select-option py-2">Bình luận nhiều nhất</option>
+                            </select>
+                        </div>
+                        <div>
+                            <div v-for="post in displayItemPost" :key="post.id">
+                                <PostItem :data="post" :deletePost="deletePost" />
+                            </div>
                         </div>
                     </div>
                     <div v-else>
@@ -149,20 +150,22 @@
 
                 <div class="pt-2 rounded-lg dark:bg-gray-800" id="question"
                     role="tabpanel" aria-labelledby="question-tab">
-                    <div class="flex items-center sort-data mb-2">
-                        <label for="">Sắp xếp theo:</label>
-                        <select id="countries" class="bg-gray-50 border-0 text-gray-900 text-sm rounded-lg focus:ring-transparent p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" @change="sortQuestion($event)">
-                            <option selected value="new" class="form-select-option py-2">Mới nhất</option>
-                            <option value="view" class="form-select-option py-2">Lượt xem nhiều nhất</option>
-                            <option value="like" class="form-select-option py-2">Đánh giá nhiều nhất</option>
-                            <option value="comment" class="form-select-option py-2">Bình luận nhiều nhất</option>
-                        </select>
-                    </div>
-                    <div
-                        v-if="dataSearch && dataSearch.questions && dataSearch.questions.length != 0">
-                        <div v-for="question in displayItemQuestion"
-                            :key="question.id">
-                            <QuestionItem :data="question" :deleteQuestion="deleteQuestion"/>
+                    <div v-if="dataSearch && dataSearch.questions && dataSearch.questions.length != 0">
+                        <div class="flex items-center sort-data mb-2">
+                            <label for="">Sắp xếp theo:</label>
+                            <select id="countries" class="bg-gray-50 border-0 text-gray-900 text-sm rounded-lg focus:ring-transparent p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" @change="sortQuestion($event)">
+                                <option selected value="new" class="form-select-option py-2">Mới nhất</option>
+                                <option value="view" class="form-select-option py-2">Lượt xem nhiều nhất</option>
+                                <option value="like" class="form-select-option py-2">Đánh giá nhiều nhất</option>
+                                <option value="comment" class="form-select-option py-2">Bình luận nhiều nhất</option>
+                            </select>
+                        </div>
+                        <div
+                            >
+                            <div v-for="question in displayItemQuestion"
+                                :key="question.id">
+                                <QuestionItem :data="question" :deleteQuestion="deleteQuestion"/>
+                            </div>
                         </div>
                     </div>
                     <div v-else>
@@ -179,23 +182,25 @@
                 </div>
                 <div class="pt-2 rounded-lg dark:bg-gray-800" id="tag"
                     role="tabpanel" aria-labelledby="tag-tab">
-                    <div class="flex items-center sort-data mb-2">
-                        <label for="">Sắp xếp theo:</label>
-                        <select id="countries"
-                            class="bg-gray-50 border-0 text-gray-900 text-sm rounded-lg focus:ring-transparent p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-                            @change="sortTag($event)">
-                            <option selected value="new" class="form-select-option py-2">Mới
-                                nhất</option>
-                            <option value="question" class="form-select-option py-2">Nhều câu hỏi nhất</option>
-                            <option value="post" class="form-select-option py-2">Nhiều bài viết nhất</option>
-                            <option value="follower" class="form-select-option py-2">Nhiều người theo dõi nhất</option>
-                        </select>
-                    </div>
-                    <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 grid-cols-1 gap-4 mb-5 list-tag"
-                        v-if="dataSearch && dataSearch.tags && dataSearch.tags.length != 0">
-                        <div v-for="tag in displayItemTag" :key="tag.id"
-                            class="col-span-1 p-4 rounded item-tag">
-                            <TagItem :data="tag" />
+                    <div v-if="dataSearch && dataSearch.tags && dataSearch.tags.length != 0">
+                        <div class="flex items-center sort-data mb-2">
+                            <label for="">Sắp xếp theo:</label>
+                            <select id="countries"
+                                class="bg-gray-50 border-0 text-gray-900 text-sm rounded-lg focus:ring-transparent p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                                @change="sortTag($event)">
+                                <option selected value="new" class="form-select-option py-2">Mới
+                                    nhất</option>
+                                <option value="question" class="form-select-option py-2">Nhều câu hỏi nhất</option>
+                                <option value="post" class="form-select-option py-2">Nhiều bài viết nhất</option>
+                                <option value="follower" class="form-select-option py-2">Nhiều người theo dõi nhất</option>
+                            </select>
+                        </div>
+                        <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 grid-cols-1 gap-4 mb-5 list-tag"
+                            >
+                            <div v-for="tag in displayItemTag" :key="tag.id"
+                                class="col-span-1 p-4 rounded item-tag">
+                                <TagItem :data="tag" />
+                            </div>
                         </div>
                     </div>
                     <div v-else>

@@ -8,7 +8,7 @@
         <div
           class="tool-post-container hidden bg-white absolute right-0 shadow-lg"
           :class="`tool-post${data.id}`" style="min-width:15rem">
-          <router-link :to="{ name: 'PostEdit', params: { id: data.id } }"
+          <router-link :to="{ name: 'PostEdit', params: { id: data.id, auth: idAuthor} }"
             class="px-2 py-2 flex items-center hover:text-current hover:bg-gray-100 w-full">
             <i class='bx bx-edit text-gray-400 pr-1'></i> Chỉnh sửa bài viết
           </router-link>
