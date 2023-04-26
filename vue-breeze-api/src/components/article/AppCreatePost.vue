@@ -94,7 +94,6 @@ const payload = ref({
 })
 const statusTitle = ref(false), statusTag = ref(false), statusBody = ref(false), focusEditor = ref(false), statusSaveDraft = ref(true)
 const addTag = (data) => {
-    console.log(data);
     if (payload.value.tag_ids.length > 4) {
         // Swal.fire("Qúa nhiều tags rồi!", "Chỉ thêm được tối đa 5 tags.");
     } else if (!payload.value.tag_ids.find(i => i == data.id)) {
@@ -133,32 +132,19 @@ const handleCreated = (payload) => {
         payload.tag_ids.length < 1 ? statusTag.value = true : statusTag.value = false
         payload.body == '' ? (statusBody.value = true, $('.ck.ck-reset.ck-editor.ck-rounded-corners').attr('style', 'border: 1px solid red')) : (statusBody.value = false, $('.ck.ck-reset.ck-editor.ck-rounded-corners').removeAttr('style'))
     } else {
-        axios.post("/api/posts", payload).then((response) => {
-            console.log(response);
-            if (response.data.status) {
+        axios.post("/api/posts", payload)
+            .then((response) => {
                 // console.log(response.data)
                 statusSaveDraft.value = false
                 router.push({ name: 'PostDetail', params: { id: response.data.data.id } })
-                .then(() => { router.go() })
-
-            }
-        });
+                    .then(() => { router.go() })
+            });
     }
 };
 
 router.beforeEach((to, from, next) => {
     if (from.path === '/create-post') {
         if (payload.value.title != '' && payload.value.tag_ids.length > 0 && payload.value.body != '' && statusSaveDraft.value == true) {
-            // Swal.fire({
-            //     title: "Bạn đang muốn rời đi trong khi bài viết chưa xuất bản.",
-            //     text: `Bạn có muốn lưu bài viết này dưới dạng bản nháp không?`,
-            //     icon: "warning",
-            //     showCancelButton: true,
-            //     confirmButtonColor: "#3085d6",
-            //     cancelButtonColor: "#A6A6A6",
-            //     confirmButtonText: "Lưu",
-            //     cancelButtonText: "Hủy",
-            // })
             const confirmNavigation = confirm('Bạn có muốn lưu lại bài viết?');
 
             if (!confirmNavigation) {
@@ -170,8 +156,10 @@ router.beforeEach((to, from, next) => {
                 //      console.log(response.data)
                 // });
             }
-
         }
+        payload.value.title = ''
+        payload.value.body = ''
+        payload.value.tag_ids = []
     }
     next()
 });

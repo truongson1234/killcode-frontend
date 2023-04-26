@@ -131,15 +131,13 @@ const handleCreated = (payload) => {
         payload.tag_ids.length < 1 ? statusTag.value = true : statusTag.value = false
         payload.body == '' ? (statusBody.value = true, $('.ck.ck-reset.ck-editor.ck-rounded-corners').attr('style', 'border: 1px solid red')) : (statusBody.value = false, $('.ck.ck-reset.ck-editor.ck-rounded-corners').removeAttr('style'))
     } else {
-        axios.post("/api/questions", payload).then((response) => {
-            console.log(response);
-            if (response.data.status) {
-                statusSaveDraft.value = false
-                // console.log(response.data)
-                router.push({ name: 'PostDetail', params: { id: response.data.data.id } })
-                .then(() => { router.go() })
+        axios.post("/api/questions", payload)
+        .then((response) => {
+            statusSaveDraft.value = false
+            // console.log(response.data)
+            router.push({ name: 'QuestionDetail', params: { id: response.data.data.id } })
+            .then(() => { router.go() })
 
-            }
         });
     }
 };
@@ -167,8 +165,10 @@ router.beforeEach((to, from, next) => {
                 //      console.log(response.data)
                 // });
             }
-
         }
+        payload.value.title = ''
+        payload.value.body = ''
+        payload.value.tag_ids = []
     }
     next()
 });

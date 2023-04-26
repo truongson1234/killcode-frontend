@@ -89,6 +89,16 @@ Route::group(['prefix' => 'comments'], function () {
     // Route::delete('{comment}', 'App\Http\Controllers\CommentController@destroy');
 });
 
+// tags api
+Route::group(['prefix' => 'tags'], function () {
+    Route::get('', 'App\Http\Controllers\TagController@index');
+    Route::get('{id}', 'App\Http\Controllers\TagController@show');
+    Route::post('', 'App\Http\Controllers\TagController@store');
+    Route::put('{id}', 'App\Http\Controllers\TagController@update');
+    Route::delete('{id}', 'App\Http\Controllers\TagController@destroy');
+    Route::get('get-posts/{id}', 'App\Http\Controllers\TagController@getPosts');
+});
+
 // questions api
 Route::group(['prefix' => 'questions'], function () {
     Route::get('', 'App\Http\Controllers\QuestionController@index');
@@ -157,15 +167,7 @@ Route::group(['prefix' => 'admin/tags'], function () {
     Route::put('{id_tag}', [TagController::class, 'update']);
 });
 
-// tags api
-Route::group(['prefix' => 'tags'], function () {
-    Route::get('', 'App\Http\Controllers\TagController@index');
-    Route::get('{id}', 'App\Http\Controllers\TagController@show');
-    Route::post('', 'App\Http\Controllers\TagController@store');
-    Route::put('{id}', 'App\Http\Controllers\TagController@update');
-    Route::delete('{id}', 'App\Http\Controllers\TagController@destroy');
-    Route::get('get-posts/{id}', 'App\Http\Controllers\TagController@getPosts');
-});
+
 
 
 

@@ -31,7 +31,7 @@ class TagController extends Controller
         $followers = $tag->followers()->count();
 
         // Danh bài viết, câu hỏi, người theo dõi tag
-        $posts = $tag->posts()->with('tags')->get();
+        $posts = $tag->posts()->where('status_id', 1)->with('tags')->get();
         $posts = $posts->map(function($post) {
             $post->author = [
                 'id' => $post->user->id,
@@ -46,7 +46,7 @@ class TagController extends Controller
         //Tag phổ biến
         $popular_tags = Tag::withCount('posts')->orderBy('posts_count', 'desc')->take(10)->get();
 
-        $questions = $tag->questions()->with('tags')->get();
+        $questions = $tag->questions()->where('status_id', 1)->with('tags')->get();
         $questions = $questions->map(function($question) {
             $question->author = [
                 'id' => $question->user->id,

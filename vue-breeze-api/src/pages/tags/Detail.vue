@@ -200,7 +200,6 @@ const fetchData = (id = tagId) => {
     axios.get(`api/followed-tags/${id}`)
         .then(res => {
             detailTag.value = res.data.data[0]
-            // console.log('cc', detailTag.value);
         })
         .catch(err => {
             console.log(err);

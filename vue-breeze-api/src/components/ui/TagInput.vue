@@ -96,7 +96,7 @@ export default {
             if (existingTag) {
                 this.newTag = "";
                 this.showAutocomplete = false;
-                console.log(this.showAutocomplete)
+                // console.log(this.showAutocomplete)
                 return;
             }
 
