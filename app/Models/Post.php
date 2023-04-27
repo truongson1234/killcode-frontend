@@ -33,6 +33,6 @@ class Post extends Model
 
     public function status()
     {
-        return $this->hasOne(PostStatus::class, 'status_id');
+        return $this->belongsTo(PostStatus::class);
     }
 }

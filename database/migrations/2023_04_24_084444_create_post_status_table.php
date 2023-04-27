@@ -13,11 +13,11 @@ class CreatePostStatusTable extends Migration
      */
     public function up()
     {
-        Schema::create('post_status', function (Blueprint $table) {
+        Schema::create('post_statuses', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->text('describe');
-            $table->boolean('is_default')->default(0);;
+            $table->boolean('is_default')->default(0);
             $table->timestamps();
         });
     }

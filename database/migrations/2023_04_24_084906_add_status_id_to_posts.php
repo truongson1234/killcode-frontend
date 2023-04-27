@@ -15,7 +15,7 @@ class AddStatusIdToPosts extends Migration
     {
         Schema::table('posts', function (Blueprint $table) {
             $table->unsignedBigInteger('status_id');
-            $table->foreign('status_id')->references('id')->on('post_status')->onDelete('cascade');
+            $table->foreign('status_id')->references('id')->on('post_statuses')->onDelete('cascade');
         });
     }
 

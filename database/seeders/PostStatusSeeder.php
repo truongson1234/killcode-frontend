@@ -15,7 +15,7 @@ class PostStatusSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('post_status')->insert([
+        DB::table('post_statuses')->insert([
             [
                 'name' => 'Công khai',
                 'describe' => 'Tất cả mọi người',
