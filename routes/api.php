@@ -86,7 +86,7 @@ Route::group(['prefix' => 'posts'], function () {
 Route::group(['prefix' => 'comments'], function () {
     Route::post('', 'App\Http\Controllers\CommentController@store');
     // Route::put('{comment}', 'App\Http\Controllers\CommentController@update');
-    // Route::delete('{comment}', 'App\Http\Controllers\CommentController@destroy');
+    Route::delete('{comment}', 'App\Http\Controllers\CommentController@destroy');
 });
 
 // tags api

@@ -54,7 +54,7 @@ class QuestionController extends Controller
         }else {
             $relatedQuestions = [];
         }
-        $newQuestions = Question::with('user')->withCount('comments')
+        $newQuestions = Question::where('status_id', 1)->with('user')->withCount('comments')
         ->withCount(['interactions as likes_count' => function($query) {
             $query->select(\DB::raw("SUM(liked) as likes_count"));
         }])
@@ -354,7 +354,7 @@ class QuestionController extends Controller
                             unset($tag->pivot);
                             return $tag;
                         });
-        $relatedQuestions = Question::where('id', '<>', $id)->whereHas('tags', function($query) use ($currentQuestion) {
+        $relatedQuestions = Question::where('id', '<>', $id)->where('status_id', 1)->whereHas('tags', function($query) use ($currentQuestion) {
             $query->whereIn('tags.id', $currentQuestion);
         })->with('tags')->withCount('comments')->withCount(['interactions as likes_count' => function($query) {
             $query->select(\DB::raw("SUM(liked) as likes_count"));

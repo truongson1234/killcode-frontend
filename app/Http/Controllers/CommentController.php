@@ -49,6 +49,7 @@ class CommentController extends Controller
                 $comment->save();
     
                 $comment->author = [
+                    'id' => $comment->user->id,
                     'name' => $comment->user->name,
                     'avatar' => $comment->user->avatar,
                     'email' => $comment->user->email,
@@ -157,6 +158,7 @@ class CommentController extends Controller
                 $comment->save();
     
                 $comment->author = [
+                    'id' => $comment->user->id,
                     'name' => $comment->user->name,
                     'email' => $comment->user->email,
                     'avatar' => $comment->user->avatar,

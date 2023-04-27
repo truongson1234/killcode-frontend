@@ -46,7 +46,7 @@
                         class="inline-flex items-center bg-blue-100 text-blue-800 text-sm font-medium mr-1 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300 "
                         v-for="tag in tags" :key="tag.id">{{ tag.name }}</a>
                 </div>
-                <button @click="handleLiked" type="button"
+                <button @click="handleLiked" type="button" v-if="question.status_id == 1"
                     class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2.5 mt-3 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
                     <span v-html="statusLike" class="flex"></span>
                 </button>
@@ -167,15 +167,17 @@ const statusLike = computed(() => {
     return liked.value == false ? "<i class='bx bx-like text-lg pr-1' ></i> Thích" : "<i class='bx bxs-like text-lg pr-1' ></i> Bỏ thích"
 })
 const fetchData = () => {
-    axios
-        .get("/api/questions/interactions/views", {
-            params: {
-                question_id: questionId,
-            },
-        })
-        .catch((e) => {
-            console.error(e);
-        });
+    if(question.value.status_id == 1) {
+        axios
+            .get("/api/questions/interactions/views", {
+                params: {
+                    question_id: questionId,
+                },
+            })
+            .catch((e) => {
+                console.error(e);
+            });
+    }
     axios
         .get(`/api/questions/${questionId}`)
         .then((response) => {

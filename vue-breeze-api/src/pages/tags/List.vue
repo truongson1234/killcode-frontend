@@ -94,7 +94,6 @@ export default {
             axios
                 .get("/api/followed-tags")
                 .then((response) => {
-                    console.log('tag', response.data.data);
                     this.tags = response.data.data;
                 })
                 .catch((error) => {

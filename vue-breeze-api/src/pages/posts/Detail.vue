@@ -1,38 +1,44 @@
 <template>
     <div class="container detail-unique-post">
         <div class="grid grid-cols-4 gap-x-7 gap-y-5 mx-auto">
-            <div class="main-detail-post col-span-4 row-span-1 lg:col-span-3 lg:row-span-3">
+            <div
+                class="main-detail-post col-span-4 row-span-1 lg:col-span-3 lg:row-span-3">
                 <div class="flex justify-between">
                     <div class="flex items-center">
-                        <div class="userimage"><img :src="author.avatar" alt="" /></div>
+                        <div class="userimage"><img :src="author.avatar" alt="" />
+                        </div>
                         <div class="ml-2">
-                            <span class="username leading-5 text-blue-600 font-bold"
-                                ><a href="javascript:;">{{ author.name }}</a>
+                            <span
+                                class="username leading-5 text-blue-600 font-bold"><a
+                                    href="javascript:;">{{ author.name }}</a>
                             </span>
                         </div>
                     </div>
-                    <div  v-if="post.status_id == 2">
+                    <div v-if="post.status_id == 2">
                         <span class="text-gray-500">
-                            <span><i class='bx bxs-lock-alt' ></i>Bản nháp - </span>
+                            <span><i class='bx bxs-lock-alt'></i>Bản nháp - </span>
                             Sửa đổi lần cuối khhoảng
                             {{ formatDateTimeFB(new Date(post.updated_at)) }}
                         </span>
                     </div>
-                    <div  v-else>
+                    <div v-else>
                         <span class="text-gray-500">
                             Đã đăng vào
                             {{ formatDetailDateTime(post.updated_at) }}
                         </span>
                         <ul class="flex items-center justify-end">
-                            <li class="pr-4 text-gray-500 text-lg flex items-center">
+                            <li
+                                class="pr-4 text-gray-500 text-lg flex items-center">
                                 <i class="bx bx-show pr-1"></i>
                                 {{ post.views_count }}
                             </li>
-                            <li class="pr-4 text-gray-500 text-lg flex items-center">
+                            <li
+                                class="pr-4 text-gray-500 text-lg flex items-center">
                                 <i class="bx bx-comment-detail pr-1"></i>
                                 {{ post.comments_count }}
                             </li>
-                            <li class="pr-4 text-gray-500 text-lg flex items-center">
+                            <li
+                                class="pr-4 text-gray-500 text-lg flex items-center">
                                 <i class="bx bx-like pr-1"></i>
                                 {{ post.likes_count }}
                             </li>
@@ -42,82 +48,59 @@
                 <h1 class="text-4xl font-bold title-post mt-4">{{ post.title }}</h1>
                 <div class="prose mt-4" v-html="post.body"></div>
                 <div class="list-tag">
-                    <a
-                        href=""
+                    <a href=""
                         class="inline-flex items-center bg-blue-100 text-blue-800 text-sm font-medium mr-1 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300"
-                        v-for="tag in tags"
-                        :key="tag.id"
-                        >{{ tag.name }}</a
-                    >
+                        v-for="tag in tags" :key="tag.id">{{ tag.name }}</a>
                 </div>
-                <button
-                    @click="handleLiked"
-                    type="button"
-                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2.5 mt-3 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-                >
-                    <span v-html="statusLike" class="flex" ></span>
+                <button @click="handleLiked" type="button" v-if="post.status_id == 1"
+                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2.5 mt-3 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                    <span v-html="statusLike" class="flex"></span>
                 </button>
                 <h2 class="text-lg font-bold mb-3 mt-4">
                     Bình luận ({{ post.comments_count }})
                 </h2>
                 <div class="space-y-4 box-users-comment">
                     <div v-if="comments && comments.length > 0">
-                        <comment
-                            v-for="comment in comments"
-                            :key="comment.id"
-                            :comment="comment"
-                            :author="comment.author"
-                            :formatdate="formatDetailDateTime"
-                        />
+                        <comment v-for="comment in comments" :key="comment.id"
+                            :comment="comment" :author="comment.author"
+                            :deletecomment="deleteComment" :formatdate="formatDateTimeFB"/>
                     </div>
                     <div v-else class="text-center">
                         <span class="text-gray-500">Chưa có bình luận nào.</span>
                     </div>
                 </div>
                 <div class="box-type-comment mt-4">
-                    <form
-                        v-if="authStore.getInfoUser"
-                        @submit.prevent="sendCmt(payload)"
-                    >
+                    <form v-if="authStore.getInfoUser"
+                        @submit.prevent="sendCmt(payload)">
                         <div class="flex items-center space-x-3">
                             <div class="userimage self-start">
-                                <img
-                                    :src="authStore.getInfoUser.avatar"
-                                    alt=""
-                                    class=""
-                                />
+                                <img :src="authStore.getInfoUser.avatar" alt=""
+                                    class="" />
                             </div>
-                            <textarea
-                                class="w-full"
-                                v-model="payload.content"
-                                placeholder="Viêt bình luận..."
-                            ></textarea>
+                            <textarea class="w-full" v-model="payload.content"
+                                placeholder="Viêt bình luận..."></textarea>
                         </div>
                         <div class="flex">
-                            <button
-                                type="submit"
-                                class="ml-auto bg-blue-500 hover:bg-blue-700 text-white py-2 px-2.5 rounded mt-2 justify-self-end"
-                            >
+                            <button type="submit"
+                                class="ml-auto bg-blue-500 hover:bg-blue-700 text-white py-2 px-2.5 rounded mt-2 justify-self-end">
                                 Bình luận
                             </button>
                         </div>
                     </form>
                     <div v-else class="text-center text-gray-500">
-                        <span class=""
-                            >Đăng nhập để được bình luận!
-                            <router-link
-                                :to="{ name: 'Login' }"
-                                class="text-blue-500"
-                                >Đăng nhập ngay.</router-link
-                            ></span
-                        >
+                        <span class="">Đăng nhập để được bình luận!
+                            <router-link :to="{ name: 'Login' }"
+                                class="text-blue-500">Đăng nhập
+                                ngay.</router-link></span>
                     </div>
                 </div>
             </div>
-            <div class="main-related-posts col-span-4 p-3 box-popular_tags h-100 row-span-1 lg:col-span-1 lg:row-span-1">
-                <h5 class="text-center pb-3 font-bold text-blue-500">Bài viết liên quan</h5>
+            <div
+                class="main-related-posts col-span-4 p-3 box-popular_tags h-100 row-span-1 lg:col-span-1 lg:row-span-1">
+                <h5 class="text-center pb-3 font-bold text-blue-500">Bài viết liên
+                    quan</h5>
                 <div v-for="post in related_posts" :key="post.id">
-                    <PostSidebar :data="post"/>
+                    <PostSidebar :data="post" />
                 </div>
             </div>
         </div>
@@ -175,7 +158,6 @@ onMounted(async () => {
     await pageLoading();
     await authStore.getToken();
     await authStore.getUser();
-
     // add user_id
     if (infoAuth.value) {
         payload.value.user_id = infoAuth.value.id;
@@ -200,18 +182,10 @@ onMounted(async () => {
 });
 
 const statusLike = computed(() => {
-    return liked.value == false ?  "<i class='bx bx-like text-lg pr-1' ></i> Thích" : "<i class='bx bxs-like text-lg pr-1' ></i> Bỏ thích"
+    return liked.value == false ? "<i class='bx bx-like text-lg pr-1' ></i> Thích" : "<i class='bx bxs-like text-lg pr-1' ></i> Bỏ thích"
 })
 const fetchData = () => {
-    axios
-        .get("/api/posts/interactions/views", {
-            params: {
-                post_id: postId,
-            },
-        })
-        .catch((e) => {
-            console.error(e);
-        });
+    
     axios
         .get(`/api/posts/${postId}`)
         .then((response) => {
@@ -227,8 +201,19 @@ const fetchData = () => {
                 item.author.avatar =
                     "http://localhost:8000/images/" + item.author.avatar;
             });
-            // console.log('detail-post', response.data.tags)
-            comments.value.reverse();
+            if(post.value && post.value.status_id == 1) {
+                axios
+                    .get("/api/posts/interactions/views", {
+                        params: {
+                            post_id: postId,
+                        },
+                    })
+                    .catch((e) => {
+                        console.error(e);
+                    });
+            }
+            // console.log('detail-post', post.value.status_id)
+            // comments.value.reverse();
         })
         .catch((error) => {
             console.log(error);
@@ -237,15 +222,27 @@ const fetchData = () => {
 
 const sendCmt = async (payload) => {
     if (payload.user_id) {
-        await axios.post("/api/comments", payload);
+        await axios.post("/api/comments", payload)
+        .then(res => {
+            console.log(res.data);
+        })
         payload.content = "";
     } else {
         console.error("Lỗi");
     }
 };
+const deleteComment = (id) => {
+    axios.delete(`api/comments/${id}`)
+        .then(res => {
+            comments.value = comments.value.filter((comment) => comment.id !== id)
+        })
+        .catch(err => {
+            console.log(err);
+        })
+}
 
 const handleLiked = () => {
-    if(authStore.getInfoUser != null) {
+    if (authStore.getInfoUser != null) {
         axios
             .post("/api/posts/interactions/liked", {
                 post_id: postId,
@@ -263,7 +260,7 @@ const handleLiked = () => {
             .catch((e) => {
                 console.error(e);
             });
-    }else {
+    } else {
         Swal.fire({
             title: "",
             text: 'Vui lòng đăng nhập để có thể thích chủ đề!',

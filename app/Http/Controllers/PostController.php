@@ -59,7 +59,7 @@ class PostController extends Controller
         }else {
             $relatedPosts = [];
         }
-        $newPosts = Post::with('user')->withCount(['interactions as likes_count' => function($query) {
+        $newPosts = Post::where('status_id', 1)->with('user')->withCount(['interactions as likes_count' => function($query) {
                         $query->select(\DB::raw("SUM(liked) as likes_count"));
                     }])
                     ->withCount(['interactions as views_count' => function($query) {
@@ -147,7 +147,7 @@ class PostController extends Controller
                     unset($tag->pivot);
                     return $tag;
                 });
-        $relatedPosts = Post::where('id', '<>', $id)->whereHas('tags', function($query) use ($currentPost) {
+        $relatedPosts = Post::where('id', '<>', $id)->where('status_id', 1)->whereHas('tags', function($query) use ($currentPost) {
                             $query->whereIn('tags.id', $currentPost);
                             })->with('tags')->withCount('comments')->withCount(['interactions as likes_count' => function($query) {
                             $query->select(\DB::raw("SUM(liked) as likes_count"));
