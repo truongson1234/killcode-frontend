@@ -255,15 +255,15 @@ class CommentController extends Controller
         }
     }
 
-    public function update(Request $request)
+    public function update(Comment $comment, Request $request)
     {
         if ($comment->user_id != auth()->user()->id) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        $comment = new Comment();
-        $comment->content = $request->input('content');
-        $comment->save();
+        $comment->update([
+            'content' => $request->input('content')
+        ]);
 
         return response()->json($comment);
     }

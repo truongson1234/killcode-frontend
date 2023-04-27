@@ -17,7 +17,7 @@
                     <div v-if="post.status_id == 2">
                         <span class="text-gray-500">
                             <span><i class='bx bxs-lock-alt'></i>Bản nháp - </span>
-                            Sửa đổi lần cuối khhoảng
+                            Sửa đổi lần cuối khoảng 
                             {{ formatDateTimeFB(new Date(post.updated_at)) }}
                         </span>
                     </div>
@@ -63,7 +63,7 @@
                     <div v-if="comments && comments.length > 0">
                         <comment v-for="comment in comments" :key="comment.id"
                             :comment="comment" :author="comment.author"
-                            :deletecomment="deleteComment" :formatdate="formatDateTimeFB"/>
+                            :deletecomment="deleteComment" :formatdate="formatDateTimeFB" :editcomment="editComment"/>
                     </div>
                     <div v-else class="text-center">
                         <span class="text-gray-500">Chưa có bình luận nào.</span>
@@ -240,6 +240,31 @@ const deleteComment = (id) => {
             console.log(err);
         })
 }
+const editComment = (id, content) => {
+    if(content != '') {
+        $(`#default-comment-${id}`).removeClass('focus:ring-red-500 focus:border-red-500 ring-red-500 border-red-500')
+        $(`#default-comment-${id}`).removeAttr()
+        axios.put(`api/comments/${id}`, {content: content})
+            .then(res => {
+                if ($(`.form-edit-comment-${id}`).is(":hidden")) {
+                    $(`.form-edit-comment-${id}`).removeClass('hidden');
+                } else {
+                    $(`.form-edit-comment-${id}`).addClass('hidden');
+                }
+    
+                if ($(`.prose-${id}`).first().is(":hidden")) {
+                    $(`.prose-${id}`).removeClass('hidden');
+                } else {
+                    $(`.prose-${id}`).addClass('hidden');
+                }
+            })
+            .catch(err => {
+                console.log(err);
+            })
+    }else {
+        $(`#default-comment-${id}`).addClass('focus:ring-red-500 focus:border-red-500 ring-red-500 border-red-500')
+    }
+}
 
 const handleLiked = () => {
     if (authStore.getInfoUser != null) {
@@ -263,7 +288,7 @@ const handleLiked = () => {
     } else {
         Swal.fire({
             title: "",
-            text: 'Vui lòng đăng nhập để có thể thích chủ đề!',
+            text: 'Vui lòng đăng nhập để có thể thích bài viết!',
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
