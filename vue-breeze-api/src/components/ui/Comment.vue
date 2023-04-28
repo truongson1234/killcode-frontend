@@ -1,9 +1,8 @@
 <template>
     <div class="space-y-2 box-cmt-detail-post relative">
         <div class="absolute tool-comment right-0 top-0"
-            v-if="comment.author.id == authStore.getInfoUser.id">
-            <button><i class='bx bx-dots-horizontal-rounded'
-                    @click="showToolComment($event, comment.id)"></i></button>
+            v-if="authStore.getInfoUser != null && comment.author.id == authStore.getInfoUser.id">
+            <button @click="showToolComment($event, comment.id)"><i class='bx bx-dots-horizontal-rounded'></i></button>
             <ul :id="`drop-down-comment-${comment.id}`"
                 class="bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)] rounded w-28 absolute z-20 hidden drop-down-comment-container">
                 <button @click="deletecomment(comment.id)"
@@ -25,21 +24,20 @@
                 </div>
             </div>
         </div>
-        <div class="prose-container" :class="`prose-${comment.id}`"
-            v-html="comment.content"></div>
-        <div class="hidden form-edit-comment-container"
-            :class="`form-edit-comment-${comment.id}`">
-            <form @submit.prevent="">
+        <div class="prose-container" :class="`prose-${comment.id}`" v-if="!isEditing">
+            {{ comment.content }}
+        </div>
+        <div class="form-edit-comment-container"
+            :class="`form-edit-comment-${comment.id}`" v-else>
+            <form @submit.prevent="editcomment(comment.id, comment.content), changeOldValue(comment.id)">
                 <div class="relative">
                     <input type="text" :id="`default-comment-${comment.id}`"
-                        @focus="oldValue(comment.content)"
+                        @focus="getOldValue(comment.content)"
                         class="block pl-3 py-3 pr-40 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        placeholder="Nhập tiêu đề bài viết"
-                        v-model="comment.content">
+                        placeholder="Nhập tiêu đề bài viết" v-model="comment.content">
                     <button @click="hideFormEditComment(comment.id)"
                         class="text-white absolute right-24 mr-2 bottom-2.5 bg-gray-500 hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded text-sm px-3 py-1.5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Hủy</button>
                     <button type="submit"
-                        @click="editcomment(comment.id, comment.content)"
                         class="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded text-sm px-3 py-1.5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Cập
                         nhật</button>
                 </div>
@@ -56,12 +54,14 @@ export default ({
         author: Object,
         deletecomment: Function,
         formatdate: Function,
-        editcomment: Function
+        editcomment: Function,
     },
     data() {
         return {
             authStore: useAuthStore(),
-            oldValueComment: ''
+            oldValueComment: '',
+            isEditing: false,
+
         }
     },
     mounted() {
@@ -70,6 +70,8 @@ export default ({
                 $(`.drop-down-comment-container`).slideUp(300);
             }
         });
+    },
+    computed: {
     },
     methods: {
         showToolComment(event, id) {
@@ -82,32 +84,33 @@ export default ({
         },
         showFormEditComment(id) {
             $(`#default-comment-${id}`).removeClass('focus:ring-red-500 focus:border-red-500 ring-red-500 border-red-500')
-            $('.form-edit-comment-container').each(function () {
+            $('.tool-comment').each(function() {
                 $(this).addClass('hidden')
             })
-            $('.prose-container').each(function () {
-                var $this = $(this);
-                if (!$this.data('oldValueComment')) {
-                    $this.data('oldValueComment', $this.html());
-                }
-                $this.html($this.data('oldValueComment')).removeClass('hidden');
-            });
+
             if (this.oldValueComment != '') {
                 this.comment.content = this.oldValueComment
             }
-            $(`.form-edit-comment-${id}`).removeClass('hidden');
-            $(`.prose-${id}`).addClass('hidden');
+            this.isEditing = true;
         },
         hideFormEditComment(id) {
             if (this.oldValueComment != '') {
                 this.comment.content = this.oldValueComment
             }
-            $(`.form-edit-comment-${id}`).addClass('hidden');
-            $(`.prose-${id}`).removeClass('hidden');
+            console.log(this.oldValueComment);
+            $('.tool-comment').each(function() {
+                $(this).removeClass('hidden')
+            })
+            this.isEditing = false;
         },
-        oldValue(content) {
-            var val = content
-            this.oldValueComment = val
+        getOldValue(content) {
+            this.oldValueComment = content
+        },
+        changeOldValue(id) {
+            if($(`#default-comment-${id}`).val() != '') {
+                this.oldValueComment = $(`#default-comment-${id}`).val()
+                this.isEditing = false;
+            }
         }
     }
 });

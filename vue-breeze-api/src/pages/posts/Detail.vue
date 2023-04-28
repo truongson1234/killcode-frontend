@@ -17,7 +17,7 @@
                     <div v-if="post.status_id == 2">
                         <span class="text-gray-500">
                             <span><i class='bx bxs-lock-alt'></i>Bản nháp - </span>
-                            Sửa đổi lần cuối khoảng 
+                            Sửa đổi lần cuối khoảng
                             {{ formatDateTimeFB(new Date(post.updated_at)) }}
                         </span>
                     </div>
@@ -52,7 +52,8 @@
                         class="inline-flex items-center bg-blue-100 text-blue-800 text-sm font-medium mr-1 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300"
                         v-for="tag in tags" :key="tag.id">{{ tag.name }}</a>
                 </div>
-                <button @click="handleLiked" type="button" v-if="post.status_id == 1"
+                <button @click="handleLiked" type="button"
+                    v-if="post.status_id == 1"
                     class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2.5 mt-3 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
                     <span v-html="statusLike" class="flex"></span>
                 </button>
@@ -63,7 +64,9 @@
                     <div v-if="comments && comments.length > 0">
                         <comment v-for="comment in comments" :key="comment.id"
                             :comment="comment" :author="comment.author"
-                            :deletecomment="deleteComment" :formatdate="formatDateTimeFB" :editcomment="editComment"/>
+                            :deletecomment="deleteComment"
+                            :formatdate="formatDateTimeFB"
+                            :editcomment="editComment" />
                     </div>
                     <div v-else class="text-center">
                         <span class="text-gray-500">Chưa có bình luận nào.</span>
@@ -185,7 +188,7 @@ const statusLike = computed(() => {
     return liked.value == false ? "<i class='bx bx-like text-lg pr-1' ></i> Thích" : "<i class='bx bxs-like text-lg pr-1' ></i> Bỏ thích"
 })
 const fetchData = () => {
-    
+
     axios
         .get(`/api/posts/${postId}`)
         .then((response) => {
@@ -201,7 +204,7 @@ const fetchData = () => {
                 item.author.avatar =
                     "http://localhost:8000/images/" + item.author.avatar;
             });
-            if(post.value && post.value.status_id == 1) {
+            if (post.value && post.value.status_id == 1) {
                 axios
                     .get("/api/posts/interactions/views", {
                         params: {
@@ -223,9 +226,9 @@ const fetchData = () => {
 const sendCmt = async (payload) => {
     if (payload.user_id) {
         await axios.post("/api/comments", payload)
-        .then(res => {
-            console.log(res.data);
-        })
+            .then(res => {
+                console.log(res.data);
+            })
         payload.content = "";
     } else {
         console.error("Lỗi");
@@ -241,27 +244,19 @@ const deleteComment = (id) => {
         })
 }
 const editComment = (id, content) => {
-    if(content != '') {
+    if (content != '') {
         $(`#default-comment-${id}`).removeClass('focus:ring-red-500 focus:border-red-500 ring-red-500 border-red-500')
         $(`#default-comment-${id}`).removeAttr()
-        axios.put(`api/comments/${id}`, {content: content})
+        axios.put(`api/comments/${id}`, { content: content })
             .then(res => {
-                if ($(`.form-edit-comment-${id}`).is(":hidden")) {
-                    $(`.form-edit-comment-${id}`).removeClass('hidden');
-                } else {
-                    $(`.form-edit-comment-${id}`).addClass('hidden');
-                }
-    
-                if ($(`.prose-${id}`).first().is(":hidden")) {
-                    $(`.prose-${id}`).removeClass('hidden');
-                } else {
-                    $(`.prose-${id}`).addClass('hidden');
-                }
+                $('.tool-comment').each(function () {
+                    $(this).removeClass('hidden')
+                })
             })
             .catch(err => {
                 console.log(err);
             })
-    }else {
+    } else {
         $(`#default-comment-${id}`).addClass('focus:ring-red-500 focus:border-red-500 ring-red-500 border-red-500')
     }
 }

@@ -17,7 +17,7 @@
                     <div v-if="question.status_id == 2">
                         <span class="text-gray-500">
                             <span><i class='bx bxs-lock-alt'></i>Bản nháp - </span>
-                            Sửa đổi lần cuối khoảng 
+                            Sửa đổi lần cuối khoảng
                             {{ formatDateTimeFB(new Date(question.updated_at)) }}
                         </span>
                     </div>
@@ -63,7 +63,9 @@
                     <div v-if="comments && comments.length > 0">
                         <comment v-for="comment in comments" :key="comment.id"
                             :comment="comment" :author="comment.author"
-                            :deletecomment="deleteComment" :formatdate="formatDateTimeFB" :editcomment="editComment"/>
+                            :deletecomment="deleteComment"
+                            :formatdate="formatDateTimeFB"
+                            :editcomment="editComment" />
                     </div>
                     <div v-else class="text-center">
                         <span class="text-gray-500">Chưa có bình luận nào.</span>
@@ -147,7 +149,6 @@ const viewers = ref({});
 const tags = ref({});
 const comments = ref([]);
 const related_questions = ref([]);
-
 onMounted(async () => {
     await pageLoading()
     await authStore.getToken();
@@ -228,27 +229,19 @@ const deleteComment = (id) => {
         })
 }
 const editComment = (id, content) => {
-    if(content != '') {
+    if (content != '') {
         $(`#default-comment-${id}`).removeClass('focus:ring-red-500 focus:border-red-500 ring-red-500 border-red-500')
         $(`#default-comment-${id}`).removeAttr()
-        axios.put(`api/comments/${id}`, {content: content})
-            .then(res => {
-                if ($(`.form-edit-comment-${id}`).is(":hidden")) {
-                    $(`.form-edit-comment-${id}`).removeClass('hidden');
-                } else {
-                    $(`.form-edit-comment-${id}`).addClass('hidden');
-                }
-    
-                if ($(`.prose-${id}`).first().is(":hidden")) {
-                    $(`.prose-${id}`).removeClass('hidden');
-                } else {
-                    $(`.prose-${id}`).addClass('hidden');
-                }
+        axios.put(`api/comments/${id}`, { content: content })
+        .then(res => {
+            $('.tool-comment').each(function () {
+                $(this).removeClass('hidden')
             })
-            .catch(err => {
-                console.log(err);
-            })
-    }else {
+        })
+        .catch(err => {
+            console.log(err);
+        })
+    } else {
         $(`#default-comment-${id}`).addClass('focus:ring-red-500 focus:border-red-500 ring-red-500 border-red-500')
     }
 }
@@ -339,4 +332,5 @@ const handleLiked = () => {
     overflow: auto;
     background-color: #f6f8fa;
     border-radius: 3px
-}</style>
+}
+</style>
