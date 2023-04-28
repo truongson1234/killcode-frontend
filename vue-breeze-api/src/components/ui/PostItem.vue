@@ -8,7 +8,7 @@
         <div
           class="tool-post-container hidden bg-white absolute right-0 shadow-lg"
           :class="`tool-post${data.id}`" style="min-width:15rem">
-          <router-link :to="{ name: 'PostEdit', params: { id: data.id } }"
+          <router-link :to="{ name: 'PostEdit', params: { id: data.id, auth: idAuthor} }"
             class="px-2 py-2 flex items-center hover:text-current hover:bg-gray-100 w-full">
             <i class='bx bx-edit text-gray-400 pr-1'></i> Chỉnh sửa bài viết
           </router-link>
@@ -21,8 +21,9 @@
         <div class="userimage"><img :src="data.author.avatar" alt="" /></div>
         <div class="flex flex-col">
           <span class="username leading-5">
-            <router-link :to="{ name: 'User', params: { id: data.author.id } }">{{
-              data.author.name }}</router-link>
+            <router-link
+              :to="{ name: 'Profile', params: { id: data.author.id } }">{{
+                            data.author.name }}</router-link>
           </span>
           <span class="time-post leading-3 text-slate-400" v-if="statusDate">
             đăng lúc
@@ -48,11 +49,14 @@
         </div>
         <div class="box-post-engagement">
           <div class="engagements flex items-center">
-            <span class="engagements-text flex items-center">{{ data.likes_count ? data.likes_count : 0 }}
+            <span class="engagements-text flex items-center">{{ data.likes_count ?
+                          data.likes_count : 0 }}
               <i class='bx bx-like fa-fw fa-lg m-r-3'></i></span>
-            <span class="engagements-text flex items-center">{{ data.views_count ? data.views_count : 0 }}
+            <span class="engagements-text flex items-center">{{ data.views_count ?
+                          data.views_count : 0 }}
               <i class='bx bx-show fa-fw fa-lg m-r-3'></i></span>
-            <span class="engagements-text flex items-center">{{ data.comments_count ? data.comments_count : 0 }} 
+            <span class="engagements-text flex items-center">{{
+                          data.comments_count ? data.comments_count : 0 }}
               <i class="bx bx-comment-detail fa-fw fa-lg m-r-3"></i></span>
           </div>
         </div>
@@ -191,5 +195,4 @@ onMounted(() => {
 
 .box-post-engagement .engagements-text+.engagements-text {
   margin-left: 15px
-}
-</style>
+}</style>

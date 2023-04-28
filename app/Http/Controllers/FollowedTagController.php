@@ -14,9 +14,17 @@ class FollowedTagController extends Controller
     {
         if(auth()->user()) {
             $data_query = Tag::with(['followers' => function ($query) { 
-                $query->where('user_id', auth()->user()->id); 
-            }])     
-                ->withCount('followers', 'posts', 'questions') 
+                    $query->where('user_id', auth()->user()->id); 
+                }])     
+                ->withCount([
+                    'followers',
+                    'posts' => function ($query) {
+                        $query->where('status_id', 1);
+                    },
+                    'questions' => function ($query) {
+                        $query->where('status_id', 1);
+                    },
+                ])
                 ->orderBy('created_at', 'desc') 
                 ->get();
 
@@ -41,12 +49,23 @@ class FollowedTagController extends Controller
     //Get ra tag hiện tại xem đã follow hay chưa với id Tag
     public function getFollowedTagById($id) {
         if(auth()->user()) {
-            $data_query = Tag::where('id', $id)->with(['followers' => function ($query) { 
-                $query->where('user_id', auth()->user()->id); 
-            }])     
-                ->withCount('followers', 'posts', 'questions') 
-                ->orderBy('created_at', 'desc') 
-                ->get();
+            $data_query = Tag::where('id', $id)
+                        ->with([
+                            'followers' => function ($query) { 
+                                $query->where('user_id', auth()->user()->id); 
+                            }
+                        ])     
+                        ->withCount([
+                            'followers',
+                            'posts' => function ($query) {
+                                $query->where('status_id', 1);
+                            },
+                            'questions' => function ($query) {
+                                $query->where('status_id', 1);
+                            },
+                        ])
+                        ->orderBy('created_at', 'desc')
+                        ->get();
 
             $tags = $data_query->map(function ($tag) { 
                 $tag->is_following = $tag->followers->isNotEmpty();

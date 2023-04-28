@@ -58,7 +58,7 @@
                         <span v-html="notification.content"></span>
                       </p>
                       <p class="text-xs mx-2 text-gray-400">{{
-                        formatDateTimeFB(new Date(notification.created_at)) }}
+                                              formatDateTimeFB(new Date(notification.created_at)) }}
                       </p>
                     </div>
                   </router-link>
@@ -86,15 +86,15 @@
                     alt="user" />
                   <div class="flex flex-col pl-1.5">
                     <span class="text-blue-500 text-md font-bold">{{
-                      infoAuth.name }}</span>
+                                          infoAuth.name }}</span>
                     <span class="text-gray-500 text-sm">{{ infoAuth.email
-                    }}</span>
+                                          }}</span>
                   </div>
                 </li>
                 <li>
                   <router-link class="navbar__ dropdown-item flex items-center"
                     @click="hideItemDropdownIconUser"
-                    :to="{ name: 'User', params: { id: infoAuth.id } }">
+                    :to="{ name: 'Profile', params: { id: infoAuth.id } }">
                     <i class='bx bxs-user pr-1.5'></i> Hồ sơ cá nhân
                   </router-link>
                 </li>
@@ -142,7 +142,7 @@
                 :key="item.name"
                 :class="[item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-700', 'block rounded-md px-3 py-2 text-base font-medium']"
                 :aria-current="item.current ? 'page' : undefined">{{ item.name
-                }}</router-link>
+                                }}</router-link>
             </div>
             <div
               class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
@@ -177,7 +177,7 @@
                           <span v-html="notification.content"></span>
                         </p>
                         <p class="text-xs mx-2 text-gray-400">{{
-                          formatDateTimeFB(new Date(notification.created_at)) }}
+                                                  formatDateTimeFB(new Date(notification.created_at)) }}
                         </p>
                       </div>
                     </router-link>
@@ -235,16 +235,16 @@
                           alt="user" />
                         <div class="flex flex-col pl-1.5">
                           <span class="text-blue-500 text-md font-bold">{{
-                            infoAuth.name }}</span>
+                                                      infoAuth.name }}</span>
                           <span class="text-gray-500 text-sm">{{ infoAuth.email
-                          }}</span>
+                                                      }}</span>
                         </div>
                       </li>
                       <li>
                         <router-link
                           class="navbar__ dropdown-item flex items-center"
                           @click="hideItemDropdownIconUser"
-                          :to="{ name: 'User', params: { id: infoAuth.id } }">
+                          :to="{ name: 'Profile', params: { id: infoAuth.id } }">
                           <i class='bx bxs-user pr-1.5'></i> Hồ sơ cá nhân
                         </router-link>
                       </li>

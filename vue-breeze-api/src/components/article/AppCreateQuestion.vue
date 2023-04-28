@@ -91,7 +91,7 @@ const payload = ref({
     views: 0,
     likes: 0,
 })
-const statusTitle = ref(false), statusTag = ref(false), statusBody = ref(false), focusEditor = ref(false)
+const statusTitle = ref(false), statusTag = ref(false), statusBody = ref(false), focusEditor = ref(false), statusSaveDraft = ref(true)
 const addTag = (data) => {
     if (payload.value.tag_ids.length > 4) {
         // Swal.fire("Qúa nhiều tags rồi!", "Chỉ thêm được tối đa 5 tags.");
@@ -131,17 +131,47 @@ const handleCreated = (payload) => {
         payload.tag_ids.length < 1 ? statusTag.value = true : statusTag.value = false
         payload.body == '' ? (statusBody.value = true, $('.ck.ck-reset.ck-editor.ck-rounded-corners').attr('style', 'border: 1px solid red')) : (statusBody.value = false, $('.ck.ck-reset.ck-editor.ck-rounded-corners').removeAttr('style'))
     } else {
-        axios.post("/api/questions", payload).then((response) => {
-            console.log(response);
-            if (response.data.status) {
-                // console.log(response.data)
-                // router.push({ name: 'PostDetail', params: { id: response.data.data.id } })
-                // .then(() => { router.go() })
+        axios.post("/api/questions", payload)
+        .then((response) => {
+            statusSaveDraft.value = false
+            // console.log(response.data)
+            router.push({ name: 'QuestionDetail', params: { id: response.data.data.id } })
+            .then(() => { router.go() })
 
-            }
         });
     }
 };
+router.beforeEach((to, from, next) => {
+    if (from.path === '/create-question') {
+        if (payload.value.title != '' && payload.value.tag_ids.length > 0 && payload.value.body != '' && statusSaveDraft.value == true) {
+            // Swal.fire({
+            //     title: "Bạn đang muốn rời đi trong khi bài viết chưa xuất bản.",
+            //     text: `Bạn có muốn lưu bài viết này dưới dạng bản nháp không?`,
+            //     icon: "warning",
+            //     showCancelButton: true,
+            //     confirmButtonColor: "#3085d6",
+            //     cancelButtonColor: "#A6A6A6",
+            //     confirmButtonText: "Lưu",
+            //     cancelButtonText: "Hủy",
+            // })
+            const confirmNavigation = confirm('Bạn có muốn lưu lại câu hỏi?');
+
+            if (!confirmNavigation) {
+                next(false);
+                return;
+            } else {
+                axios.post("/api/questions/draft", payload.value)
+                // .then((response) => {
+                //      console.log(response.data)
+                // });
+            }
+        }
+        payload.value.title = ''
+        payload.value.body = ''
+        payload.value.tag_ids = []
+    }
+    next()
+});
 </script>
 <style>
 .create-question-unique .ck.ck-editor__main>.ck-editor__editable {

@@ -23,7 +23,8 @@ class QuestionController extends Controller
         }])
         ->withCount(['interactions as views_count' => function($query) {
             $query->select(\DB::raw("SUM(views) as views_count"));
-        }])->get();
+        }])
+        ->orderBy('created_at', 'desc')->where('status_id', 1)->get();
         $questions = $questions->map(function ($question) {
                 $question->author = [
                     'id' => $question->user->id,
@@ -53,7 +54,7 @@ class QuestionController extends Controller
         }else {
             $relatedQuestions = [];
         }
-        $newQuestions = Question::with('user')->withCount('comments')
+        $newQuestions = Question::where('status_id', 1)->with('user')->withCount('comments')
         ->withCount(['interactions as likes_count' => function($query) {
             $query->select(\DB::raw("SUM(liked) as likes_count"));
         }])
@@ -86,6 +87,86 @@ class QuestionController extends Controller
         $question->user_id = auth()->user()->id;
         $question->title = $request->input('title');
         $question->body = $request->input('body');
+        $question->status_id = 1;
+        $question->save();
+
+        // tạo followed tag
+        $tagIds = $request->input('tag_ids');
+
+        $question->tags()->attach($tagIds);
+
+        // Tạo thông báo
+        $data_notification = [
+            'sender_id' => $question->user_id,
+            'title' => 'Thông báo có câu hỏi mới',
+            'type_notification' => 'new question',
+            'route' => [
+                'name' => 'QuestionDetail',
+                'params' => [
+                    'id' => $question->id
+                ]
+            ]
+        ];
+
+        $pusher = new Pusher(
+            env('PUSHER_APP_KEY'),
+            env('PUSHER_APP_SECRET'),
+            env('PUSHER_APP_ID'),
+            [
+                'cluster' => env('PUSHER_APP_CLUSTER'),
+                'encrypted' => true
+            ]
+        );
+
+        // lấy tất cả các user đã follow các tag trong post
+        $users = User::whereIn('id', function($query) use($tagIds) {
+            $query->select('user_id')
+                ->from('followed_tags')
+                ->whereIn('tag_id', $tagIds);
+        })->with('tags')->get();
+
+        if ($users->count()) {
+            // gửi thông báo tới user đang follow tag trong post
+            foreach ($users as $user) {
+                $tagNames = $user->tags->whereIn('id', $tagIds)
+                    ->take(3)
+                    ->pluck('name')
+                    ->implode(', ');
+
+                $notification = new Notification([
+                    'user_id' => $user->id,
+                    'sender_id' => $data_notification['sender_id'],
+                    'title' => $data_notification['title'],
+                    // 'content' => 'Có câu hỏi mới từ ' . $tagNames . '. Tựa đề: ' . $question->title,
+                    'content' => 'Có câu hỏi mới từ chủ đề <span class="font-bold">' . $tagNames .'.</span>',
+                    'type_notification' => $data_notification['type_notification'],
+                    'route' => $data_notification['route'],
+                    'read' => false,
+                ]);
+    
+                $notification->save();
+
+                $notification['user'] = $notification->user;
+                $notification['sender'] = $notification->sender;
+
+                $pusher->trigger('chanel-notification', 'event-notification-' . $user->id, $notification);
+            }
+        }            
+
+        return response()->json([
+            'data' => $question,
+            'message' => 'Question created successfully.',
+        ], 201);
+    }
+    public function draftQuestion(Request $request)
+    {
+        // tạo bài viết
+        $question = new Question();
+        // $question->user_id = 1;
+        $question->user_id = auth()->user()->id;
+        $question->title = $request->input('title');
+        $question->body = $request->input('body');
+        $question->status_id = 2;
         $question->save();
 
         // tạo followed tag
@@ -158,7 +239,7 @@ class QuestionController extends Controller
     }
 
     public function getQuestionByUser($id) {
-        $data_query = Question::where('user_id', $id)->with('user', 'tags')->get();
+        $data_query = Question::where('user_id', $id)->with('user', 'tags')->orderBy('created_at', 'desc')->where('status_id', 1)->get();
         $questions = $data_query->map(function ($question) {
             $question->author = [
                 'id' => $question->user->id,
@@ -171,6 +252,31 @@ class QuestionController extends Controller
         });
         return response()->json([
             'questions' => $questions,
+        ]);
+    }
+    public function getDraftQuestionByUser($id) 
+    {
+        $user = User::findOrFail($id);
+        $questions = Question::where('user_id', $id)->where('status_id', 2)->with('tags')->orderBy('created_at', 'desc')->get();
+        return response()->json(['data' => $questions]);
+    }
+
+    public function updateDraftQuestion(Request $request, $id)
+    {
+        $question = Question::findOrFail($id);
+        $question->update([
+            'title' => $request->input('title'),
+            'body' => $request->input('body'),
+            'updated_at' => now()
+        ]);
+
+        $tagIds = $request->input('tag_ids');
+        $question->tags()->detach();
+        $question->tags()->attach($tagIds);
+        return response()->json([
+            'data' => $question,
+            'status' => 1,
+            'message' => 'Cập nhật bản nháp thành công.'
         ]);
     }
 
@@ -248,7 +354,7 @@ class QuestionController extends Controller
                             unset($tag->pivot);
                             return $tag;
                         });
-        $relatedQuestions = Question::where('id', '<>', $id)->whereHas('tags', function($query) use ($currentQuestion) {
+        $relatedQuestions = Question::where('id', '<>', $id)->where('status_id', 1)->whereHas('tags', function($query) use ($currentQuestion) {
             $query->whereIn('tags.id', $currentQuestion);
         })->with('tags')->withCount('comments')->withCount(['interactions as likes_count' => function($query) {
             $query->select(\DB::raw("SUM(liked) as likes_count"));
@@ -282,10 +388,20 @@ class QuestionController extends Controller
     {
         $question = Question::findOrFail($id);
 
-        $question->update([
-            'title' => $request->input('title'),
-            'body' => $request->input('body'),
-        ]);
+        if($question->status_id == 2) {
+            $question->update([
+                'title' => $request->input('title'),
+                'body' => $request->input('body'),
+                'updated_at' => now(),
+                'status_id' => 1,
+            ]);
+        }else {
+            $question->update([
+                'title' => $request->input('title'),
+                'body' => $request->input('body'),
+                'updated_at' => now()
+            ]);
+        }
         $tagIds = $request->input('tag_ids');
         $question->tags()->detach();
         $question->tags()->attach($tagIds);
@@ -294,6 +410,14 @@ class QuestionController extends Controller
             'status' => 1,
             'message' => 'Question updated successfully.',
         ]);
+    }
+
+    public function searchDraftQuestion(Request $request, $id) {
+        $keyword = $request->input('title');
+        $draftQuestions = Question::where('title', 'like', "%$keyword%")
+                            ->where('user_id', $id)->where('status_id', 2)
+                            ->with('tags')->orderBy('updated_at', 'desc')->get();
+        return response()->json(['data' => $draftQuestions]);
     }
 
     public function destroy($id)

@@ -115,7 +115,6 @@ export default {
             await axios.delete(`api/posts/${id_post}`)
                 .then(res => {
                     this.posts = this.posts.filter((post) => post.id !== id_post);
-                    console.log('ayeah');
                 })
                 .catch(err => {
                     console.log(err);
@@ -137,20 +136,6 @@ export default {
         },
         onPageChanged(page) {
             this.currentPage = page;
-            // axios
-            //     .get("/api/posts", {
-            //         params: {
-            //             page: this.currentPage,
-            //             perPage: this.totalPages,
-            //         },
-            //     })
-            //     .then((response) => {
-            //         this.posts = response.data.data;
-            //         this.currentPage = response.data.currentPage;
-            //     })
-            //     .catch((error) => {
-            //         console.log(error);
-            //     });
         },
     },
 };

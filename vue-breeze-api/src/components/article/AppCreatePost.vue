@@ -7,8 +7,8 @@
             </button>
         </div>
         <div class="">
-            <input v-model="payload.title" placeholder="Tiêu đề bài viết" type="text"
-                id="base-input"
+            <input v-model="payload.title" placeholder="Tiêu đề bài viết"
+                type="text" id="base-input"
                 class="bg-gray-50 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 :class="[statusTitle ? 'border-red-600' : '']"
                 @keyup="keyUpValidate('statusTitle', $event)" />
@@ -35,7 +35,8 @@
                 @add-item="addTag" :hightlight-border="statusTag" />
         </div>
         <div class="" v-if="statusTag">
-            <span class="text-sm text-red-600">Vui lòng gắn chủ đề cho bài viết</span>
+            <span class="text-sm text-red-600">Vui lòng gắn chủ đề cho bài
+                viết</span>
         </div>
         <div class="mt-3">
             <ckeditor :editor="editor" v-model="payload.body" @input="checkCkeditor"
@@ -91,9 +92,8 @@ const payload = ref({
     views: 0,
     likes: 0,
 })
-const statusTitle = ref(false), statusTag = ref(false), statusBody = ref(false), focusEditor = ref(false)
+const statusTitle = ref(false), statusTag = ref(false), statusBody = ref(false), focusEditor = ref(false), statusSaveDraft = ref(true)
 const addTag = (data) => {
-    console.log(data);
     if (payload.value.tag_ids.length > 4) {
         // Swal.fire("Qúa nhiều tags rồi!", "Chỉ thêm được tối đa 5 tags.");
     } else if (!payload.value.tag_ids.find(i => i == data.id)) {
@@ -132,17 +132,37 @@ const handleCreated = (payload) => {
         payload.tag_ids.length < 1 ? statusTag.value = true : statusTag.value = false
         payload.body == '' ? (statusBody.value = true, $('.ck.ck-reset.ck-editor.ck-rounded-corners').attr('style', 'border: 1px solid red')) : (statusBody.value = false, $('.ck.ck-reset.ck-editor.ck-rounded-corners').removeAttr('style'))
     } else {
-        axios.post("/api/posts", payload).then((response) => {
-            console.log(response);
-            if (response.data.status) {
+        axios.post("/api/posts", payload)
+            .then((response) => {
                 // console.log(response.data)
-                // router.push({ name: 'PostDetail', params: { id: response.data.data.id } })
-                // .then(() => { router.go() })
-
-            }
-        });
+                statusSaveDraft.value = false
+                router.push({ name: 'PostDetail', params: { id: response.data.data.id } })
+                    .then(() => { router.go() })
+            });
     }
 };
+
+router.beforeEach((to, from, next) => {
+    if (from.path === '/create-post') {
+        if (payload.value.title != '' && payload.value.tag_ids.length > 0 && payload.value.body != '' && statusSaveDraft.value == true) {
+            const confirmNavigation = confirm('Bạn có muốn lưu lại bài viết?');
+
+            if (!confirmNavigation) {
+                next(false);
+                return;
+            } else {
+                axios.post("/api/posts/draft", payload.value)
+                // .then((response) => {
+                //      console.log(response.data)
+                // });
+            }
+        }
+        payload.value.title = ''
+        payload.value.body = ''
+        payload.value.tag_ids = []
+    }
+    next()
+});
 </script>
 <style>
 .create-post-unique .ck.ck-editor__main>.ck-editor__editable {
