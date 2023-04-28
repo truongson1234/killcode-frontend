@@ -8,15 +8,25 @@ use App\Models\PostStatus;
 
 class PostStatusController extends Controller
 {
-    public function index ()
+    public $post_statuses;
+
+    public function load_statuses()
     {
-        $post_statuses = PostStatus::all()->map(function ($post_status) {
+        $this->post_statuses = PostStatus::all()->map(function ($post_status) {
             $post_status->posts;
             return $post_status;
         });
+    }
 
+    public function __construct()
+    {
+        $this->load_statuses();
+    }
+
+    public function index ()
+    {
         return response()->json([
-            'post_statuses' => $post_statuses,
+            'post_statuses' => $this->post_statuses,
         ]);
     }
 
@@ -26,8 +36,10 @@ class PostStatusController extends Controller
             'name' => $request->input('name'),
             'describe' => $request->input('describe'),
         ]);
-        
+
+        $this->load_statuses();
         return response()->json([
+            'post_statuses' => $this->post_statuses,
             'status' => 1,
             'message' => 'Đã tạo thành công trạng thái.'
         ], 201);
@@ -42,11 +54,14 @@ class PostStatusController extends Controller
             'describe' => $request->input('describe'),
         ]);
 
+        $this->load_statuses();
         return response()->json([
+            'post_statuses' => $this->post_statuses,
             'status' => 1,
             'message' => 'Cập nhật thành công.'
         ]);
     }
+    
 
     public function destroy($id)
     {
@@ -55,7 +70,9 @@ class PostStatusController extends Controller
         if (!$post_status->is_default) {
             $post_status->delete();
 
+            $this->load_statuses();
             return response()->json([
+                'post_statuses' => $this->post_statuses,
                 'status' => 1,
                 'message' => 'Xóa thành công trạng thái.'
             ], 200);
@@ -66,4 +83,6 @@ class PostStatusController extends Controller
             'message' => 'Không thể xóa.'
         ], 200);
     }
+    
+    
 }
