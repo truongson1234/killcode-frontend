@@ -31,15 +31,34 @@
                     </th>
                     <td class="px-6 py-4">{{ post.status.name }}</td>
                     <td class="px-6 py-4">{{ post.comments_count }}</td>
-                    <td class="px-6 py-4">{{ post.likes_count ? post.likes_count : 0 }}</td>
-                    <td class="px-6 py-4">{{ post.views_count ? post.views_count : 0 }}</td>
+                    <td class="px-6 py-4">
+                        {{ post.likes_count ? post.likes_count : 0 }}
+                    </td>
+                    <td class="px-6 py-4">
+                        {{ post.views_count ? post.views_count : 0 }}
+                    </td>
                     <td class="px-6 py-4">{{ post.user.name }}</td>
-                    <td class="px-6 py-4">{{ post.tags.map(tag => tag.name).join(", ") }}</td>
+                    <td class="px-6 py-4">
+                        {{ post.tags.map((tag) => tag.name).join(", ") }}
+                    </td>
                     <td class="flex items-center px-6 py-4 space-x-3">
+                        <ModalBanPost
+                            v-if="!post.is_banned"
+                            :post_id="post.id"
+                            @update-posts="loadPosts"
+                        />
+                        <button
+                            v-else
+                            @click="unbanPost(post.id)"
+                            type="button"
+                            class="mx-2 focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900"
+                        >
+                            <i class="bx bx-wrench"></i>
+                        </button>
                         <button
                             @click="removePost(post.id)"
                             type="button"
-                            class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2.5 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+                            class="mx-2 focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2.5 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
                         >
                             <i class="bx bx-trash"></i>
                         </button>
@@ -53,11 +72,12 @@
 <script setup>
 import axios from "axios";
 import { onMounted, ref, computed } from "vue";
+import ModalBanPost from "@/components/admin/ui/ModalBanPost.vue";
 
-const posts = ref([])
+const posts = ref([]);
 
 onMounted(() => {
-    fetchData()
+    fetchData();
 });
 
 const fetchData = () => {
@@ -70,18 +90,42 @@ const fetchData = () => {
         .catch((error) => {
             console.log(error);
         });
-}
+};
+
+const loadPosts = (data) => {
+    posts.value = data;
+};
+
+const unbanPost = async (id) => {
+    await axios
+        .post(`/api/dashboard/posts/${id}/unban`)
+        .then((response) => {
+            // posts.value = response.data.posts;
+            if (response.data.status == 1) {
+                posts.value = response.data.posts;
+                Swal.fire(
+                    "Đã unban lệnh cấm với bài viết này!",
+                    "You clicked the button!",
+                    "success"
+                );
+            }
+            console.log(response);
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+};
 
 const removePost = async (id) => {
     await axios
-            .delete(`/api/dashboard/posts/${id}`)
-            .then((response) => {
-                posts.value = response.data.posts;
-                // console.log(postStatuses);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+        .delete(`/api/dashboard/posts/${id}`)
+        .then((response) => {
+            posts.value = response.data.posts;
+            // console.log(postStatuses);
+        })
+        .catch((error) => {
+            console.log(error);
+        });
 };
 </script>
 

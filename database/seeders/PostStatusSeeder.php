@@ -25,6 +25,11 @@ class PostStatusSeeder extends Seeder
                 'name' => 'Riêng tư',
                 'describe' => 'Chỉ mình tôi',
                 'is_default' => true,
+            ],
+            [
+                'name' => 'Vi phạm',
+                'describe' => 'Bài viết đang vi phạm quy định của trang',
+                'is_default' => true,
             ]
         ]);
     }
