@@ -34,6 +34,7 @@ Route::group(['prefix' => 'dashboard'], function () {
     });
     Route::group(['prefix' => 'posts'], function () {
         Route::get('', 'App\Http\Controllers\Admin\PostController@index');
+        Route::delete('{id}', 'App\Http\Controllers\Admin\PostController@destroy');
     });
     Route::group(['prefix' => 'post-statuses'], function () {
         Route::get('', 'App\Http\Controllers\Admin\PostStatusController@index');

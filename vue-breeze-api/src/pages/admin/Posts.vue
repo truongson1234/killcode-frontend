@@ -36,11 +36,13 @@
                     <td class="px-6 py-4">{{ post.user.name }}</td>
                     <td class="px-6 py-4">{{ post.tags.map(tag => tag.name).join(", ") }}</td>
                     <td class="flex items-center px-6 py-4 space-x-3">
-                        <a
-                            href="#"
-                            class="font-medium text-red-600 dark:text-red-500 hover:underline"
-                            >Remove</a
+                        <button
+                            @click="removePost(post.id)"
+                            type="button"
+                            class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2.5 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
                         >
+                            <i class="bx bx-trash"></i>
+                        </button>
                     </td>
                 </tr>
             </tbody>
@@ -69,6 +71,18 @@ const fetchData = () => {
             console.log(error);
         });
 }
+
+const removePost = async (id) => {
+    await axios
+            .delete(`/api/dashboard/posts/${id}`)
+            .then((response) => {
+                posts.value = response.data.posts;
+                // console.log(postStatuses);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+};
 </script>
 
 <style lang="scss" scoped></style>

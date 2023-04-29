@@ -86,7 +86,7 @@
 <script setup>
 import axios from "axios";
 import { onMounted, ref, computed } from "vue";
-import ModalPostStatuses from "@/components/ui/ModalPostStatuses.vue";
+import ModalPostStatuses from "@/components/admin/ui/ModalPostStatuses.vue";
 
 const postStatuses = ref([]);
 

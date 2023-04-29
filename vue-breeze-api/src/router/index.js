@@ -292,7 +292,6 @@ const routes = [
                 name: "AdminQuestions",
                 component: () => import("@/pages/admin/Questions.vue"),
             },
-<<<<<<< HEAD
             {
                 path: "reports",
                 name: "AdminReports",
@@ -303,8 +302,6 @@ const routes = [
                 name: "AdminPostStatuses",
                 component: () => import("@/pages/admin/PostStatuses.vue"),
             },
-=======
->>>>>>> 11e889492feeecea7011cedce6a865746aa073d7
         ],
         name: "Admin",
         components: {
