@@ -35,9 +35,9 @@
                             <router-link :to="{ name: 'QuestionsList' }">Câu
                                 hỏi</router-link>
                         </li>
-                        <li>
+                        <!-- <li>
                             <router-link :to="{ name: 'Test' }">Test</router-link>
-                        </li>
+                        </li> -->
                         <li>
                             <router-link :to="{ name: 'PostsList' }">Bài
                                 viết</router-link>
@@ -174,10 +174,10 @@
                                             Quản trị hệ thống
                                         </router-link>
                                     </li>
-                                    <li>
+                                    <!-- <li>
                                         <BtnDarkMode
                                             @click="hideItemDropdownIconUser" />
-                                    </li>
+                                    </li> -->
                                     <li>
                                         <button
                                             class="navbar__ dropdown-item flex items-center"

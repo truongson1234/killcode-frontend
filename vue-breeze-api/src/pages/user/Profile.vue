@@ -31,7 +31,7 @@
                                             @click="showModalEditProfile(inforUser.id, inforUser.name, inforUser.email)"
                                             class="btn btn-sm btn-secondary mb-2 inline-flex items-center text-sm lg:text-base">
                                             <i class='bx bxs-pencil md: pr-1'></i>
-                                            <span class="hidden md:block">Chỉnh sửa thông tin cá nhân</span>
+                                            <span class="hidden md:block">Sửa</span>
                                         </button>
                                         <div id="modal-edit-user-role"
                                             class="hidden fixed top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] md:h-full">

@@ -285,6 +285,7 @@ import VPagination from "@hennge/vue3-pagination";
 import "@hennge/vue3-pagination/dist/vue3-pagination.css";
 import "@/assets/admin/css/pagination-styles.css";
 import { useAuthStore } from '@/stores/auth'
+import { pageLoading, pageLoaded } from '@/assets/js/app'
 export default {
     components: {
         VPagination
@@ -437,6 +438,7 @@ export default {
         }
     },
     async mounted() {
+        pageLoading()
         initFlowbite()
         await this.authStore.getToken()
         await this.authStore.getUser()
@@ -447,6 +449,7 @@ export default {
                 $(`.drop-down-container`).slideUp(300);
             }
         });
+        pageLoaded()
     }
 }
 </script>

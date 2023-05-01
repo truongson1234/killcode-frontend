@@ -72,7 +72,7 @@ const routes = [
                 meta: { showHeader: false, showFooter: false, isAdmin: false },
             },
             {
-                path: "forgot_password",
+                path: "forgot-password",
                 name: "ForgotPassword",
                 component: () => import("@/pages/auth/ForgotPassword.vue"),
                 meta: { showHeader: false, showFooter: false, isAdmin: false },
@@ -316,14 +316,14 @@ const routes = [
             },
         ],
     },
-    {
-        path: "/:catchAll(.*)",
-        name: "NotFound",
-        components: {
-            default: () => import("@/pages/errors/404.vue"),
-            other: () => import("@/pages/errors/404.vue"),
-        },
-    },
+    // {
+    //     path: "/:catchAll(.*)",
+    //     name: "NotFound",
+    //     components: {
+    //         default: () => import("@/pages/errors/404.vue"),
+    //         other: () => import("@/pages/errors/404.vue"),
+    //     },
+    // },
 ];
 
 const router = createRouter({

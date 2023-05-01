@@ -1,43 +1,43 @@
 <template>
-  <div class="under-space"></div>
-  <div class="footer-dark">
-    <footer>
-      <div class="container">
-        <div class="row">
-          <div class="col-sm-6 col-md-3 item">
-            <h3>Services</h3>
-            <ul>
-              <li><a href="#">Web design</a></li>
-              <li><a href="#">Development</a></li>
-              <li><a href="#">Hosting</a></li>
-            </ul>
+  <div>
+    <div class="under-space"></div>
+    <div class="footer-dark">
+      <footer>
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-6 col-md-3 item">
+              <h3>Tài nguyên</h3>
+              <ul>
+                <li class="pb-2 hover:text-black"><router-link :to="{ name: 'TagsList'}">Chủ đề</router-link></li>
+                <li class="pb-2 hover:text-black"><router-link :to="{ name: 'PostsList'}">Bài viết</router-link></li>
+                <li class="pb-2 hover:text-black"><router-link :to="{ name: 'QuestionsList'}">Câu hỏi</router-link></li>
+                <li class="pb-2 hover:text-black"><router-link :to="{ name: 'Search'}">Tìm kiếm</router-link></li>
+              </ul>
+            </div>
+            <div class="col-sm-6 col-md-3 item">
+              <h3>Liên hệ</h3>
+              <ul>
+                <li class="text-gray-400">SĐT: 0123456789</li>
+                <li class="text-gray-400">Địa chỉ: Cao đẳng Công nghệ cao Hà Nội - HHT</li>
+              </ul>
+            </div>
+            <div class="col-md-6 item text">
+              <h3>Giới thiệu</h3>
+              <p>
+                Trang web chia sẻ kiến thức lập trình của chúng tôi là một nơi tuyệt vời để học hỏi, chia sẻ và khám phá các kiến thức về lập trình. Chúng tôi cung cấp các bài hướng dẫn, các bài viết chia sẻ kinh nghiệm, các câu hỏi thường gặp và các tài liệu hữu ích khác trong lĩnh vực lập trình. Trang web của chúng tôi sẽ giúp bạn phát triển kỹ năng lập trình và cập nhật các xu hướng mới nhất trong ngành. Chúng tôi hy vọng trang web của chúng tôi sẽ giúp bạn trở thành một lập trình viên thành thạo và chuyên nghiệp.
+              </p>
+            </div>
+            <div class="col item social">
+              <a href="#"><i class='bx bxl-facebook'></i></a
+              ><a href="#"><i class='bx bxl-twitter' ></i></a
+              ><a href="#"><i class='bx bxl-github' ></i></a
+              ><a href="#"><i class='bx bxl-instagram' ></i></a>
+            </div>
           </div>
-          <div class="col-sm-6 col-md-3 item">
-            <h3>About</h3>
-            <ul>
-              <li><a href="#">Company</a></li>
-              <li><a href="#">Team</a></li>
-              <li><a href="#">Careers</a></li>
-            </ul>
-          </div>
-          <div class="col-md-6 item text">
-            <h3>Company Name</h3>
-            <p>
-              Praesent sed lobortis mi. Suspendisse vel placerat ligula. Vivamus
-              ac sem lacus. Ut vehicula rhoncus elementum. Etiam quis tristique
-              lectus. Aliquam in arcu eget velit pulvinar dictum vel in justo.
-            </p>
-          </div>
-          <div class="col item social">
-            <a href="#"><i class='bx bxl-facebook'></i></a
-            ><a href="#"><i class='bx bxl-twitter' ></i></a
-            ><a href="#"><i class='bx bxl-github' ></i></a
-            ><a href="#"><i class='bx bxl-instagram' ></i></a>
-          </div>
+          <p class="copyright">KILLCODE © 2023</p>
         </div>
-        <p class="copyright">Company Killcode © 2023</p>
-      </div>
-    </footer>
+      </footer>
+    </div>
   </div>
 </template>
 
