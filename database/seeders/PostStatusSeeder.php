@@ -15,7 +15,7 @@ class PostStatusSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('post_status')->insert([
+        DB::table('post_statuses')->insert([
             [
                 'name' => 'Công khai',
                 'describe' => 'Tất cả mọi người',
@@ -24,6 +24,11 @@ class PostStatusSeeder extends Seeder
             [
                 'name' => 'Riêng tư',
                 'describe' => 'Chỉ mình tôi',
+                'is_default' => true,
+            ],
+            [
+                'name' => 'Vi phạm',
+                'describe' => 'Bài viết đang vi phạm quy định của trang',
                 'is_default' => true,
             ]
         ]);

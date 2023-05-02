@@ -11,4 +11,8 @@ class PostStatus extends Model
 
     protected $fillable = ['name', 'describe', 'is_default'];
 
+    public function posts()
+    {
+        return $this->hasMany(Post::class, 'status_id');
+    }
 }

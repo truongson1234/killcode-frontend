@@ -7,20 +7,8 @@
                 class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
             >
                 <tr>
-                    <th scope="col" class="p-4">
-                        <div class="flex items-center">
-                            <input
-                                id="checkbox-all-search"
-                                type="checkbox"
-                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            />
-                            <label for="checkbox-all-search" class="sr-only"
-                                >checkbox</label
-                            >
-                        </div>
-                    </th>
                     <th scope="col" class="px-6 py-3">Tiều đề</th>
-                    <th scope="col" class="px-6 py-3">Nội dung</th>
+                    <th scope="col" class="px-6 py-3">Trạng thái</th>
                     <th scope="col" class="px-6 py-3">Bình luận</th>
                     <th scope="col" class="px-6 py-3">Lượt thích</th>
                     <th scope="col" class="px-6 py-3">Lượt xem</th>
@@ -32,37 +20,48 @@
             <tbody>
                 <tr
                     class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                    v-for="post in posts"
+                    :key="post.id"
                 >
-                    <td class="w-4 p-4">
-                        <div class="flex items-center">
-                            <input
-                                id="checkbox-table-search-2"
-                                type="checkbox"
-                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            />
-                            <label for="checkbox-table-search-2" class="sr-only"
-                                >checkbox</label
-                            >
-                        </div>
-                    </td>
                     <th
                         scope="row"
                         class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                     >
-                        C# cơ bản
+                        {{ post.title }}
                     </th>
-                    <td class="px-6 py-4">Bước đầu...</td>
-                    <td class="px-6 py-4">0</td>
-                    <td class="px-6 py-4">0</td>
-                    <td class="px-6 py-4">0</td>
-                    <td class="px-6 py-4">Nguyễn Văn A</td>
-                    <td class="px-6 py-4">c#, newbie</td>
+                    <td class="px-6 py-4">{{ post.status.name }}</td>
+                    <td class="px-6 py-4">{{ post.comments_count }}</td>
+                    <td class="px-6 py-4">
+                        {{ post.likes_count ? post.likes_count : 0 }}
+                    </td>
+                    <td class="px-6 py-4">
+                        {{ post.views_count ? post.views_count : 0 }}
+                    </td>
+                    <td class="px-6 py-4">{{ post.user.name }}</td>
+                    <td class="px-6 py-4">
+                        {{ post.tags.map((tag) => tag.name).join(", ") }}
+                    </td>
                     <td class="flex items-center px-6 py-4 space-x-3">
-                        <a
-                            href="#"
-                            class="font-medium text-red-600 dark:text-red-500 hover:underline"
-                            >Remove</a
+                        <ModalBanPost
+                            v-if="!post.is_banned"
+                            :post_id="post.id"
+                            @update-posts="loadPosts"
+                        />
+                        <button
+                            v-else
+                            @click="unbanPost(post.id)"
+                            type="button"
+                            class="mx-2 focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900"
                         >
+                            <i class="bx bx-wrench"></i>
+                        </button>
+                        <button
+                            @click="removePost(post.id)"
+                            type="button"
+                            class="mx-2 focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2.5 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+                        >
+                            <i class="bx bx-trash"></i>
+                        </button>
                     </td>
                 </tr>
             </tbody>
@@ -70,6 +69,64 @@
     </div>
 </template>
 
-<script setup></script>
+<script setup>
+import axios from "axios";
+import { onMounted, ref, computed } from "vue";
+import ModalBanPost from "@/components/admin/ui/ModalBanPost.vue";
+
+const posts = ref([]);
+
+onMounted(() => {
+    fetchData();
+});
+
+const fetchData = () => {
+    axios
+        .get("/api/dashboard/posts")
+        .then((response) => {
+            posts.value = response.data.posts;
+            console.log(posts);
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+};
+
+const loadPosts = (data) => {
+    posts.value = data;
+};
+
+const unbanPost = async (id) => {
+    await axios
+        .post(`/api/dashboard/posts/${id}/unban`)
+        .then((response) => {
+            // posts.value = response.data.posts;
+            if (response.data.status == 1) {
+                posts.value = response.data.posts;
+                Swal.fire(
+                    "Đã unban lệnh cấm với bài viết này!",
+                    "You clicked the button!",
+                    "success"
+                );
+            }
+            console.log(response);
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+};
+
+const removePost = async (id) => {
+    await axios
+        .delete(`/api/dashboard/posts/${id}`)
+        .then((response) => {
+            posts.value = response.data.posts;
+            // console.log(postStatuses);
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+};
+</script>
 
 <style lang="scss" scoped></style>
