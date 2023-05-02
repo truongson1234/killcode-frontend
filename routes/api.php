@@ -53,7 +53,9 @@ Route::group(['prefix' => 'reports'], function () {
 });
 
 
+// SEARCH 
 Route::get('/search', 'App\Http\Controllers\SearchController@search');
+Route::get('/search/all', 'App\Http\Controllers\SearchController@getSearchAll');
 
 // Get user by id
 Route::group(['prefix' => 'user-detail'], function () {

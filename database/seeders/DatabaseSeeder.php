@@ -14,9 +14,51 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        for ($i = 0; $i < 10; $i++) {
-            $name = Str::random(10); // Generate a random name
-            $slug = Str::slug($name); // Generate a slug from the name
+        $tags = [
+            [
+                'name' => 'php',
+                'slug' => 'php'
+            ],
+            [
+                'name' => 'javascript',
+                'slug' => 'javascript'
+            ],
+            [
+                'name' => 'vue',
+                'slug' => 'vue'
+            ],
+            [
+                'name' => 'mysql',
+                'slug' => 'mysql'
+            ],
+            [
+                'name' => 'laravel',
+                'slug' => 'laravel'
+            ],
+            [
+                'name' => 'react',
+                'slug' => 'react'
+            ],
+            [
+                'name' => 'python',
+                'slug' => 'python'
+            ],
+            [
+                'name' => 'c#',
+                'slug' => 'c#'
+            ],
+            [
+                'name' => 'html',
+                'slug' => 'html'
+            ],
+            [
+                'name' => 'css',
+                'slug' => 'css'
+            ],
+        ];
+        for ($i = 0; $i < count($tags); $i++) {
+            $name = $tags[$i]['name']; 
+            $slug = Str::slug($tags[$i]['slug']);
             DB::table('tags')->insert([
                 'name' => $name,
                 'slug' => $slug,

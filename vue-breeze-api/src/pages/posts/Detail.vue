@@ -30,17 +30,17 @@
                             <li
                                 class="pr-4 text-gray-500 text-lg flex items-center">
                                 <i class="bx bx-show pr-1"></i>
-                                {{ post.views_count }}
+                                {{ post.views_count ? post.views_count : 0 }}
                             </li>
                             <li
                                 class="pr-4 text-gray-500 text-lg flex items-center">
                                 <i class="bx bx-comment-detail pr-1"></i>
-                                {{ post.comments_count }}
+                                {{ post.comments_count ? post.comments_count : 0 }}
                             </li>
                             <li
                                 class="pr-4 text-gray-500 text-lg flex items-center">
                                 <i class="bx bx-like pr-1"></i>
-                                {{ post.likes_count }}
+                                {{ post.likes_count ? post.likes_count : 0 }}
                             </li>
                         </ul>
                     </div>

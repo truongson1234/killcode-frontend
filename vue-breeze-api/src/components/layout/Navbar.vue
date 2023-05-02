@@ -52,7 +52,7 @@
                                 :class="[!statusDotBell ? 'hidden' : '']"></div>
                         </button>
 
-                        <div class="list-notification absolute right-0 mt-2 bg-white rounded-md shadow-lg overflow-hidden z-20 hidden"
+                        <div class="list-notification absolute right-0 mt-2 bg-white rounded-md shadow-lg overflow-hidden z-20 hidden"  v-if="notifications && notifications.length > 0"
                             style="width:20rem;">
                             <div
                                 class="flex items-center justify-between px-3 pt-2">
@@ -89,9 +89,9 @@
                                 class="block bg-gray-800 text-white text-center text-sm py-1.5 read-all-notification">Xem
                                 tất cả thông báo</router-link>
                         </div>
-                        <!-- <div v-else class="list-notification absolute right-0 mt-2 bg-white rounded-md shadow-lg overflow-hidden z-20 hidden" style="width:20rem;">
+                        <div v-else class="list-notification absolute right-0 mt-2 bg-white rounded-md shadow-lg overflow-hidden z-20 hidden" style="width:20rem;">
                             <span class="text-center py-2 block font-bold text-gray-400">Hiện tại không có thông báo nào.</span>
-                        </div> -->
+                        </div>
                     </div>
                     <div class="relative" v-if="authStore.getInfoUser">
                         <button @click="showPencilWrite($event)"
