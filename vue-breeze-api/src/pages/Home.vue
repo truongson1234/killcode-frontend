@@ -2,7 +2,7 @@
     <div class="container mt-3">
         <div class="grid grid-cols-4 gap-x-2 gap-y-5 mx-auto">
             <div class="col-span-4 row-span-1 lg:col-span-3 lg:row-span-3">
-                <div class="flex relative">
+                <div class="flex relative ml-3 mr-3">
                     <button @click="showDropdownSearch($event)" id="dropdown-button"
                         data-dropdown-toggle="dropdown-search"
                         class="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-900 bg-gray-100 border border-gray-300 rounded-l-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600"
@@ -86,7 +86,7 @@
                         </button>
                     </div>
                 </div>
-                <div class="border-b border-gray-200 dark:border-gray-700 mb-4">
+                <div class="border-b border-gray-200 dark:border-gray-700 mb-4 mr-3 ml-3">
                     <ul class="flex flex-wrap -mb-px" id="myTab"
                         data-tabs-toggle="#myTabContent" role="tablist">
                         <li class="mr-2" role="presentation">
