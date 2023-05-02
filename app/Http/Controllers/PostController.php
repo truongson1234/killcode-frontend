@@ -433,10 +433,19 @@ class PostController extends Controller
 
     public function searchDraftPost(Request $request, $id) {
         $keyword = $request->input('title');
-        $draftPosts = Post::where('title', 'like', "%$keyword%")
-                            ->where('user_id', $id)->where('status_id', 2)
-                            ->with('tags')->orderBy('updated_at', 'desc')->get();
-        return response()->json(['data' => $draftPosts]);
+        $type = $request->input('type');
+        if($type == 'draft') {
+            $draftPosts = Post::where('title', 'like', "%$keyword%")
+                                ->where('user_id', $id)->where('status_id', 2)
+                                ->with('tags')->orderBy('updated_at', 'desc')->get();
+            return response()->json(['data' => $draftPosts]);
+        }
+        if($type == 'public') {
+            $publicPosts = Post::where('title', 'like', "%$keyword%")
+                                ->where('user_id', $id)->where('status_id', 1)
+                                ->with('tags')->orderBy('updated_at', 'desc')->get();
+            return response()->json(['data' => $publicPosts]);
+        }
     }
 
     public function destroy($id)

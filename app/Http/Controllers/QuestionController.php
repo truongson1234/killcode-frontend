@@ -414,10 +414,19 @@ class QuestionController extends Controller
 
     public function searchDraftQuestion(Request $request, $id) {
         $keyword = $request->input('title');
-        $draftQuestions = Question::where('title', 'like', "%$keyword%")
-                            ->where('user_id', $id)->where('status_id', 2)
-                            ->with('tags')->orderBy('updated_at', 'desc')->get();
-        return response()->json(['data' => $draftQuestions]);
+        $type =  $request->input('type');
+        if($type == 'draft') {
+            $draftQuestions = Question::where('title', 'like', "%$keyword%")
+                                ->where('user_id', $id)->where('status_id', 2)
+                                ->with('tags')->orderBy('updated_at', 'desc')->get();
+            return response()->json(['data' => $draftQuestions]);
+        }
+        if($type == 'public') {
+            $publicQuestions = Question::where('title', 'like', "%$keyword%")
+                                ->where('user_id', $id)->where('status_id', 1)
+                                ->with('tags')->orderBy('updated_at', 'desc')->get();
+            return response()->json(['data' => $publicQuestions]);
+        }
     }
 
     public function destroy($id)

@@ -245,7 +245,7 @@ const routes = [
                         component: () => import("@/pages/user/Profile.vue"),
                     },
                     {
-                        path: "post/drafts",
+                        path: "content/manager",
                         name: "PostDrafts",
                         component: () => import("@/pages/user/PostDrafts.vue"),
                         beforeEnter: checkLogined,
@@ -316,14 +316,14 @@ const routes = [
             },
         ],
     },
-    // {
-    //     path: "/:catchAll(.*)",
-    //     name: "NotFound",
-    //     components: {
-    //         default: () => import("@/pages/errors/404.vue"),
-    //         other: () => import("@/pages/errors/404.vue"),
-    //     },
-    // },
+    {
+        path: "/:catchAll(.*)",
+        name: "NotFound",
+        components: {
+            default: () => import("@/pages/errors/404.vue"),
+            other: () => import("@/pages/errors/404.vue"),
+        },
+    },
 ];
 
 const router = createRouter({
