@@ -72,7 +72,7 @@ const routes = [
                 meta: { showHeader: false, showFooter: false, isAdmin: false },
             },
             {
-                path: "forgot_password",
+                path: "forgot-password",
                 name: "ForgotPassword",
                 component: () => import("@/pages/auth/ForgotPassword.vue"),
                 meta: { showHeader: false, showFooter: false, isAdmin: false },
@@ -245,7 +245,7 @@ const routes = [
                         component: () => import("@/pages/user/Profile.vue"),
                     },
                     {
-                        path: "post/drafts",
+                        path: "content/manager",
                         name: "PostDrafts",
                         component: () => import("@/pages/user/PostDrafts.vue"),
                         beforeEnter: checkLogined,

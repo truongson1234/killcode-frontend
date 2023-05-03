@@ -1,5 +1,5 @@
 <template>
-    <div class="">
+    <div class="edit-post-unique">
         <div class="flex justify-between mb-6">
             <button @click="handleUpdated(payload.post)" type="button"
                 class=" ml-auto text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">
@@ -44,7 +44,7 @@
                 :config="editorConfig" />
         </div>
         <div class="" v-if="statusBody">
-            <span class="text-sm text-red-600">Vui lòng nội dung</span>
+            <span class="text-sm text-red-600">Vui lòng nhập nội dung</span>
         </div>
     </div>
 </template>
@@ -63,7 +63,10 @@ import ItalicPlugin from "@ckeditor/ckeditor5-basic-styles/src/italic";
 import LinkPlugin from "@ckeditor/ckeditor5-link/src/link";
 import ParagraphPlugin from "@ckeditor/ckeditor5-paragraph/src/paragraph";
 import CodeBlock from "@ckeditor/ckeditor5-code-block/src/codeblock";
-
+import List from '@ckeditor/ckeditor5-list/src/list';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading';
+import Indent from '@ckeditor/ckeditor5-indent/src/indent';
+import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 const editor = ClassicEditor;
 const editorConfig = {
     plugins: [
@@ -73,10 +76,15 @@ const editorConfig = {
         LinkPlugin,
         ParagraphPlugin,
         CodeBlock,
+        List,
+        Heading,
+        Indent, 
+        IndentBlock,
     ],
     toolbar: {
-        items: ["bold", "italic", "link", "undo", "redo", "codeBlock"],
+        items: ["bold", "italic", "link", "undo", "redo", "codeBlock", "bulletedList", "numberedList", "heading", 'outdent', 'indent'],
     },
+    isolate: true
 };
 
 const route = useRoute();
@@ -146,7 +154,7 @@ onMounted(async () => {
     payload.value.tags.forEach(function (item) {
         payload.value.post.tag_ids.push(item.id)
     })
-    console.log(response.data);
+    console.log(payload.value.post.body);
 });
 
 const handleUpdated = (payload) => {
@@ -198,3 +206,14 @@ router.beforeEach((to, from, next) => {
     next()
 });
 </script>
+<style>
+.edit-post-unique .ck.ck-editor__main ol, .edit-post-unique .ck.ck-editor__main ul {
+   padding-left:35px
+}
+.edit-post-unique .ck.ck-editor__main a {
+    color: rgb(24, 132, 255);
+}
+.edit-post-unique .ck.ck-editor__main>.ck-editor__editable {
+    height: 500px !important;
+    padding-left:10px
+}</style>

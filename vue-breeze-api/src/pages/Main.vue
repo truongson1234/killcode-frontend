@@ -58,7 +58,7 @@
                         <span v-html="notification.content"></span>
                       </p>
                       <p class="text-xs mx-2 text-gray-400">{{
-                                              formatDateTimeFB(new Date(notification.created_at)) }}
+                        formatDateTimeFB(new Date(notification.created_at)) }}
                       </p>
                     </div>
                   </router-link>
@@ -86,9 +86,9 @@
                     alt="user" />
                   <div class="flex flex-col pl-1.5">
                     <span class="text-blue-500 text-md font-bold">{{
-                                          infoAuth.name }}</span>
+                      infoAuth.name }}</span>
                     <span class="text-gray-500 text-sm">{{ infoAuth.email
-                                          }}</span>
+                    }}</span>
                   </div>
                 </li>
                 <li>
@@ -122,6 +122,14 @@
                   </router-link>
                 </li>
                 <li>
+                  <router-link class="navbar__ dropdown-item flex items-center"
+                    @click="hideItemDropdownIconUser"
+                    :to="{ name: 'PostDrafts' }">
+                    <i class='bx bxs-notepad pr-1.5'></i>
+                    Quản lí nội dung
+                  </router-link>
+                </li>
+                <li>
                   <button class="navbar__ dropdown-item flex items-center"
                     @click="authStore.handleLogout(), hideItemDropdownIconUser">
                     <i class='bx bxs-log-out pr-1.5'></i>
@@ -140,9 +148,10 @@
             <div class="flex space-x-4">
               <router-link :to="{ name: item.router }" v-for="item in navigation"
                 :key="item.name"
+                class="flex items-center"
                 :class="[item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-700', 'block rounded-md px-3 py-2 text-base font-medium']"
                 :aria-current="item.current ? 'page' : undefined">{{ item.name
-                                }}</router-link>
+                }}</router-link>
             </div>
             <div
               class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
@@ -177,7 +186,7 @@
                           <span v-html="notification.content"></span>
                         </p>
                         <p class="text-xs mx-2 text-gray-400">{{
-                                                  formatDateTimeFB(new Date(notification.created_at)) }}
+                          formatDateTimeFB(new Date(notification.created_at)) }}
                         </p>
                       </div>
                     </router-link>
@@ -235,9 +244,9 @@
                           alt="user" />
                         <div class="flex flex-col pl-1.5">
                           <span class="text-blue-500 text-md font-bold">{{
-                                                      infoAuth.name }}</span>
+                            infoAuth.name }}</span>
                           <span class="text-gray-500 text-sm">{{ infoAuth.email
-                                                      }}</span>
+                          }}</span>
                         </div>
                       </li>
                       <li>
@@ -255,6 +264,15 @@
                           :to="{ name: 'Dashboard' }">
                           <i class='bx bx-shield-quarter pr-1.5'></i> Quản trị hệ
                           thống
+                        </router-link>
+                      </li>
+                      <li>
+                        <router-link
+                          class="navbar__ dropdown-item flex items-center"
+                          @click="hideItemDropdownIconUser"
+                          :to="{ name: 'PostDrafts' }">
+                          <i class='bx bxs-notepad pr-1.5'></i>
+                          Quản lí nội dung
                         </router-link>
                       </li>
                       <li>
@@ -297,9 +315,9 @@ import { useAuthStore } from '@/stores/auth'
 import BtnLogin from "@/components/ui/BtnLogin.vue";
 import { formatDateTimeFB } from '@/assets/js/app.js'
 const navigation = [
-  { name: 'Trang chủ', router: 'Home', current: false },
-  { name: 'Giới thiệu', router: '', current: false },
+  { name: 'Chủ đề', router: 'TagsList', current: false },
   { name: 'Bài viết', router: 'PostsList', current: false },
+  { name: 'Câu hỏi', router: 'QuestionsList', current: false },
 ]
 const data = () => ({
   pusher: null,
@@ -316,8 +334,15 @@ const notifications = ref([]);
 
 const showNotifications = (event) => {
   event.stopPropagation();
-  if ($('.list-notification ').first().is(":hidden")) {
-    $('.list-notification ').slideDown(300);
+  let allHidden = true;
+  $('.list-notification').each(function () {
+    if (!$(this).is(':hidden')) {
+      allHidden = false;
+      return false; // thoát khỏi vòng lặp khi tìm thấy một phần tử không bị ẩn
+    }
+  });
+  if (allHidden) {
+    $('.list-notification').slideDown(300);
   } else {
     $('.list-notification').slideUp(300);
   }
@@ -332,7 +357,14 @@ const showMenuMobile = (event) => {
 }
 const dropdownIconUser = (event) => {
   event.stopPropagation();
-  if ($('.dropdownIconUserMenu').first().is(":hidden")) {
+  let allHidden = true;
+  $('.dropdownIconUserMenu').each(function () {
+    if (!$(this).is(':hidden')) {
+      allHidden = false;
+      return false; // thoát khỏi vòng lặp khi tìm thấy một phần tử không bị ẩn
+    }
+  });
+  if (allHidden) {
     $('.dropdownIconUserMenu').slideDown(300);
   } else {
     $('.dropdownIconUserMenu').slideUp(300);

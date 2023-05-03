@@ -71,11 +71,34 @@ class QuestionController extends Controller
             unset($question->user);
             return $question;
         });
+        $popularQuestions = Question::withCount('comments')
+            ->withCount(['interactions as likes_count' => function($query) {
+                $query->select(\DB::raw("SUM(liked) as likes_count"));
+            }])
+            ->withCount(['interactions as views_count' => function($query) {
+                $query->select(\DB::raw("SUM(views) as views_count"));
+            }])
+            ->orderByRaw('(views_count + likes_count) DESC')
+            ->orderBy('comments_count', 'DESC')
+            ->orderByDesc('comments_count')
+            ->limit(5) // Lấy ra 10 câu hỏi phổ biến nhất
+            ->get();
+        $popularQuestions = $popularQuestions->map(function ($question) {
+            $question->author = [
+                'id' => $question->user->id,
+                'name' => $question->user->name,
+                'email' => $question->user->email,
+                'avatar' => $question->user->avatar,
+            ];
+            unset($question->user);
+            return $question;
+        });    
         return response()->json([
             'data' => $questions,
             'related_questions' => $relatedQuestions,
             'new_questions' => $newQuestions,
-            'popular_tags' => $popular_tags
+            'popular_tags' => $popular_tags,
+            'popular_questions' => $popularQuestions
         ]);
     }
 
@@ -414,10 +437,19 @@ class QuestionController extends Controller
 
     public function searchDraftQuestion(Request $request, $id) {
         $keyword = $request->input('title');
-        $draftQuestions = Question::where('title', 'like', "%$keyword%")
-                            ->where('user_id', $id)->where('status_id', 2)
-                            ->with('tags')->orderBy('updated_at', 'desc')->get();
-        return response()->json(['data' => $draftQuestions]);
+        $type =  $request->input('type');
+        if($type == 'draft') {
+            $draftQuestions = Question::where('title', 'like', "%$keyword%")
+                                ->where('user_id', $id)->where('status_id', 2)
+                                ->with('tags')->orderBy('updated_at', 'desc')->get();
+            return response()->json(['data' => $draftQuestions]);
+        }
+        if($type == 'public') {
+            $publicQuestions = Question::where('title', 'like', "%$keyword%")
+                                ->where('user_id', $id)->where('status_id', 1)
+                                ->with('tags')->orderBy('updated_at', 'desc')->get();
+            return response()->json(['data' => $publicQuestions]);
+        }
     }
 
     public function destroy($id)

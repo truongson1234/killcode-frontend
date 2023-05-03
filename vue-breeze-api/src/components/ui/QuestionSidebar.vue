@@ -4,14 +4,14 @@
       class="text-gray-800 tile-question hover:text-blue-500">{{ data.title
             }}</router-link>
     <div class="engagements flex items-center text-xs py-1">
-      <span class="engagements-text pr-1.5">
-        <i class='bx bx-like fa-fw fa-lg m-r-3'></i>{{ data.likes_count ?
+      <span class="engagements-text mr-2">
+        <i class='bx bx-like fa-fw fa-lg pr-1.5'></i>{{ data.likes_count ?
                 data.likes_count : 0 }}</span>
-      <span class="engagements-text pr-1.5"><i
-          class='bx bx-show fa-fw fa-lg m-r-3'></i>{{ data.views_count ?
+      <span class="engagements-text mr-2"><i
+          class='bx bx-show fa-fw fa-lg pr-1.5'></i>{{ data.views_count ?
                   data.views_count : 0 }}</span>
-      <span class="engagements-text pr-1.5"><i
-          class="bx bx-comment-detail fa-fw fa-lg m-r-3"></i>{{
+      <span class="engagements-text mr-2"><i
+          class="bx bx-comment-detail fa-fw fa-lg pr-1.5"></i>{{
                   data.comments_count ? data.comments_count : 0 }}</span>
     </div>
     <router-link :to="{ name: 'Profile', params: {id: data.author.id}}"

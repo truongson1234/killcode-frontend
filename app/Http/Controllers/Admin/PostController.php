@@ -45,8 +45,9 @@ class PostController extends Controller
         $keyword = $request->input('keyword');
 
         $posts = Post::where(function ($query) use ($keyword) {
-                $query->where('title', 'like', "%$keyword%")
-                        ->orWhere('body', 'like', "%$keyword%");
+                $query->where('id', 'like', "%$keyword%")
+                    ->orWhere('title', 'like', "%$keyword%")
+                    ->orWhere('body', 'like', "%$keyword%");
             })
             ->with('user', 'tags', 'status')
             ->withCount('comments')

@@ -27,11 +27,12 @@
                                             <i class='bx bx-user-plus  pr-1'></i>
                                             <span>Theo dõi</span>
                                         </a> -->
-                                        <button v-if="authUser != null && inforUser.id == authUser.id"
+                                        <button
+                                            v-if="authUser != null && inforUser.id == authUser.id"
                                             @click="showModalEditProfile(inforUser.id, inforUser.name, inforUser.email)"
                                             class="btn btn-sm btn-secondary mb-2 inline-flex items-center text-sm lg:text-base">
                                             <i class='bx bxs-pencil md: pr-1'></i>
-                                            <span class="hidden md:block">Chỉnh sửa thông tin cá nhân</span>
+                                            <span class="hidden md:block">Sửa</span>
                                         </button>
                                         <div id="modal-edit-user-role"
                                             class="hidden fixed top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] md:h-full">
@@ -56,8 +57,8 @@
                                                     </button>
                                                     <form
                                                         @submit.prevent="updateProfile(formUpdateProfile, userId)">
-                                                        <div class="px-4 py-4 lg:px-5 cc"
-                                                            >
+                                                        <div
+                                                            class="px-4 py-4 lg:px-5 cc">
                                                             <h3
                                                                 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
                                                                 Chỉnh sửa thông tin
@@ -195,7 +196,8 @@
                                                         </path>
                                                     </svg>
                                                 </div>
-                                                <div class="tab-post block p-6 rounded-lg bg-gray-100 max-w-md ml-6 mb-10">
+                                                <div
+                                                    class="tab-post block p-6 rounded-lg bg-gray-100 max-w-md ml-6 mb-10">
                                                     <div
                                                         class="flex justify-between mb-2">
                                                         <p href="#!"
@@ -255,7 +257,8 @@
                                                         </path>
                                                     </svg>
                                                 </div>
-                                                <div class="tab-post block p-6 rounded-lg bg-gray-100 max-w-md ml-6 mb-10">
+                                                <div
+                                                    class="tab-post block p-6 rounded-lg bg-gray-100 max-w-md ml-6 mb-10">
                                                     <div
                                                         class="flex justify-between mb-2">
                                                         <p href="#!"
@@ -335,7 +338,7 @@ const fetchDataUser = (userId) => {
         .then(response => {
             response.data.user.avatar = 'http://localhost:8000/images/' + response.data.user.avatar
             dataUser.value = response.data.user;
-            })
+        })
         .catch(err => {
             console.log(err);
         })
@@ -368,23 +371,49 @@ const fetchDataQuestion = () => {
             console.log(error);
         });
 }
-const deletePost = async (id_post) => {
-    await axios.delete(`api/posts/${id_post}`)
-        .then(res => {
-            listPost.value = listPost.value.filter((post) => post.id !== id_post);
-        })
-        .catch(err => {
-            console.log(err);
-        })
+const deletePost = (id_post) => {
+    Swal.fire({
+        title: "",
+        text: `Bạn có chắc muốn xóa bài viết này?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Xóa",
+        cancelButtonText: "Hủy",
+    }).then(res => {
+        if (res.isConfirmed) {
+            axios.delete(`api/posts/${id_post}`)
+                .then(res => {
+                    listPost.value = listPost.value.filter((post) => post.id !== id_post);
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+        }
+    })
 }
-const deleteQuestion = async (id_question) => {
-    await axios.delete(`api/questions/${id_question}`)
-        .then(res => {
-            listQuestion.value = listQuestion.value.filter((post) => post.id !== id_question);
-        })
-        .catch(err => {
-            console.log(err);
-        })
+const deleteQuestion = (id_question) => {
+    Swal.fire({
+        title: "",
+        text: `Bạn có chắc muốn xóa câu hỏi này?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Xóa",
+        cancelButtonText: "Hủy",
+    }).then(res => {
+        if (res.isConfirmed) {
+            axios.delete(`api/questions/${id_question}`)
+                .then(res => {
+                    listQuestion.value = listQuestion.value.filter((post) => post.id !== id_question);
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+        }
+    })
 }
 onMounted(async () => {
     initFlowbite()
@@ -600,63 +629,71 @@ const updateProfile = async (formData, userId) => {
     padding: 25px;
     border-radius: 4px
 }
+
 .tab-post {
     min-width: 50rem;
 }
-#modal-edit-user-role form  {
+
+#modal-edit-user-role form {
     width: 550px;
 }
+
 @media (max-width: 976px) {
     .tab-post {
         min-width: 40rem;
     }
 }
+
 @media (max-width: 768px) {
     .tab-post {
         min-width: 30rem;
         margin-bottom: 0;
     }
+
     .view-more {
-        margin-top: 1.5rem  ;
+        margin-top: 1.5rem;
     }
+
     .profile-header-img {
         width: 80px;
         height: 80px;
     }
+
     .profile-header-tab {
-        margin-left: 30px!important;
+        margin-left: 30px !important;
     }
 }
-@media (min-width: 640px) {
-    
-}
+
+@media (min-width: 640px) {}
+
 @media (max-width: 639px) {
     .profile-header-img {
         width: 60px;
         height: 60px;
     }
+
     .profile-header-tab {
-        margin-left: 95px!important;
+        margin-left: 95px !important;
     }
+
     #modal-edit-user-role form {
         width: 400px;
     }
+
     #modal-edit-user-role form .avatar-preview {
         width: 150px;
         height: 150px;
     }
+
     #modal-edit-user-role form .avatar-profile-edit {
         max-width: 220px;
     }
-    
-}
-</style>
-<style>
-.list-post-user .box-post {
+
+}</style>
+<style>.list-post-user .box-post {
     background: #ffff;
 }
 
 .list-question-user .box-question {
     background: #ffff;
-}
-</style>
+}</style>

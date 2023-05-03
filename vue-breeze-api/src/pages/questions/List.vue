@@ -80,15 +80,28 @@ const fetchData = () => {
             console.log(error);
         });
 }
-const deleteQuestion = async (id_question) => {
-    await axios.delete(`api/questions/${id_question}`)
-        .then(res => {
-            questions.value = questions.value.filter((post) => post.id !== id_question);
-            // console.log('ayeah', questions.value);
-        })
-        .catch(err => {
-            console.log(err);
-        })
+const deleteQuestion = (id_question) => {
+    Swal.fire({
+        title: "",
+        text: `Bạn có chắc muốn xóa câu hỏi này?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Xóa",
+        cancelButtonText: "Hủy",
+    }).then(res => {
+        if (res.isConfirmed) {
+            axios.delete(`api/questions/${id_question}`)
+                .then(res => {
+                    questions.value = questions.value.filter((post) => post.id !== id_question);
+                    // console.log('ayeah', questions.value);
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+        }
+    })
 }
 const displayQuesitons = computed(() => {
     if (questions.value != null) {
@@ -129,7 +142,9 @@ onMounted(() => {
 
 </script>
 
-<style scoped>.box-popular_tags {
+<style scoped>
+.box-popular_tags {
     box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
     border-radius: 6px;
-}</style>
+}
+</style>

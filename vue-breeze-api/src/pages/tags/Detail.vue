@@ -4,7 +4,8 @@
             <TagItemDetail :data="detailTag" />
         </div>
         <div class="grid grid-cols-4 gap-x-2 gap-y-5 mx-auto">
-            <div class="col-span-4 row-span-1 md:col-span-2 lg:col-span-3 lg:row-span-3">
+            <div
+                class="col-span-4 row-span-1 md:col-span-2 lg:col-span-3 lg:row-span-3">
                 <div class="border-b border-gray-200 dark:border-gray-700 mb-4">
                     <ul class="flex flex-wrap -mb-px" id="myTab"
                         data-tabs-toggle="#myTabContent" role="tablist">
@@ -108,9 +109,9 @@
                 <ul v-if="popularTags != null" class="flex flex-wrap mt-3">
                     <router-link :to="{ name: 'TagDetail', params: { id: tag.id } }"
                         v-for="tag in popularTags" :key="tag.id"
-                        @click="fetchData(tag.id)"
-                        class="mb-2 mr-2  flex">
-                        <span class="px-2 py-1 bg-gray-200 rounded-l text-sm">{{ tag.name }} </span>
+                        @click="fetchData(tag.id)" class="mb-2 mr-2  flex">
+                        <span class="px-2 py-1 bg-gray-200 rounded-l text-sm">{{
+                            tag.name }} </span>
                         <span
                             class="px-2 bg-blue-500 text-white rounded-r text-center text-sm flex items-center">{{
                                 tag.posts_count }}</span>
@@ -134,6 +135,7 @@ import TagItemDetail from '@/components/ui/TagItemDetail.vue'
 import VPagination from "@hennge/vue3-pagination";
 import "@hennge/vue3-pagination/dist/vue3-pagination.css";
 import "@/assets/admin/css/pagination-styles.css";
+import { pageLoading, pageLoaded } from '@/assets/js/app'
 const route = useRoute();
 const tagId = route.params.id;
 const detailTag = ref(null), posts = ref(null), questions = ref(null), followeds = ref(null), countPost = ref(0), countQuestion = ref(0), countFollower = ref(0), popularTags = ref(null)
@@ -196,15 +198,15 @@ const totalPagesUser = computed(() => {
         return Math.ceil(followeds.value.length / itemPerPageUser.value)
     }
 })
-const fetchData = (id = tagId) => {
-    axios.get(`api/followed-tags/${id}`)
+const fetchData = async (id = tagId) => {
+    await axios.get(`api/followed-tags/${id}`)
         .then(res => {
             detailTag.value = res.data.data[0]
         })
         .catch(err => {
             console.log(err);
         })
-    axios.get(`api/tags/${id}`)
+    await axios.get(`api/tags/${id}`)
         .then((res) => {
             popularTags.value = res.data.popular_tags
             posts.value = res.data.posts
@@ -220,39 +222,68 @@ const fetchData = (id = tagId) => {
         })
 }
 
-const deletePost = async (id_post) => {
-    await axios.delete(`api/posts/${id_post}`)
-        .then(res => {
-            posts.value = posts.value.filter((post) => post.id !== id_post);
-            if(displayItemPost.value.length <= 1) {
-                currentPagePost.value = totalPagesPost.value
-                pagePost.value = totalPagesPost.value
-            }
-        })
-        .catch(err => {
-            console.log(err);
-        })
+const deletePost = (id_post) => {
+    Swal.fire({
+        title: "",
+        text: `Bạn có chắc muốn xóa bài viết này?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Xóa",
+        cancelButtonText: "Hủy",
+    }).then(res => {
+        if (res.isConfirmed) {
+            axios.delete(`api/posts/${id_post}`)
+                .then(res => {
+                    posts.value = posts.value.filter((post) => post.id !== id_post);
+                    if (displayItemPost.value.length <= 1) {
+                        currentPagePost.value = totalPagesPost.value
+                        pagePost.value = totalPagesPost.value
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+        }
+    })
 }
-const deleteQuestion = async (id_question) => {
-    await axios.delete(`api/questions/${id_question}`)
-        .then(res => {
-            questions.value = questions.value.filter((question) => question.id !== id_question);
-            if(displayItemQuestion.value.length <= 1) {
-                currentPageQuestion.value = totalPagesQuestion.value
-                pageQuestion.value = totalPagesQuestion.value
-            }
-        })
-        .catch(err => {
-            console.log(err);
-        })
+const deleteQuestion = (id_question) => {
+    Swal.fire({
+        title: "",
+        text: `Bạn có chắc muốn xóa câu hỏi này?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Xóa",
+        cancelButtonText: "Hủy",
+    }).then(res => {
+        if (res.isConfirmed) {
+            axios.delete(`api/questions/${id_question}`)
+                .then(res => {
+                    questions.value = questions.value.filter((question) => question.id !== id_question);
+                    if (displayItemQuestion.value.length <= 1) {
+                        currentPageQuestion.value = totalPagesQuestion.value
+                        pageQuestion.value = totalPagesQuestion.value
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+        }
+    })
 }
-onMounted(() => {
+onMounted( async() => {
+    pageLoading()
     initFlowbite()
-    fetchData()
+    await fetchData()
+    pageLoaded()
 })
 </script>
 
-<style scoped>.text-tag-sidebar:after {
+<style scoped>
+.text-tag-sidebar:after {
     position: absolute;
     content: '';
     width: 48%;
@@ -268,4 +299,5 @@ onMounted(() => {
 
 .list-tag .item-tag {
     box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-}</style>
+}
+</style>

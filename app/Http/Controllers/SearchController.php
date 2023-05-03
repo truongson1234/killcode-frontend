@@ -148,4 +148,50 @@ class SearchController extends Controller
             'questions_doesnt_interaction' => $questionsWithoutInteractions,
         ]);
     }
+
+    public function getSearchAll() {
+        $posts = Post::with('interactions','tags')
+            ->withCount('comments')
+            ->withCount(['interactions as likes_count' => function($query) {
+                $query->select(\DB::raw("SUM(liked) as likes_count"));
+            }])
+            ->withCount(['interactions as views_count' => function($query) {
+                $query->select(\DB::raw("SUM(views) as views_count"));
+            }])->orderBy('created_at', 'desc');
+
+        $questions = Question::with('interactions','tags')
+            ->withCount(['interactions as likes_count' => function($query) {
+                $query->select(\DB::raw("SUM(liked) as likes_count"));
+            }])
+            ->withCount(['interactions as views_count' => function($query) {
+                $query->select(\DB::raw("SUM(views) as views_count"));
+            }])->orderBy('created_at', 'desc');
+
+        $dataPosts = $posts->get()->map(function ($post) {
+            $post->author = [
+                'id' => $post->user->id,
+                'name' => $post->user->name,
+                'email' => $post->user->email,
+                'avatar' => $post->user->avatar,
+            ];
+            unset($post->user);
+            return $post;
+        });
+        $dataQuestions = $questions->get()->map(function ($question) {
+            $question->author = [
+                'id' => $question->user->id,
+                'name' => $question->user->name,
+                'email' => $question->user->email,
+                'avatar' => $question->user->avatar,
+            ];
+            unset($question->user);
+            return $question;
+        });
+        $tags = Tag::withCount('followers', 'posts', 'questions')->orderBy('created_at', 'desc')->get();
+        return response()->json([
+            'tags' => $tags,
+            'posts' => $dataPosts,
+            'questions' => $dataQuestions,
+        ]);
+    }
 }

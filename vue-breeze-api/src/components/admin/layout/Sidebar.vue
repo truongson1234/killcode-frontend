@@ -29,7 +29,7 @@ const route = useRoute()
                             <i
                                 class="ni ni-tv-2 text-primary text-sm opacity-10"></i>
                         </div>
-                        <span class="nav-link-text ms-1">Dashboard</span>
+                        <span class="nav-link-text ms-1">Tổng quan</span>
                     </router-link>
                 </li>
                 <li class="nav-item">
@@ -55,10 +55,21 @@ const route = useRoute()
                     </router-link>
                 </li>
 
+                <li class="nav-item">
+                    <router-link :to="{ name: 'AdminPosts' }" class="nav-link "
+                        :class="route.name == 'AdminPosts' ? 'active' : ''">
+                        <div
+                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class='bx bx-book-bookmark text-success text-sm opacity-10'></i>
+                        </div>
+                        <span class="nav-link-text ms-1">Bài viết</span>
+                    </router-link>
+                </li>
+
                 <li class="nav-item mt-3">
                     <h6
                         class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">
-                        Account pages</h6>
+                        Tài khoản</h6>
                 </li>
                 <li class="nav-item">
                     <router-link class="nav-link "

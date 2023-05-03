@@ -1,9 +1,11 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
+import { initFlowbite } from 'flowbite'
 const authStore = useAuthStore()
 onMounted(async () => {
     authStore.authErrors = []
+    initFlowbite()
 });
 const form = ref({
     email: '',

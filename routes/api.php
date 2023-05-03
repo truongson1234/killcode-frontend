@@ -53,7 +53,9 @@ Route::group(['prefix' => 'reports'], function () {
 });
 
 
+// SEARCH 
 Route::get('/search', 'App\Http\Controllers\SearchController@search');
+Route::get('/search/all', 'App\Http\Controllers\SearchController@getSearchAll');
 
 // Get user by id
 Route::group(['prefix' => 'user-detail'], function () {
@@ -92,7 +94,7 @@ Route::group(['prefix' => 'posts'], function () {
     Route::get('draft/{id_user}', 'App\Http\Controllers\PostController@getDraftPostByUser');
     Route::get('draft/{id_user}/ban', 'App\Http\Controllers\PostController@getDraftPostBanByUser');
     Route::put('draft/{id_post}', 'App\Http\Controllers\PostController@updateDraftPost');
-    Route::get('search/draft/{id_user}', 'App\Http\Controllers\PostController@searchDraftPost');
+    Route::get('search/{id_user}', 'App\Http\Controllers\PostController@searchDraftPost');
     // Interactions
     Route::get('interactions/views', 'App\Http\Controllers\InteractionController@incrementViews');
     Route::post('interactions/liked', 'App\Http\Controllers\InteractionController@liked');

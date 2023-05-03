@@ -45,5 +45,22 @@ export const useSearchStore = defineStore("search", {
                     console.log(error);
                 });
         },
+        async handleGetSearchAll() {
+            await axios.get('api/search/all')
+            .then(res => {
+                this.dataSearch = res.data;
+                this.dataSearch.posts.forEach(function (item) {
+                    item.author.avatar =
+                        "http://localhost:8000/images/" + item.author.avatar;
+                });
+                this.dataSearch.questions.forEach(function (item) {
+                    item.author.avatar =
+                        "http://localhost:8000/images/" + item.author.avatar;
+                });
+            })
+            .catch(err => {
+                console.log(err);
+            })
+        }
     },
 });

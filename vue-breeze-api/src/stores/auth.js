@@ -125,7 +125,7 @@ export const useAuthStore = defineStore("auth", {
                     confirmButtonText: 'Đóng'
                 }).then(result => {
                     if(result.isConfirmed || result) {
-                        this.router.push("/login");
+                        this.router.push({ name: "Login"});
                         this.authStatus = response.data.status;
                     }
                 })

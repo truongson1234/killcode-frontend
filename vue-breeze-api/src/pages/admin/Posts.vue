@@ -1,71 +1,97 @@
 <template>
-    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-        <table
-            class="w-full text-sm text-left text-gray-500 dark:text-gray-400"
+    <div class="bg-white p-3.5 rounded-lg">
+        <form
+            @submit.prevent="submitInputSearch"
+            class="flex items-center mb-5"
         >
-            <thead
-                class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+            <label for="voice-search" class="sr-only">Search</label>
+            <div class="relative w-full">
+                <input
+                    v-model="keyword"
+                    type="text"
+                    id="voice-search"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    placeholder="Search Mockups, Logos, Design Templates..."
+                    required
+                />
+            </div>
+            <button
+                type="submit"
+                class="inline-flex items-center py-2.5 px-3 ml-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
             >
-                <tr>
-                    <th scope="col" class="px-6 py-3">Tiều đề</th>
-                    <th scope="col" class="px-6 py-3">Trạng thái</th>
-                    <th scope="col" class="px-6 py-3">Bình luận</th>
-                    <th scope="col" class="px-6 py-3">Lượt thích</th>
-                    <th scope="col" class="px-6 py-3">Lượt xem</th>
-                    <th scope="col" class="px-6 py-3">Tác giả</th>
-                    <th scope="col" class="px-6 py-3">Thẻ</th>
-                    <th scope="col" class="px-6 py-3"></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr
-                    class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-                    v-for="post in posts"
-                    :key="post.id"
+                Search
+            </button>
+        </form>
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+            <table
+                class="w-full text-sm text-left text-gray-500 dark:text-gray-400"
+            >
+                <thead
+                    class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
                 >
-                    <th
-                        scope="row"
-                        class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                    <tr>
+                        <th scope="col" class="px-6 py-3">Tiều đề</th>
+                        <th scope="col" class="px-6 py-3">Trạng thái</th>
+                        <th scope="col" class="px-6 py-3">Bình luận</th>
+                        <th scope="col" class="px-6 py-3">Lượt thích</th>
+                        <th scope="col" class="px-6 py-3">Lượt xem</th>
+                        <th scope="col" class="px-6 py-3">Tác giả</th>
+                        <th scope="col" class="px-6 py-3">Thẻ</th>
+                        <th scope="col" class="px-6 py-3"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                        v-for="post in posts"
+                        :key="post.id"
+                        :class="{ 'text-red-500': post.is_banned }"
                     >
-                        {{ post.title }}
-                    </th>
-                    <td class="px-6 py-4">{{ post.status.name }}</td>
-                    <td class="px-6 py-4">{{ post.comments_count }}</td>
-                    <td class="px-6 py-4">
-                        {{ post.likes_count ? post.likes_count : 0 }}
-                    </td>
-                    <td class="px-6 py-4">
-                        {{ post.views_count ? post.views_count : 0 }}
-                    </td>
-                    <td class="px-6 py-4">{{ post.user.name }}</td>
-                    <td class="px-6 py-4">
-                        {{ post.tags.map((tag) => tag.name).join(", ") }}
-                    </td>
-                    <td class="flex items-center px-6 py-4 space-x-3">
-                        <ModalBanPost
-                            v-if="!post.is_banned"
-                            :post_id="post.id"
-                            @update-posts="loadPosts"
-                        />
-                        <button
-                            v-else
-                            @click="unbanPost(post.id)"
-                            type="button"
-                            class="mx-2 focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900"
+                        <th
+                            scope="row"
+                            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                            :class="{ 'text-red-500': post.is_banned }"
                         >
-                            <i class="bx bx-wrench"></i>
-                        </button>
-                        <button
-                            @click="removePost(post.id)"
-                            type="button"
-                            class="mx-2 focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2.5 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
-                        >
-                            <i class="bx bx-trash"></i>
-                        </button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+                            {{ post.title }}
+                        </th>
+                        <td class="px-6 py-4">{{ post.status.name }}</td>
+                        <td class="px-6 py-4">{{ post.comments_count }}</td>
+                        <td class="px-6 py-4">
+                            {{ post.likes_count ? post.likes_count : 0 }}
+                        </td>
+                        <td class="px-6 py-4">
+                            {{ post.views_count ? post.views_count : 0 }}
+                        </td>
+                        <td class="px-6 py-4">{{ post.user.name }}</td>
+                        <td class="px-6 py-4">
+                            {{ post.tags.map((tag) => tag.name).join(", ") }}
+                        </td>
+                        <td class="flex items-center px-6 py-4 space-x-3">
+                            <ModalBanPost
+                                v-if="!post.is_banned"
+                                :post_id="post.id"
+                                @update-posts="loadPosts"
+                            />
+                            <button
+                                v-else
+                                @click="unbanPost(post.id)"
+                                type="button"
+                                class="mx-2 focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900"
+                            >
+                                <i class="bx bx-wrench"></i>
+                            </button>
+                            <button
+                                @click="removePost(post.id)"
+                                type="button"
+                                class="mx-2 focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2.5 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+                            >
+                                <i class="bx bx-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </template>
 
@@ -75,6 +101,7 @@ import { onMounted, ref, computed } from "vue";
 import ModalBanPost from "@/components/admin/ui/ModalBanPost.vue";
 
 const posts = ref([]);
+const keyword = ref("");
 
 onMounted(() => {
     fetchData();
@@ -122,6 +149,22 @@ const removePost = async (id) => {
         .then((response) => {
             posts.value = response.data.posts;
             // console.log(postStatuses);
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+};
+
+const submitInputSearch = async () => {
+    axios
+        .get("/api/dashboard/posts", {
+            params: {
+                keyword: keyword.value,
+            },
+        })
+        .then((response) => {
+            posts.value = response.data.posts;
+            console.log(posts);
         })
         .catch((error) => {
             console.log(error);

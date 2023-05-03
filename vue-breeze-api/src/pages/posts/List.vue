@@ -111,14 +111,27 @@ export default {
                 return this.posts.sort((a,b) => b.comments_count - a.comments_count)
             }
         },
-        async deletePost(id_post) {
-            await axios.delete(`api/posts/${id_post}`)
-                .then(res => {
-                    this.posts = this.posts.filter((post) => post.id !== id_post);
-                })
-                .catch(err => {
-                    console.log(err);
-                })
+        deletePost(id_post) {
+            Swal.fire({
+                title: "",
+                text: `Bạn có chắc muốn xóa bài viết này?`,
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Xóa",
+                cancelButtonText: "Hủy",
+            }).then(res => {
+                if (res.isConfirmed) {
+                    axios.delete(`api/posts/${id_post}`)
+                        .then(res => {
+                            this.posts = this.posts.filter((post) => post.id !== id_post);
+                        })
+                        .catch(err => {
+                            console.log(err);
+                        })
+                }
+            })
         },
         fetchData() {
             axios
