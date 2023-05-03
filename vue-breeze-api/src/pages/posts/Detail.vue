@@ -45,8 +45,8 @@
                         </ul>
                     </div>
                 </div>
-                <h1 class="text-4xl font-bold title-post mt-4">{{ post.title }}</h1>
-                <div class="prose mt-4" v-html="post.body"></div>
+                <h1 class="text-4xl font-bold title-post mt-4 text-gray-800">{{ post.title }}</h1>
+                <div class="prose mt-4 text-gray-800" v-html="post.body"></div>
                 <div class="list-tag">
                     <a href=""
                         class="inline-flex items-center bg-blue-100 text-blue-800 text-sm font-medium mr-1 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300"
@@ -306,6 +306,19 @@ const handleLiked = () => {
 }
 </style>
 <style>
+.detail-unique-post .prose ul, .detail-unique-post .prose ol {
+    list-style: inherit;
+    padding-left:32px;
+}
+.detail-unique-post .prose ol {
+    list-style-type: auto;
+}
+.detail-unique-post .prose a {
+    color: rgb(24, 132, 255);
+}
+.detail-unique-post .prose a:hover {
+    text-decoration: underline;
+}
 .detail-unique-post .userimage img {
     width: 100%;
 }

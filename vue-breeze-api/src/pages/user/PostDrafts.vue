@@ -16,7 +16,7 @@
                                 sidebar-toggle-item>Bài viết
                                 <span
                                     class="inline-flex items-center justify-center w-2 h-2 p-2.5 text-sm font-medium text-blue-600 bg-blue-200 rounded-full dark:bg-blue-900 dark:text-blue-200">{{
-                                        draftPost.length }}</span>
+                                        draftPost.length + publicPost.length }}</span>
                             </span>
                             <i class='bx bx-chevron-down text-2xl'
                                 sidebar-toggle-item></i>
@@ -55,7 +55,9 @@
                                     class="flex items-center w-full p-2 text-base font-normal transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 pl-11"
                                     :class="{ 'bg-gray-100 text-blue-600': activeBtn == 3, 'text-gray-900': activeBtn != 3 }"><i
                                         class="bx bx-world text-md pr-3"></i>
-                                    Công khai
+                                    Công khai <span
+                                        class="inline-flex items-center justify-center w-2 h-2 p-2.5 ml-1 text-sm font-medium text-blue-600 bg-blue-200 rounded-full dark:bg-blue-900 dark:text-blue-200">{{
+                                            publicPost.length }}</span>
                                 </button>
                             </li>
                         </ul>
@@ -71,7 +73,7 @@
                                 sidebar-toggle-item>Câu hỏi
                                 <span
                                     class="inline-flex items-center justify-center w-2 h-2 p-2.5 text-sm font-medium text-blue-600 bg-blue-200 rounded-full dark:bg-blue-900 dark:text-blue-200">{{
-                                        draftQuestion.length }}</span>
+                                        draftQuestion.length + publicQuestion.length }}</span>
                             </span>
                             <i class='bx bx-chevron-down text-2xl'
                                 sidebar-toggle-item></i>
@@ -110,7 +112,9 @@
                                     class="flex items-center w-full p-2 text-base font-normal transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 pl-11"
                                     :class="{ 'bg-gray-100 text-blue-600': activeBtn == 6, 'text-gray-900': activeBtn != 6 }"><i
                                         class="bx bx-world text-md pr-3"></i>
-                                    Công khai
+                                    Công khai <span
+                                        class="inline-flex items-center justify-center w-2 h-2 p-2.5 ml-1 text-sm font-medium text-blue-600 bg-blue-200 rounded-full dark:bg-blue-900 dark:text-blue-200">{{
+                                            publicQuestion.length }}</span>
                                 </button>
                             </li>
                         </ul>
@@ -404,11 +408,11 @@
                                     Date(question.updated_at)) }}</span>
                                 <div class="relative">
                                     <button class="text-lg ml-1 flex items-center"
-                                        @click="showDropDownDraft($event, question.id)">
+                                        @click="showDropDownQuestion($event, question.id)">
                                         <i class='bx bx-chevron-down'></i>
                                     </button>
-                                    <ul :id="`drop-down-draft-${question.id}`"
-                                        class="bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)] rounded w-28 absolute hidden z-20 drop-down-container">
+                                    <ul :id="`drop-down-question-${question.id}`"
+                                        class="bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)] rounded w-28 absolute hidden z-20 drop-down-question-container">
                                         <router-link
                                             :to="{ name: 'QuestionEdit', params: { id: question.id, auth: authId } }"
                                             class="py-2 block px-2 hover:bg-blue-100">Sửa</router-link>
@@ -536,11 +540,11 @@
                                     Date(question.created_at)) }}</span>
                                 <div class="relative">
                                     <button class="text-lg ml-1 flex items-center"
-                                        @click="showDropDownDraft($event, question.id)">
+                                        @click="showDropDownQuestion($event, question.id)">
                                         <i class='bx bx-chevron-down'></i>
                                     </button>
-                                    <ul :id="`drop-down-draft-${question.id}`"
-                                        class="bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)] rounded w-28 absolute hidden z-20 drop-down-container">
+                                    <ul :id="`drop-down-question-${question.id}`"
+                                        class="bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)] rounded w-28 absolute hidden z-20 drop-down-post-container">
                                         <router-link
                                             :to="{ name: 'QuestionEdit', params: { id: question.id, auth: authId } }"
                                             class="py-2 block px-2 hover:bg-blue-100">Sửa</router-link>
@@ -737,6 +741,14 @@ export default {
                 $(`#drop-down-draft-${id}`).slideUp(300);
             }
         },
+        showDropDownQuestion(event, id) {
+            event.stopPropagation();
+            if ($(`#drop-down-question-${id}`).first().is(":hidden")) {
+                $(`#drop-down-question-${id}`).slideDown(300);
+            } else {
+                $(`#drop-down-question-${id}`).slideUp(300);
+            }
+        },
         deletePost(id, type) {
             Swal.fire({
                 title: "",
@@ -881,6 +893,9 @@ export default {
         $(document).on('click', function (event) {
             if (!$(event.target).closest('.showDropDownDraft').length) {
                 $(`.drop-down-container`).slideUp(300);
+            }
+            if (!$(event.target).closest('.showDropDownQuestion').length) {
+                $(`.drop-down-post-container`).slideUp(300);
             }
         });
         pageLoaded()

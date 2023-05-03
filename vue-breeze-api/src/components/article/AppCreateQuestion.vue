@@ -62,7 +62,8 @@ import ParagraphPlugin from "@ckeditor/ckeditor5-paragraph/src/paragraph";
 import CodeBlock from "@ckeditor/ckeditor5-code-block/src/codeblock";
 import List from '@ckeditor/ckeditor5-list/src/list';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-
+import Indent from '@ckeditor/ckeditor5-indent/src/indent';
+import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 const editor = ClassicEditor;
 const editorConfig = {
     plugins: [
@@ -73,11 +74,14 @@ const editorConfig = {
         ParagraphPlugin,
         CodeBlock,
         List,
-        Heading
+        Heading,
+        Indent, 
+        IndentBlock,
     ],
     toolbar: {
-        items: ["bold", "italic", "link", "undo", "redo", "codeBlock", "bulletedList", "numberedList", "heading"],
+        items: ["bold", "italic", "link", "undo", "redo", "codeBlock", "bulletedList", "numberedList", "heading", 'outdent', 'indent'],
     },
+    isolate: true
 };
 const dataTags = ref({
     url: "/api/tags",
@@ -174,8 +178,14 @@ router.beforeEach((to, from, next) => {
 });
 </script>
 <style>
+.create-question-unique .ck.ck-editor__main ol, .create-question-unique .ck.ck-editor__main ul {
+   padding-left:35px
+}
+.create-question-unique .ck.ck-editor__main a {
+    color: rgb(24, 132, 255);
+}
 .create-question-unique .ck.ck-editor__main>.ck-editor__editable {
     height: 500px !important;
-    ;
+    padding-left:10px
 }
 </style>

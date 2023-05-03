@@ -14,6 +14,7 @@
     "@ckeditor/ckeditor5-editor-classic": "^36.0.1",
     "@ckeditor/ckeditor5-essentials": "^36.0.1",
     "@ckeditor/ckeditor5-heading": "^36.0.1",
+    "@ckeditor/ckeditor5-indent": "^36.0.1",
     "@ckeditor/ckeditor5-link": "^36.0.1",
     "@ckeditor/ckeditor5-list": "^36.0.1",
     "@ckeditor/ckeditor5-paragraph": "^36.0.1",
