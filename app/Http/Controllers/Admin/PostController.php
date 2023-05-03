@@ -79,6 +79,12 @@ class PostController extends Controller
             'post_id' => $id
         ]);
 
+        if($offending_post->post->status_id !== 3) {
+            $offending_post->post->update([
+                'status_id' => 3,
+            ]);
+        }
+
         // Tạo thông báo
         $data_notification = [
             'sender_id' => auth()->user()->id,
@@ -130,6 +136,11 @@ class PostController extends Controller
     public function unban(Request $request, $id)
     {
         $offending_post = OffendingPost::where('post_id', $id)->first();
+        if($offending_post->post->status_id === 3) {
+            $offending_post->post->update([
+                'status_id' => 1,
+            ]);
+        }
         // Tạo thông báo
         $data_notification = [
             'sender_id' => auth()->user()->id,

@@ -377,6 +377,13 @@ class PostController extends Controller
         }
     }
 
+    public function getDraftPostBanByUser($id)
+    {
+        $user = User::findOrFail($id);
+        $posts = Post::where('user_id', $id)->where('status_id', 3)->with('tags')->orderBy('created_at', 'desc')->get();
+        return response()->json(['data' => $posts]);
+    }
+
     public function getDraftPostByUser($id) 
     {
         $user = User::findOrFail($id);
