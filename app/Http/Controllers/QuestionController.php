@@ -283,6 +283,12 @@ class QuestionController extends Controller
         $questions = Question::where('user_id', $id)->where('status_id', 2)->with('tags')->orderBy('created_at', 'desc')->get();
         return response()->json(['data' => $questions]);
     }
+    public function getOffendingQuestionByUser($id) 
+    {
+        $user = User::findOrFail($id);
+        $questions = Question::where('user_id', $id)->where('status_id', 3)->with('tags')->orderBy('created_at', 'desc')->get();
+        return response()->json(['data' => $questions]);
+    }
 
     public function updateDraftQuestion(Request $request, $id)
     {
@@ -435,7 +441,7 @@ class QuestionController extends Controller
         ]);
     }
 
-    public function searchDraftQuestion(Request $request, $id) {
+    public function searchManageQuestion(Request $request, $id) {
         $keyword = $request->input('title');
         $type =  $request->input('type');
         if($type == 'draft') {
@@ -443,6 +449,12 @@ class QuestionController extends Controller
                                 ->where('user_id', $id)->where('status_id', 2)
                                 ->with('tags')->orderBy('updated_at', 'desc')->get();
             return response()->json(['data' => $draftQuestions]);
+        }
+        if($type == 'offending') {
+            $offendingQuestions = Question::where('title', 'like', "%$keyword%")
+                                ->where('user_id', $id)->where('status_id', 3)
+                                ->with('tags')->orderBy('updated_at', 'desc')->get();
+            return response()->json(['data' => $offendingQuestions]);
         }
         if($type == 'public') {
             $publicQuestions = Question::where('title', 'like', "%$keyword%")

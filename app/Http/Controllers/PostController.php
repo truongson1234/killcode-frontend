@@ -414,6 +414,13 @@ class PostController extends Controller
         return response()->json(['data' => $posts]);
     }
 
+    public function getOffendingPostByUser($id) 
+    {
+        $user = User::findOrFail($id);
+        $posts = Post::where('user_id', $id)->where('status_id', 3)->with('tags')->orderBy('created_at', 'desc')->get();
+        return response()->json(['data' => $posts]);
+    }
+
     public function update(Request $request, $id)
     {
         $post = Post::findOrFail($id);
@@ -461,7 +468,7 @@ class PostController extends Controller
         ]);
     }
 
-    public function searchDraftPost(Request $request, $id) {
+    public function searchManagePost(Request $request, $id) {
         $keyword = $request->input('title');
         $type = $request->input('type');
         if($type == 'draft') {
@@ -469,6 +476,12 @@ class PostController extends Controller
                                 ->where('user_id', $id)->where('status_id', 2)
                                 ->with('tags')->orderBy('updated_at', 'desc')->get();
             return response()->json(['data' => $draftPosts]);
+        }
+        if($type == 'offending') {
+            $offendingPosts = Post::where('title', 'like', "%$keyword%")
+                                ->where('user_id', $id)->where('status_id', 3)
+                                ->with('tags')->orderBy('updated_at', 'desc')->get();
+            return response()->json(['data' => $offendingPosts]);
         }
         if($type == 'public') {
             $publicPosts = Post::where('title', 'like', "%$keyword%")
