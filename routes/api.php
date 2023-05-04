@@ -93,11 +93,30 @@ Route::group(['prefix' => 'posts'], function () {
     Route::post('draft', 'App\Http\Controllers\PostController@draftPost');
     Route::get('draft/{id_user}', 'App\Http\Controllers\PostController@getDraftPostByUser');
     Route::put('draft/{id_post}', 'App\Http\Controllers\PostController@updateDraftPost');
-    Route::get('search/{id_user}', 'App\Http\Controllers\PostController@searchDraftPost');
+    Route::get('offending/{id_user}', 'App\Http\Controllers\PostController@getOffendingPostByUser');
+    Route::get('search/{id_user}', 'App\Http\Controllers\PostController@searchManagePost');
     // Interactions
     Route::get('interactions/views', 'App\Http\Controllers\InteractionController@incrementViews');
     Route::post('interactions/liked', 'App\Http\Controllers\InteractionController@liked');
 
+});
+
+// questions api
+Route::group(['prefix' => 'questions'], function () {
+    Route::get('', 'App\Http\Controllers\QuestionController@index');
+    Route::get('{id}', 'App\Http\Controllers\QuestionController@show');
+    Route::get('list-question-user/{id}', 'App\Http\Controllers\QuestionController@getQuestionByUser');
+    Route::post('', 'App\Http\Controllers\QuestionController@store');
+    Route::put('{id}', 'App\Http\Controllers\QuestionController@update');
+    Route::delete('{id}', 'App\Http\Controllers\QuestionController@destroy');
+    Route::post('draft', 'App\Http\Controllers\QuestionController@draftQuestion');
+    Route::get('draft/{id_user}', 'App\Http\Controllers\QuestionController@getDraftQuestionByUser');
+    Route::put('draft/{id_question}', 'App\Http\Controllers\QuestionController@updateDraftQuestion');
+    Route::get('offending/{id_user}', 'App\Http\Controllers\QuestionController@getOffendingQuestionByUser');
+    Route::get('search/draft/{id_user}', 'App\Http\Controllers\QuestionController@searchManageQuestion');
+    // Interactions
+    Route::get('interactions/views', 'App\Http\Controllers\QuestionInteractionController@incrementViews');
+    Route::post('interactions/liked', 'App\Http\Controllers\QuestionInteractionController@liked');
 });
 
 Route::group(['prefix' => 'comments'], function () {
@@ -116,22 +135,6 @@ Route::group(['prefix' => 'tags'], function () {
     Route::get('get-posts/{id}', 'App\Http\Controllers\TagController@getPosts');
 });
 
-// questions api
-Route::group(['prefix' => 'questions'], function () {
-    Route::get('', 'App\Http\Controllers\QuestionController@index');
-    Route::get('{id}', 'App\Http\Controllers\QuestionController@show');
-    Route::get('list-question-user/{id}', 'App\Http\Controllers\QuestionController@getQuestionByUser');
-    Route::post('', 'App\Http\Controllers\QuestionController@store');
-    Route::put('{id}', 'App\Http\Controllers\QuestionController@update');
-    Route::delete('{id}', 'App\Http\Controllers\QuestionController@destroy');
-    Route::post('draft', 'App\Http\Controllers\QuestionController@draftQuestion');
-    Route::get('draft/{id_user}', 'App\Http\Controllers\QuestionController@getDraftQuestionByUser');
-    Route::put('draft/{id_question}', 'App\Http\Controllers\QuestionController@updateDraftQuestion');
-    Route::get('search/draft/{id_user}', 'App\Http\Controllers\QuestionController@searchDraftQuestion');
-    // Interactions
-    Route::get('interactions/views', 'App\Http\Controllers\QuestionInteractionController@incrementViews');
-    Route::post('interactions/liked', 'App\Http\Controllers\QuestionInteractionController@liked');
-});
 
 Route::group(['prefix' => 'answers'], function () {
     Route::post('', 'App\Http\Controllers\AnswerController@store');

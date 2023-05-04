@@ -16,7 +16,8 @@
                                 sidebar-toggle-item>Bài viết
                                 <span
                                     class="inline-flex items-center justify-center w-2 h-2 p-2.5 text-sm font-medium text-blue-600 bg-blue-200 rounded-full dark:bg-blue-900 dark:text-blue-200">{{
-                                        draftPost.length + publicPost.length }}</span>
+                                        draftPost.length + publicPost.length +
+                                        offendingPost.length }}</span>
                             </span>
                             <i class='bx bx-chevron-down text-2xl'
                                 sidebar-toggle-item></i>
@@ -44,7 +45,9 @@
                                     class="flex items-center w-full p-2 text-base font-normal transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 pl-11"
                                     :class="{ 'bg-gray-100 text-blue-600': activeBtn == 2, 'text-gray-900': activeBtn != 2 }"><i
                                         class="bx bx-block text-md pr-3"></i>
-                                    Vi phạm
+                                    Vi phạm <span
+                                        class="inline-flex items-center justify-center w-2 h-2 p-2.5 ml-1 text-sm font-medium text-blue-600 bg-blue-200 rounded-full dark:bg-blue-900 dark:text-blue-200">{{
+                                            offendingPost.length }}</span>
                                 </button>
                             </li>
                             <li>
@@ -73,7 +76,8 @@
                                 sidebar-toggle-item>Câu hỏi
                                 <span
                                     class="inline-flex items-center justify-center w-2 h-2 p-2.5 text-sm font-medium text-blue-600 bg-blue-200 rounded-full dark:bg-blue-900 dark:text-blue-200">{{
-                                        draftQuestion.length + publicQuestion.length }}</span>
+                                        draftQuestion.length + publicQuestion.length + offendingQuestion.length
+                                    }}</span>
                             </span>
                             <i class='bx bx-chevron-down text-2xl'
                                 sidebar-toggle-item></i>
@@ -100,7 +104,9 @@
                                     class="flex items-center w-full p-2 text-base font-normal transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 pl-11"
                                     :class="{ 'bg-gray-100 text-blue-600': activeBtn == 5, 'text-gray-900': activeBtn != 5 }"><i
                                         class="bx bx-block text-md pr-3"></i>
-                                    Vi phạm
+                                    Vi phạm <span
+                                        class="inline-flex items-center justify-center w-2 h-2 p-2.5 ml-1 text-sm font-medium text-blue-600 bg-blue-200 rounded-full dark:bg-blue-900 dark:text-blue-200">{{
+                                            offendingQuestion.length }}</span>
                                 </button>
                             </li>
                             <li>
@@ -193,10 +199,13 @@
                                         class="bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)] rounded w-28 absolute hidden z-20 drop-down-container">
                                         <router-link
                                             :to="{ name: 'PostEdit', params: { id: post.id, auth: authId } }"
-                                            class="py-2 block px-2 hover:bg-blue-100">Sửa</router-link>
+                                            class="py-2 block px-2 hover:bg-blue-100">
+                                            <i
+                                                class='bx bxs-edit-alt mr-1'></i>Sửa</router-link>
                                         <button
                                             @click="deletePost(post.id, 'draft')"
-                                            class="w-full text-left py-2 px-2 hover:bg-blue-100">Xóa</button>
+                                            class="w-full text-left py-2 px-2 hover:bg-blue-100"><i
+                                                class='bx bxs-trash mr-1'></i>Xóa</button>
                                     </ul>
                                 </div>
                             </div>
@@ -220,10 +229,11 @@
                     role="tabpanel" aria-labelledby="block-post-tab">
                     <h2 class="text-gray-800 font-medium text-lg border-b pb-2">Vi
                         phạm</h2>
-                    <div class="mt-3">
+                    <div v-if="offendingPost && offendingPost.length > 0"
+                        class="mt-3">
                         <div class="mb-2">
                             <form
-                                @submit.prevent="searchPost(dataSearch.blockPost, 'block')">
+                                @submit.prevent="searchPost(dataSearch.blockPost, 'offending')">
                                 <label for="default-search"
                                     class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-gray-300">Search</label>
                                 <div class="relative">
@@ -250,6 +260,58 @@
                                 </div>
                             </form>
                         </div>
+                        <div class="py-2 border-b"
+                            v-for="post in displayOffendingPost" :key="post.id">
+                            <div class="flex items-center ">
+                                <router-link
+                                    :to="{ name: 'PostDetail', params: { id: post.id } }"
+                                    class="text-gray-800 text-lg flex items-center">
+                                    <i
+                                        class='bx bx-block text-red-700 text-lg pr-2'></i>
+                                    {{ post.title }}
+                                </router-link>
+                                <div class="ml-2">
+                                    <router-link
+                                        :to="{ name: 'TagDetail', params: { id: tag.pivot.tag_id } }"
+                                        class="inline-flex items-center bg-blue-100 text-blue-800 text-xs md:text-sm font-medium mr-1 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300 "
+                                        v-for="tag in post.tags" :key="tag.slug">{{
+                                            tag.name }}</router-link>
+                                </div>
+                            </div>
+                            <div
+                                class="mt-1.5 text-sm text-gray-500 flex items-center">
+                                <span>Vi phạm lúc: {{ formatDateTime(new
+                                    Date(post.created_at)) }}</span>
+                                <div class="relative">
+                                    <button class="text-lg ml-1 flex items-center"
+                                        @click="showDropDownDraft($event, post.id)">
+                                        <i class='bx bx-chevron-down'></i>
+                                    </button>
+                                    <ul :id="`drop-down-draft-${post.id}`"
+                                        class="bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)] rounded w-28 absolute hidden z-20 drop-down-container">
+                                        <button
+                                            class="w-full text-left py-2 px-2 hover:bg-blue-100"><i
+                                                class='bx bxs-wrench mr-1'></i>Khiếu
+                                            nại</button>
+                                        <button
+                                            @click="deletePost(post.id, 'offending')"
+                                            class="w-full text-left py-2 px-2 hover:bg-blue-100"><i
+                                                class='bx bxs-trash mr-1'></i>Xóa</button>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            v-if="offendingPost && offendingPost != null && offendingPost.length > itemPerPageOffendingPost">
+                            <v-pagination v-model="pageOffendingPost"
+                                :pages="totalPagesOffendingPost" :range-size="1"
+                                active-color="#0074FF" class="my-3 pl-0"
+                                @update:modelValue="onPageChangedOffendingPost" />
+                        </div>
+                    </div>
+                    <div v-else>
+                        <h4 class="font-semibold text-center text-gray-500 mt-3">
+                            Không có gì ở đây cả</h4>
                     </div>
                 </div>
 
@@ -320,10 +382,12 @@
                                         class="bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)] rounded w-28 absolute hidden z-20 drop-down-container">
                                         <router-link
                                             :to="{ name: 'PostEdit', params: { id: post.id, auth: authId } }"
-                                            class="py-2 block px-2 hover:bg-blue-100">Sửa</router-link>
+                                            class="py-2 block px-2 hover:bg-blue-100"><i
+                                                class='bx bxs-edit-alt mr-1'></i>Sửa</router-link>
                                         <button
                                             @click="deletePost(post.id, 'public')"
-                                            class="w-full text-left py-2 px-2 hover:bg-blue-100">Xóa</button>
+                                            class="w-full text-left py-2 px-2 hover:bg-blue-100"><i
+                                                class='bx bxs-trash mr-1'></i>Xóa</button>
                                     </ul>
                                 </div>
                             </div>
@@ -415,10 +479,12 @@
                                         class="bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)] rounded w-28 absolute hidden z-20 drop-down-question-container">
                                         <router-link
                                             :to="{ name: 'QuestionEdit', params: { id: question.id, auth: authId } }"
-                                            class="py-2 block px-2 hover:bg-blue-100">Sửa</router-link>
+                                            class="py-2 block px-2 hover:bg-blue-100"><i
+                                                class='bx bxs-edit-alt mr-1'></i>Sửa</router-link>
                                         <button
                                             @click="deleteQuestion(question.id, 'draft')"
-                                            class="w-full text-left py-2 px-2 hover:bg-blue-100">Xóa</button>
+                                            class="w-full text-left py-2 px-2 hover:bg-blue-100"><i
+                                                class='bx bxs-trash mr-1'></i>Xóa</button>
                                     </ul>
                                 </div>
                             </div>
@@ -443,10 +509,11 @@
                     aria-labelledby="block-question-tab">
                     <h2 class="text-gray-800 font-medium text-lg border-b pb-2">Vi
                         phạm</h2>
-                    <div class="mt-3">
+                    <div v-if="offendingQuestion && offendingQuestion.length > 0"
+                        class="mt-3">
                         <div class="mb-2">
                             <form
-                                @submit.prevent="searchPost(dataSearch.blockPost, 'block')">
+                                @submit.prevent="searchQuestion(dataSearch.blockQuestion, 'offending')">
                                 <label for="default-search"
                                     class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-gray-300">Search</label>
                                 <div class="relative">
@@ -466,13 +533,65 @@
                                     <input type="search" id="default-search"
                                         class="block px-5 py-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                         placeholder="Nhập tiêu đề bài viết"
-                                        v-model="dataSearch.blockPost.title">
+                                        v-model="dataSearch.blockQuestion.title">
                                     <button type="submit"
                                         class="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Tìm
                                         kiếm</button>
                                 </div>
                             </form>
                         </div>
+                        <div class="py-2 border-b"
+                            v-for="question in displayOffendingQuestion" :key="question.id">
+                            <div class="flex items-center ">
+                                <router-link
+                                    :to="{ name: 'QuestionDetail', params: { id: question.id } }"
+                                    class="text-gray-800 text-lg flex items-center">
+                                    <i
+                                        class='bx bx-block text-red-700 text-lg pr-2'></i>
+                                    {{ question.title }}
+                                </router-link>
+                                <div class="ml-2">
+                                    <router-link
+                                        :to="{ name: 'TagDetail', params: { id: tag.pivot.tag_id } }"
+                                        class="inline-flex items-center bg-blue-100 text-blue-800 text-xs md:text-sm font-medium mr-1 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300 "
+                                        v-for="tag in question.tags" :key="tag.slug">{{
+                                            tag.name }}</router-link>
+                                </div>
+                            </div>
+                            <div
+                                class="mt-1.5 text-sm text-gray-500 flex items-center">
+                                <span>Vi phạm lúc: {{ formatDateTime(new
+                                    Date(question.created_at)) }}</span>
+                                <div class="relative">
+                                    <button class="text-lg ml-1 flex items-center"
+                                        @click="showDropDownQuestion($event, question.id)">
+                                        <i class='bx bx-chevron-down'></i>
+                                    </button>
+                                    <ul :id="`drop-down-question-${question.id}`"
+                                        class="bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)] rounded w-28 absolute hidden z-20 drop-down-container">
+                                        <button
+                                            class="w-full text-left py-2 px-2 hover:bg-blue-100"><i
+                                                class='bx bxs-wrench mr-1'></i>Khiếu
+                                            nại</button>
+                                        <button
+                                            @click="deleteQuestion(question.id, 'offending')"
+                                            class="w-full text-left py-2 px-2 hover:bg-blue-100"><i
+                                                class='bx bxs-trash mr-1'></i>Xóa</button>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            v-if="offendingQuestion && offendingQuestion != null && offendingQuestion.length > itemPerPageOffendingQuestion">
+                            <v-pagination v-model="pageOffendingQuestion"
+                                :pages="totalPagesOffendingQuestion" :range-size="1"
+                                active-color="#0074FF" class="my-3 pl-0"
+                                @update:modelValue="onPageChangedOffendingQuestion" />
+                        </div>
+                    </div>
+                    <div v-else>
+                        <h4 class="font-semibold text-center text-gray-500 mt-3">
+                            Không có gì ở đây cả</h4>
                     </div>
                 </div>
 
@@ -547,10 +666,12 @@
                                         class="bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)] rounded w-28 absolute hidden z-20 drop-down-post-container">
                                         <router-link
                                             :to="{ name: 'QuestionEdit', params: { id: question.id, auth: authId } }"
-                                            class="py-2 block px-2 hover:bg-blue-100">Sửa</router-link>
+                                            class="py-2 block px-2 hover:bg-blue-100"><i
+                                                class='bx bxs-edit-alt mr-1'></i>Sửa</router-link>
                                         <button
                                             @click="deleteQuestion(question.id, 'public')"
-                                            class="w-full text-left py-2 px-2 hover:bg-blue-100">Xóa</button>
+                                            class="w-full text-left py-2 px-2 hover:bg-blue-100"><i
+                                                class='bx bxs-trash mr-1'></i>Xóa</button>
                                     </ul>
                                 </div>
                             </div>
@@ -588,14 +709,14 @@ export default {
     },
     data() {
         return {
-            draftPost: [], publicPost: [],
-            draftQuestion: [], publicQuestion: [],
-            itemPerPagePost: 5, itemPerPagePublicPost: 5,
-            itemPerPageQuestion: 5, itemPerPagePublicQuestion: 5,
-            currentPagePost: 1, currentPublicPagePost: 1,
-            currentPageQuestion: 1, currentPublicPageQuestion: 1,
-            pagePost: 1, pagePublicPost: 1,
-            pageQuestion: 1, pagePuclicQuestion: 1,
+            draftPost: [], publicPost: [], offendingPost: [],
+            draftQuestion: [], publicQuestion: [], offendingQuestion: [],
+            itemPerPagePost: 5, itemPerPagePublicPost: 5, itemPerPageOffendingPost: 5,
+            itemPerPageQuestion: 5, itemPerPagePublicQuestion: 5, itemPerPageOffendingQuestion: 5,
+            currentPagePost: 1, currentPublicPagePost: 1, currentOffendingPagePost: 1,
+            currentPageQuestion: 1, currentPublicPageQuestion: 1, currentOffendingPageQuestion: 1,
+            pagePost: 1, pagePublicPost: 1, pageOffendingPost: 1,
+            pageQuestion: 1, pagePuclicQuestion: 1, pageOffendingQuestion: 1,
             dataSearch: {
                 post: {
                     'title': '',
@@ -642,6 +763,26 @@ export default {
                 return this.publicPost.slice(startIndex, endIndex)
             }
         },
+        displayOffendingPost() {
+            if (this.offendingPost && this.offendingPost != null) {
+                var startIndex = (this.currentOffendingPagePost - 1) * this.itemPerPageOffendingPost
+                var endIndex = startIndex + this.itemPerPageOffendingPost
+                if (endIndex > this.offendingPost.length) {
+                    endIndex = this.offendingPost.length
+                }
+                return this.offendingPost.slice(startIndex, endIndex)
+            }
+        },
+        displayOffendingQuestion() {
+            if (this.offendingQuestion && this.offendingQuestion != null) {
+                var startIndex = (this.currentOffendingPageQuestion - 1) * this.itemPerPageOffendingQuestion
+                var endIndex = startIndex + this.itemPerPageOffendingQuestion
+                if (endIndex > this.offendingQuestion.length) {
+                    endIndex = this.offendingQuestion.length
+                }
+                return this.offendingQuestion.slice(startIndex, endIndex)
+            }
+        },
         displayDraftQuestion() {
             if (this.draftQuestion && this.draftQuestion != null) {
                 var startIndex = (this.currentPageQuestion - 1) * this.itemPerPageQuestion
@@ -667,6 +808,16 @@ export default {
                 return Math.ceil(this.draftQuestion.length / this.itemPerPageQuestion)
             }
         },
+        totalPagesOffendingPost() {
+            if (this.offendingPost && this.offendingPost != null) {
+                return Math.ceil(this.offendingPost.length / this.itemPerPageOffendingPost)
+            }
+        },
+        totalPagesOffendingQuestion() {
+            if (this.offendingQuestion && this.offendingQuestion != null) {
+                return Math.ceil(this.offendingQuestion.length / this.itemPerPageOffendingQuestion)
+            }
+        },
         totalPagesPublicQuestion() {
             if (this.publicQuestion && this.publicQuestion != null) {
                 return Math.ceil(this.publicQuestion.length / this.itemPerPagePublicQuestion)
@@ -687,11 +838,17 @@ export default {
         onPageChanged(page) {
             return this.currentPagePost = page
         },
+        onPageChangedOffendingPost(page) {
+            return this.currentOffendingPagePost = page
+        },
         onPageChangedPublicPost(page) {
             return this.currentPublicPagePost = page
         },
         onPageChangedQuestion(page) {
             return this.currentPageQuestion = page
+        },
+        onPageChangedOffendingQuestion(page) {
+            return this.currentOffendingPageQuestion = page
         },
         onPageChangedPublicQuestion(page) {
             return this.currentPublicPageQuestion = page
@@ -701,6 +858,14 @@ export default {
                 .then(res => {
                     // console.log(res.data);
                     this.draftPost = res.data.data
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+            axios.get(`api/posts/offending/${this.authId}`)
+                .then(res => {
+                    this.offendingPost = res.data.data
+                    // console.log(this.offendingPost);
                 })
                 .catch(err => {
                     console.log(err);
@@ -717,6 +882,14 @@ export default {
                 .then(res => {
                     // console.log(res.data);
                     this.draftQuestion = res.data.data
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+            axios.get(`api/questions/offending/${this.authId}`)
+                .then(res => {
+                    this.offendingQuestion = res.data.data
+                    // console.log(this.offendingQuestion);
                 })
                 .catch(err => {
                     console.log(err);
@@ -770,6 +943,13 @@ export default {
                                     this.pagePost = this.totalPagesPost
                                 }
                             }
+                            if (type == 'offending') {
+                                this.offendingPost = this.offendingPost.filter((post) => post.id !== id);
+                                if (this.displayOffendingPost.length <= 1) {
+                                    this.currentOffendingPagePost = this.totalPagesOffendingPost
+                                    this.pageOffendingPost = this.totalPagesOffendingPost
+                                }
+                            }
                             if (type == 'public') {
                                 this.publicPost = this.publicPost.filter((post) => post.id !== id);
                                 if (this.displayPublicPost.length <= 1) {
@@ -798,14 +978,21 @@ export default {
                 if (res.isConfirmed) {
                     axios.delete(`api/questions/${id}`)
                         .then(res => {
-                            if(type == 'draft') {
+                            if (type == 'draft') {
                                 this.draftQuestion = this.draftQuestion.filter((question) => question.id !== id);
                                 if (this.displayDraftQuestion.length <= 1) {
                                     this.currentPageQuestion = this.totalPagesQuestion
                                     this.pageQuestion = this.totalPagesQuestion
                                 }
                             }
-                            if(type == 'public') {
+                            if (type == 'offending') {
+                                this.offendingQuestion = this.offendingQuestion.filter((question) => question.id !== id);
+                                if (this.displayOffendingQuestion.length <= 1) {
+                                    this.currentOffendingPageQuestion = this.totalPagesOffendingQuestion
+                                    this.pageOffendingQuestion = this.totalPagesOffendingQuestion
+                                }
+                            }
+                            if (type == 'public') {
                                 this.publicQuestion = this.publicQuestion.filter((question) => question.id !== id);
                                 if (this.displayPublicQuestion.length <= 1) {
                                     this.currentPublicPageQuestion = this.totalPagesPublicQuestion
@@ -834,6 +1021,20 @@ export default {
                         console.log(err);
                     })
             }
+            if (type == 'offending') {
+                axios.get(`api/posts/search/${this.authId}`, {
+                    params: {
+                        title: data.title,
+                        type: 'offending'
+                    }
+                })
+                    .then(res => {
+                        this.offendingPost = res.data.data
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
+            }
             if (type == 'public') {
                 axios.get(`api/posts/search/${this.authId}`, {
                     params: {
@@ -850,7 +1051,7 @@ export default {
             }
         },
         searchQuestion(data, type) {
-            if(type == 'draft') {
+            if (type == 'draft') {
                 axios.get(`api/questions/search/draft/${this.authId}`, {
                     params: {
                         title: data.title,
@@ -864,7 +1065,21 @@ export default {
                         console.log(err);
                     })
             }
-            if(type == 'public') {
+            if (type == 'offending') {
+                axios.get(`api/questions/search/draft/${this.authId}`, {
+                    params: {
+                        title: data.title,
+                        type: 'offending'
+                    }
+                })
+                    .then(res => {
+                        this.offendingQuestion = res.data.data
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
+            }
+            if (type == 'public') {
                 axios.get(`api/questions/search/draft/${this.authId}`, {
                     params: {
                         title: data.title,
