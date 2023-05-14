@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Tag;
-
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\File;
 class TagController extends Controller
 {
     /**
@@ -45,8 +47,19 @@ class TagController extends Controller
         if($existSlug) {
             return response()->json(['error' => 'Tên slug này đã tồn tại, vui lòng nhập slug khác!'], 422);
         }
-        Tag::create($request->all());
-        return response()->json(['msg' => 'Thêm mới thẻ thành công'], 204);
+        if($request->input('image') != '') {
+            $image = $request->input('image');
+            $filename = time().$request->input('nameImage');
+            Image::make($image)->save(public_path('images/tags/'.$filename));
+            Tag::insert([
+                'thumbnail' => $filename,
+                "name" => $request->input('name'),
+                "slug" => $request->input('slug'),
+                "created_at" => now(),
+                "updated_at" => now(),
+            ]);
+        }
+        return response()->json(['msg' => $filename]);
     }
 
     /**
@@ -89,6 +102,14 @@ class TagController extends Controller
         if($existSlugTag) {
             return response()->json(['error' => 'Tên slug này đã tồn tại, vui lòng nhập slug khác!'], 422);
         }
+        if($request->input('image') != '') {
+            File::delete(public_path('images/tags/'.$tag->thumbnail));
+            $image = $request->input('image');
+            $filename = time().$request->input('nameImage');
+            Image::make($image)->save(public_path('images/tags/'.$filename));
+            $tag->thumbnail = $filename;
+            $tag->save();
+        }
         $tag->update($request->all());
         return response()->json(null, 204);
 
@@ -105,6 +126,8 @@ class TagController extends Controller
         $tag = Tag::findOrFail($id);
         if($tag) {
             $tag->delete();
+            File::delete(public_path('images/tags/'.$tag->thumbnail));
+
             return response()->json(null, 204);
         }
         return response()->json(['error' => 'Lỗi'], 422);

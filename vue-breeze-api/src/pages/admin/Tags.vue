@@ -14,7 +14,8 @@
                                     <tr>
                                         <th @click="sortTable('name')"
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 cursor-pointer">
-                                            Tên thẻ <i :class="sortIcon('name')"></i>
+                                            Tên thẻ <i
+                                                :class="sortIcon('name')"></i>
 
                                         </th>
                                         <th @click="sortTable('slug')"
@@ -24,7 +25,8 @@
                                         </th>
                                         <th @click="sortTable('created_at')"
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2 cursor-pointer">
-                                            Ngày tạo <i :class="sortIcon('created_at')"></i>
+                                            Ngày tạo <i
+                                                :class="sortIcon('created_at')"></i>
 
                                         </th>
                                         <th
@@ -37,8 +39,9 @@
                                     <tr v-for="item in displayedItemsTag"
                                         :key="item.name">
                                         <td>
-                                            <div class="flex px-2 align-items-center">
-                                                <i class='bx bxs-purchase-tag mr-1'></i>
+                                            <div class="flex px-2 items-center">
+                                                <img :src="item.thumbnail" alt=""
+                                                    class="thumbnail-tag pr-1">
                                                 <div class="my-auto">
                                                     <h6 class="mb-0 text-sm">
                                                         {{ item.name }}
@@ -79,7 +82,9 @@
                                     <div id="modal-edit-tag"
                                         class="hidden fixed top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] md:h-full">
                                         <div class="backdrop-modal-edit-tag absolute z-10"
-                                            @click="closeModalEditTag()" style="background: rgba(0, 0, 0, 0.2);"></div>
+                                            @click="closeModalEditTag()"
+                                            style="background: rgba(0, 0, 0, 0.2);">
+                                        </div>
                                         <div class="relative h-full border-0">
                                             <div class="absolute bg-white rounded-lg shadow z-20"
                                                 style="
@@ -94,13 +99,15 @@
                                                     class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
                                                     @click="
                                                         closeModalEditTag()
-                                                    ">
+                                                        ">
                                                     <i class="bx bx-x text-xl"></i>
                                                 </button>
-                                                <div class="px-4 py-4 lg:px-5" style="width: 450px">
+                                                <div class="px-4 py-4 lg:px-5"
+                                                    style="width: 450px">
                                                     <h3
                                                         class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
-                                                        Chỉnh sửa thẻ: {{ formEditTag.name }}
+                                                        Chỉnh sửa thẻ: {{
+                                                            formEditTag.name }}
                                                     </h3>
                                                     <form class="space-y-6"
                                                         @submit.prevent="
@@ -108,41 +115,75 @@
                                                                 formEditTag.id,
                                                                 formEditTag
                                                             )
-                                                        ">
+                                                            ">
                                                         <div>
-                                                            <p for="name-role" class="leading-8">Tên thẻ:</p>
+                                                            <p for="name-role"
+                                                                class="leading-8">
+                                                                Tên thẻ:</p>
                                                             <input type="text"
                                                                 name="name-role"
                                                                 placeholder=""
                                                                 class="py-2 px-3 block w-full border-2 border-gray-200 rounded-md text-sm focus:border-black shadow-sm"
-                                                                v-model="
-                                                                    formEditTag.name
-                                                                "
+                                                                v-model="formEditTag.name
+                                                                    "
                                                                 @keyup="valiEmptyInput('name-edit', formEditTag.name)" />
                                                             <div v-if="checkValiEditTag.name"
                                                                 class="mt-0 mb-0">
                                                                 <span
                                                                     class="text-red-400 text-sm p-2 pt-3 px-0">Không
-                                                                    được để trống tên
+                                                                    được để trống
+                                                                    tên
                                                                     thẻ!</span>
                                                             </div>
                                                         </div>
                                                         <div>
-                                                            <p for="name-slug" class="leading-8">Tên slug:</p>
+                                                            <p for="name-slug"
+                                                                class="leading-8">
+                                                                Tên slug:</p>
                                                             <input type="text"
                                                                 name="slug-role"
                                                                 placeholder=""
                                                                 class="py-2 px-3 block w-full border-2 border-gray-200 rounded-md text-sm focus:border-black shadow-sm"
-                                                                v-model="
-                                                                    formEditTag.slug
-                                                                "
+                                                                v-model="formEditTag.slug
+                                                                    "
                                                                 @keyup="valiEmptyInput('slug-edit', formEditTag.slug)" />
                                                             <div v-if="checkValiEditTag.slug"
                                                                 class="mt-0 mb-0">
                                                                 <span
                                                                     class="text-red-400 text-sm p-2 pt-3 px-0">Không
-                                                                    được để trống tên
+                                                                    được để trống
+                                                                    tên
                                                                     slug!</span>
+                                                            </div>
+                                                        </div>
+                                                        <div>
+                                                            <p for=""
+                                                                class="leading-8">
+                                                                Chọn ảnh thumbnail
+                                                                nếu cần thay
+                                                                đổi:</p>
+                                                            <label class="block">
+                                                                <span
+                                                                    class="sr-only">Choose
+                                                                    profile
+                                                                    photo</span>
+                                                                <input type="file"
+                                                                    class="block w-full text-sm text-slate-500
+                                                                        file:mr-4 file:py-2 file:px-4
+                                                                        file:rounded-full file:border-0
+                                                                        file:text-sm file:font-semibold
+                                                                        file:bg-violet-50 file:text-violet-700
+                                                                        hover:file:bg-violet-100
+                                                                        "
+                                                                    id="thumbnail-update-tag"
+                                                                    accept="image/*" />
+                                                            </label>
+                                                            <div
+                                                                v-if="checkValiEditTag.size">
+                                                                <span
+                                                                    class="text-red-400 text-sm p-2 px-0">Ảnh
+                                                                    vượt quá
+                                                                    2MB!</span>
                                                             </div>
                                                         </div>
                                                         <button type="submit"
@@ -202,8 +243,26 @@
                                     <span class="text-red-400 text-sm p-2 px-0">Vui
                                         lòng nhập slug thẻ!</span>
                                 </div>
+                                <label class="block">
+                                    <input type="file" title="Chọn ảnh thumbnail"
+                                        class="block w-full text-sm text-slate-500
+                                        file:mr-4 file:py-2 file:px-4
+                                        file:rounded-full file:border-0
+                                        file:text-sm file:font-semibold
+                                        file:bg-violet-50 file:text-violet-700
+                                        hover:file:bg-violet-100
+                                        " id="thumbnail-add-tag" />
+                                </label>
+                                <div v-if="checkValiAddTag.thumbnail">
+                                    <span class="text-red-400 text-sm p-2 px-0">Vui
+                                        lòng chọn ảnh thumbnail!</span>
+                                </div>
+                                <div v-if="checkValiAddTag.size">
+                                    <span class="text-red-400 text-sm p-2 px-0">Ảnh
+                                        vượt quá 2MB!</span>
+                                </div>
                                 <button type="submit"
-                                    class="px-2 py-1.5 rounded-sm bg-blue-600 text-white text-sm mt-1">
+                                    class="px-2 py-1.5 rounded-sm bg-blue-600 text-white text-sm mt-1 block">
                                     Thêm
                                 </button>
                             </form>
@@ -221,20 +280,72 @@ import TagInput from "@/components/admin/ui/SearchTag.vue";
 import VPagination from "@hennge/vue3-pagination";
 import "@hennge/vue3-pagination/dist/vue3-pagination.css";
 import "@/assets/admin/css/pagination-styles.css";
-import { tagStore, listTags, onPageChanged, itemsPerPage, pageTag, indexStartTag, indexEndTag, displayedItemsTag, totalPagesTag, deleteTag, addTag, formAddTag, formEditTag, valiEmptyInput, checkValiAddTag, showModalEditTag, closeModalEditTag,checkValiEditTag, editTag, sortIcon, sortTable } from "@/components/admin/process/TagProcess.js";
+import { tagStore, listTags, onPageChanged, itemsPerPage, pageTag, indexStartTag, indexEndTag, displayedItemsTag, totalPagesTag, deleteTag, addTag, formAddTag, formEditTag, valiEmptyInput, checkValiAddTag, showModalEditTag, closeModalEditTag, checkValiEditTag, editTag, sortIcon, sortTable } from "@/components/admin/process/TagProcess.js";
 import { formatDateTime } from '@/assets/js/app.js'
 onMounted(async () => {
     initModals();
+    $("#thumbnail-add-tag").change(function () {
+        readURL(this, 'add');
+    });
+    $("#thumbnail-update-tag").change(function () {
+        readURL(this, 'update');
+    });
     await tagStore.getTags()
 });
+const readURL = (input, type) => {
+    if (type == 'add') {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                // Lấy tên file
+                var fileName = input.files[0].name;
+                var fileSize = input.files[0].size / 1024 / 1024;
+                formAddTag.value.size = fileSize
+                var fileData = reader.result;
+                if (fileSize > 2) {
+                    checkValiAddTag.value.size = true
+                }
+                formAddTag.value.nameImage = fileName
+                formAddTag.value.image = fileData
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    } else if (type == 'update') {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                // Lấy tên file
+                var fileName = input.files[0].name;
+                var fileSize = input.files[0].size / 1024 / 1024;
+                formEditTag.value.size = fileSize
+                var fileData = reader.result;
+                if (fileSize > 2) {
+                    checkValiEditTag.value.size = true
+                }
+                formEditTag.value.nameImage = fileName
+                formEditTag.value.image = fileData
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+}
 </script>
 <style scoped>
+.thumbnail-tag {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+}
+
 #admin h3 {
     font-size: 1.567rem;
 }
+
 #admin p.leading-8 {
     margin-bottom: .5rem;
 }
+
 .focus\:border-gray-200:focus {
     box-shadow: none;
 }
@@ -249,5 +360,4 @@ onMounted(async () => {
 
 .hennge-pagination-custom button.Page-active {
     color: #fff !important;
-}
-</style>
+}</style>

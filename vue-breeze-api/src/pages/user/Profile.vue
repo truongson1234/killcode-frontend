@@ -312,6 +312,8 @@ import { pageLoading, pageLoaded, formatDateTimeHours, formatDateTime } from "@/
 import PostItem from "@/components/ui/PostItem.vue";
 import QuestionItem from "@/components/ui/QuestionItem.vue";
 import { useRoute } from "vue-router";
+import router from '@/router';
+
 const route = useRoute();
 const authStore = useAuthStore();
 const userStore = useUserStore();
@@ -341,6 +343,7 @@ const fetchDataUser = (userId) => {
         })
         .catch(err => {
             console.log(err);
+            router.push({ name: 'Home' })
         })
 }
 const fetchDataPost = () => {

@@ -224,8 +224,8 @@ class PostController extends Controller
         try {
             // tạo bài viết
             $post = new Post();
-            $post->user_id = 1;
-            // $post->user_id = auth()->user()->id;
+            // $post->user_id = 1;
+            $post->user_id = auth()->user()->id;
             $post->title = $request->input('title');
             $post->body = $request->input('body');
             $post->status_id = 1;

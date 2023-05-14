@@ -18,17 +18,17 @@ class PostStatusSeeder extends Seeder
         DB::table('post_statuses')->insert([
             [
                 'name' => 'Công khai',
-                'describe' => 'Tất cả mọi người',
+                'describe' => 'Được public lên hệ thống',
                 'is_default' => true,
             ],
             [
-                'name' => 'Riêng tư',
-                'describe' => 'Chỉ mình tôi',
+                'name' => 'Bản nháp',
+                'describe' => 'Bài viết được lưu dưới dạng bản nháp, không public lên hệ thống',
                 'is_default' => true,
             ],
             [
                 'name' => 'Vi phạm',
-                'describe' => 'Bài viết đang vi phạm quy định của trang',
+                'describe' => 'Bài viết đang vi phạm quy định của trang và không được public lên hệ thống',
                 'is_default' => true,
             ]
         ]);

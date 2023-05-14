@@ -521,10 +521,6 @@
 #admin ::-webkit-color-swatch-wrapper {
   padding: 0;
 }
-#admin ::file-selector-button {
-  font: inherit;
-  -webkit-appearance: button;
-}
 #admin output {
   display: inline-block;
 }
@@ -2330,12 +2326,6 @@
     transition: none;
   }
 }
-#admin .form-control[type=file] {
-  overflow: hidden;
-}
-#admin .form-control[type=file]:not(:disabled):not([readonly]) {
-  cursor: pointer;
-}
 #admin .form-control:focus {
   color: #495057;
   background-color: #fff;
@@ -2354,28 +2344,6 @@
 #admin .form-control[readonly] {
   background-color: #e9ecef;
   opacity: 1;
-}
-#admin .form-control::file-selector-button {
-  padding: 0.5rem 0.75rem;
-  margin: -0.5rem -0.75rem;
-  margin-inline-end: 0.75rem;
-  color: #495057;
-  background-color: #fff;
-  pointer-events: none;
-  border-color: inherit;
-  border-style: solid;
-  border-width: 0;
-  border-inline-end-width: 1px;
-  border-radius: 0;
-  transition: all 0.15s ease-in;
-}
-@media (prefers-reduced-motion: reduce) {
-  #admin .form-control::file-selector-button {
-    transition: none;
-  }
-}
-#admin .form-control:hover:not(:disabled):not([readonly])::file-selector-button {
-  background-color: #f2f2f2;
 }
 #admin .form-control-plaintext {
   display: block;
@@ -2399,21 +2367,11 @@
   font-size: 0.75rem;
   border-radius: 0.5rem;
 }
-#admin .form-control-sm::file-selector-button {
-  padding: 0.25rem 0.75rem;
-  margin: -0.25rem -0.75rem;
-  margin-inline-end: 0.75rem;
-}
 #admin .form-control-lg {
   min-height: unset;
   padding: 0.75rem 0.75rem;
   font-size: 0.875rem;
   border-radius: 0.5rem;
-}
-#admin .form-control-lg::file-selector-button {
-  padding: 0.75rem 0.75rem;
-  margin: -0.75rem -0.75rem;
-  margin-inline-end: 0.75rem;
 }
 #admin textarea.form-control {
   min-height: unset;
@@ -16539,7 +16497,6 @@
   font-weight: 700;
   margin-bottom: 0.5rem;
   color: #344767;
-  margin-left: 0.25rem;
 }
 #admin .form-control.is-invalid:focus {
   box-shadow: 0 0 0 2px rgba(253, 92, 112, 0.6);

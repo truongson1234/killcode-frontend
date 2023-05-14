@@ -65,10 +65,12 @@ import List from '@ckeditor/ckeditor5-list/src/list';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
+// import Font from '@ckeditor/ckeditor5-font/src/font';
 const editor = ClassicEditor;
 const editorConfig = {
     plugins: [
         EssentialsPlugin,
+        // Font,
         BoldPlugin,
         ItalicPlugin,
         LinkPlugin,

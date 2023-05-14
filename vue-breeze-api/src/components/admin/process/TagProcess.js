@@ -9,19 +9,27 @@ export const indexStartTag = ref(""),
 export const checkValiAddTag = ref({
     name: false,
     slug: false,
+    thumbnail: false,
+    size: false,
 });
 export const checkValiEditTag = ref({
     name: false,
     slug: false,
+    thumbnail: false,
+    size: false,
 });
 export const formAddTag = ref({
     name: "",
     slug: "",
+    image: "",
+    size: ""
 });
 export const formEditTag = ref({
     id: "",
     name: "",
     slug: "",
+    image: "",
+    size: ""
 });
 export const sortKey = ref(''), sortOrder = ref(1)
 export const deleteTag = (item, id) => {
@@ -73,7 +81,19 @@ export const addTag = async (form) => {
         checkValiAddTag.value.slug = true;
 
     }
-    if(formAddTag.value.name == "" || formAddTag.value.slug == "") return false
+    if (formAddTag.value.image != "") {
+        checkValiAddTag.value.thumbnail = false;
+    }else {
+        checkValiAddTag.value.thumbnail = true;
+
+    }
+    if (formAddTag.value.size <= 3) {
+        checkValiAddTag.value.size = false;
+    }else {
+        checkValiAddTag.value.size = true;
+
+    }
+    if(formAddTag.value.name == "" || formAddTag.value.slug == "" || formAddTag.value.image == "" || formAddTag.value.size > 3) return false
     await tagStore
         .handleAddTag(form)
         .then((res) => {
@@ -92,10 +112,29 @@ export const addTag = async (form) => {
         });
 };
 export const editTag = async(id, form) => {
+    if (formEditTag.value.name != "") {
+        checkValiEditTag.value.name = false;
+    }else {
+        checkValiEditTag.value.name = true;
+
+    }
+    if (formEditTag.value.slug != "") {
+        checkValiEditTag.value.slug = false;
+    }else {
+        checkValiEditTag.value.slug = true;
+
+    }
+    if (formEditTag.value.size <= 3) {
+        checkValiEditTag.value.size = false;
+    }else {
+        checkValiEditTag.value.size = true;
+
+    }
+    if(formEditTag.value.name == "" || formEditTag.value.slug == "" || formEditTag.value.size > 3) return false
     await tagStore.handleEditTag(id, form)
     .then(res => {
         if(tagStore.dataTagErrors == 'success!') {
-            console.log('update-success')
+            $('#modal-edit-tag').addClass('hidden')
         }else {
             Swal.fire({
                 title: "",
