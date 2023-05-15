@@ -48,7 +48,7 @@ export const useUserStore = defineStore("user", {
         async handleUpdateProfile(formData, id) {
             try {
                 await axios
-                    .post("api/user/update-profile", formData)
+                    .post("api/user-detail/update-profile", formData)
                     .then((res) => {
                         // console.log(res);
                         this.getUserById(id)

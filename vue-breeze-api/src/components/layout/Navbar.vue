@@ -5,17 +5,21 @@
             <div
                 class="navbar-navigation-mobile hidden absolute left-0 top-16 p-4 bg-white w-full">
                 <ul class="text-center text-gray-900">
-                    <li class="py-2 hover:bg-gray-600 hover:text-white">
+                    <li class="py-2 hover:bg-gray-600 hover:text-white" :class="[$route.path == '/home' ? 'active' : '']">
+                        <router-link :to="{ name: 'Home' }"
+                            class="hover:text-inherit">Trang chủ</router-link>
+                    </li>
+                    <li class="py-2 hover:bg-gray-600 hover:text-white" :class="[$route.path == '/tags' ? 'active' : '']">
                         <router-link :to="{ name: 'TagsList' }"
                             class="hover:text-inherit">Chủ
                             đề</router-link>
                     </li>
-                    <li class="py-2 hover:bg-gray-600 hover:text-white">
+                    <li class="py-2 hover:bg-gray-600 hover:text-white" :class="[$route.path == '/questions' ? 'active' : '']">
                         <router-link :to="{ name: 'QuestionsList' }"
                             class="hover:text-inherit">Câu
                             hỏi</router-link>
                     </li>
-                    <li class="py-2 hover:bg-gray-600 hover:text-white">
+                    <li class="py-2 hover:bg-gray-600 hover:text-white" :class="[$route.path == '/posts' ? 'active' : '']">
                         <router-link :to="{ name: 'PostsList' }"
                             class="hover:text-inherit">Bài
                             viết</router-link>
@@ -27,18 +31,21 @@
                     :to="{ name: 'Home' }">Killcode</router-link>
                 <div class="navbar__group">
                     <ul class="navbar__navigation flex items-center">
-                        <li>
+                        <li :class="[$route.path == '/home' ? 'active' : '']">
+                            <router-link :to="{ name: 'Home' }">Trang chủ</router-link>
+                        </li>
+                        <li :class="[$route.path == '/tags' ? 'active' : '']">
                             <router-link :to="{ name: 'TagsList' }">Chủ
                                 đề</router-link>
                         </li>
-                        <li>
+                        <li :class="[$route.path == '/questions' ? 'active' : '']">
                             <router-link :to="{ name: 'QuestionsList' }">Câu
                                 hỏi</router-link>
                         </li>
                         <!-- <li>
                             <router-link :to="{ name: 'Test' }">Test</router-link>
                         </li> -->
-                        <li>
+                        <li :class="[$route.path == '/posts' ? 'active' : '']">
                             <router-link :to="{ name: 'PostsList' }">Bài
                                 viết</router-link>
                         </li>
@@ -454,7 +461,9 @@ onBeforeUnmount(() => {
     letter-spacing: 0.2em;
 }
 
-.navbar .navbar__navigation li a::before {
+.navbar .navbar__navigation li a::before,
+.navbar .navbar__navigation li.active a::before
+ {
     content: "";
     position: absolute;
     bottom: -2px;
@@ -466,16 +475,21 @@ onBeforeUnmount(() => {
     transform-origin: right;
 }
 
-.navbar .navbar__navigation li a:hover::before {
+.navbar .navbar__navigation li a:hover::before,
+.navbar .navbar__navigation li.active a::before
+ {
     transform: scale(1);
     transform-origin: left;
 }
 
+.navbar-navigation-mobile ul li.active {
+    color: #fff;
+    background-color: rgb(75 85 99 / 1);
+}
 .navbar .navbar__group-icon {
     display: flex;
     align-items: center;
     gap: 20px;
-    margin-left:15px;
 }
 
 .navbar .navbar__dropdown-menu {

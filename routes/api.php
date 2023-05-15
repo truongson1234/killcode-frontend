@@ -60,6 +60,7 @@ Route::get('/search/all', 'App\Http\Controllers\SearchController@getSearchAll');
 // Get user by id
 Route::group(['prefix' => 'user-detail'], function () {
     Route::get('{id}', 'App\Http\Controllers\UserController@show');
+    Route::post('/update-profile', 'App\Http\Controllers\UserController@updateProfile');
 });
 
 Route::group(['prefix' => 'notifications'], function () {

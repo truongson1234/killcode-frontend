@@ -385,7 +385,12 @@ const showModalReport = (event) => {
 }
 </style>
 <style>
-
+.detail-unique-post h3 {
+    font-size: 1.55rem!important
+}
+.detail-unique-post h2 {
+    font-size: 1.75rem!important
+}
 .detail-unique-post .prose ul,
 .detail-unique-post .prose ol {
     list-style: inherit;

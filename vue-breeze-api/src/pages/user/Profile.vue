@@ -340,6 +340,7 @@ const fetchDataUser = (userId) => {
         .then(response => {
             response.data.user.avatar = 'http://localhost:8000/images/' + response.data.user.avatar
             dataUser.value = response.data.user;
+            console.log('cc');
         })
         .catch(err => {
             console.log(err);
