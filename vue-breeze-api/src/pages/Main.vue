@@ -591,6 +591,7 @@ onBeforeUnmount(() => {
 .navbar__group-icon {
   display: flex;
   align-items: center;
+  margin-left:15px;
   gap: 20px;
 }
 

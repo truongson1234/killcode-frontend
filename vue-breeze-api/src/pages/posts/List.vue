@@ -31,13 +31,13 @@
                     </div>
                 </div>
             </div>
-            <div
+            <!-- <div
                 class="col-span-4 p-3 box-popular_tags h-100 row-span-1 lg:col-span-1 lg:row-span-1" v-if="related_posts && related_posts.length != 0">
                 <h5 class="text-center pb-3 font-bold text-blue-500">Bài viết liên quan</h5>
                 <div v-for="item in related_posts" :key="item.id">
                     <PostSidebar :data="item"/>
                 </div>
-            </div>
+            </div> -->
             <div
                 class="col-span-4 p-3 box-popular_tags h-100 row-span-1 lg:col-span-1 lg:row-span-1" v-if="new_posts && new_posts.length != 0">
                 <h5 class="text-center pb-3 font-bold text-blue-500">Bài viết mới nhất</h5>

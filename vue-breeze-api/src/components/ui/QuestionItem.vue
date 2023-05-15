@@ -128,6 +128,8 @@ onMounted(() => {
   height: 34px;
   border-radius: 40px;
   overflow: hidden;
+  display: flex;
+  align-items: center;
   margin: -2px 10px -2px 0
 }
 

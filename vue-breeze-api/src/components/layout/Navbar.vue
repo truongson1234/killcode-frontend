@@ -475,6 +475,7 @@ onBeforeUnmount(() => {
     display: flex;
     align-items: center;
     gap: 20px;
+    margin-left:15px;
 }
 
 .navbar .navbar__dropdown-menu {
@@ -498,9 +499,9 @@ onBeforeUnmount(() => {
 }
 
 .navbar .navbar__logo-user img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
 }
 
 .navbar .navbar__logo-user {
@@ -510,6 +511,7 @@ onBeforeUnmount(() => {
     justify-content: center;
     align-items: center;
     border-radius: 50%;
+    overflow: hidden
 }
 
 .navbar .navbar__toggle-menu {

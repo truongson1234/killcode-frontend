@@ -387,6 +387,8 @@ const showModalReport = (event) => {
     width: 50px;
     height: 50px;
     border-radius: 40px;
+    display: flex;
+    align-items: center;
     overflow: hidden;
 }
 

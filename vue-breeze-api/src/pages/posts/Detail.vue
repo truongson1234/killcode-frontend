@@ -385,6 +385,7 @@ const showModalReport = (event) => {
 }
 </style>
 <style>
+
 .detail-unique-post .prose ul,
 .detail-unique-post .prose ol {
     list-style: inherit;
@@ -410,6 +411,8 @@ const showModalReport = (event) => {
 .detail-unique-post .userimage {
     width: 50px;
     height: 50px;
+    display: flex;
+    align-items: center;
     border-radius: 40px;
     overflow: hidden;
 }

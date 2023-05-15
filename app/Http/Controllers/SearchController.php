@@ -22,7 +22,7 @@ class SearchController extends Controller
             ->where(function ($query) use ($keyword) {
                 $query->where('title', 'like', "%$keyword%")
                         ->orWhere('body', 'like', "%$keyword%");
-            })
+            })->where('status_id', 1)
             ->with('interactions','tags')
             ->withCount('comments')
             ->withCount(['interactions as likes_count' => function($query) {
@@ -51,7 +51,7 @@ class SearchController extends Controller
             ->where(function ($query) use ($keyword) {
                 $query->where('title', 'like', "%$keyword%")
                         ->orWhere('body', 'like', "%$keyword%");
-            })
+            })->where('status_id', 1)
             ->with('interactions','tags')
             ->withCount('answers')
             ->withCount(['interactions as likes_count' => function($query) {
@@ -157,7 +157,8 @@ class SearchController extends Controller
             }])
             ->withCount(['interactions as views_count' => function($query) {
                 $query->select(\DB::raw("SUM(views) as views_count"));
-            }])->orderBy('created_at', 'desc');
+            }])
+            ->where('status_id', 1)->orderBy('created_at', 'desc');
 
         $questions = Question::with('interactions','tags')
             ->withCount(['interactions as likes_count' => function($query) {
@@ -165,7 +166,8 @@ class SearchController extends Controller
             }])
             ->withCount(['interactions as views_count' => function($query) {
                 $query->select(\DB::raw("SUM(views) as views_count"));
-            }])->orderBy('created_at', 'desc');
+            }])
+            ->where('status_id', 1)->orderBy('created_at', 'desc');
 
         $dataPosts = $posts->get()->map(function ($post) {
             $post->author = [

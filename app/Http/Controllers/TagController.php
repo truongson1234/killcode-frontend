@@ -31,7 +31,12 @@ class TagController extends Controller
         $followers = $tag->followers()->count();
 
         // Danh bài viết, câu hỏi, người theo dõi tag
-        $posts = $tag->posts()->where('status_id', 1)->with('tags')->get();
+        $posts = $tag->posts()->withCount('comments')->withCount(['interactions as likes_count' => function($query) {
+                            $query->select(\DB::raw("SUM(liked) as likes_count"));
+                            }])
+                            ->withCount(['interactions as views_count' => function($query) {
+                            $query->select(\DB::raw("SUM(views) as views_count"));
+                            }])->where('status_id', 1)->with('tags')->get();
         $posts = $posts->map(function($post) {
             $post->author = [
                 'id' => $post->user->id,
@@ -46,7 +51,12 @@ class TagController extends Controller
         //Tag phổ biến
         $popular_tags = Tag::withCount('posts')->orderBy('posts_count', 'desc')->take(10)->get();
 
-        $questions = $tag->questions()->where('status_id', 1)->with('tags')->get();
+        $questions = $tag->questions()->withCount('comments')->withCount(['interactions as likes_count' => function($query) {
+                            $query->select(\DB::raw("SUM(liked) as likes_count"));
+                            }])
+                            ->withCount(['interactions as views_count' => function($query) {
+                            $query->select(\DB::raw("SUM(views) as views_count"));
+                            }])->where('status_id', 1)->with('tags')->get();
         $questions = $questions->map(function($question) {
             $question->author = [
                 'id' => $question->user->id,
