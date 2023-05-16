@@ -138,10 +138,17 @@ const handleCreated = (payload) => {
     } else {
         axios.post("/api/posts", payload)
             .then((response) => {
-                // console.log(response.data)
-                statusSaveDraft.value = false
-                router.push({ name: 'PostDetail', params: { id: response.data.data.id } })
-                    .then(() => { router.go() })
+                if (response.data.status == 1) {
+                    statusSaveDraft.value = false
+                    router.push({ name: 'PostDetail', params: { id: response.data.data.id } })
+                        .then(() => { router.go() })
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: response.data.message,
+                    })                    
+                }
             });
     }
 };

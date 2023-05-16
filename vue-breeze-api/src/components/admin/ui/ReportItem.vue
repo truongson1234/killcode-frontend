@@ -1,17 +1,18 @@
 <template>
     <div class="reports__item">
+        <button class="btn-delete" @click="removeI"><i class='bx bx-x'></i></button>
         <div class="reports__sender">
-            <a class="reports__avartar" href="#">
+            <router-link class="reports__avartar" :to="{ name: 'Profile', params: { id: report.sender.route.params.id }}">
                 <img
                     class="reports__image"
                     src="https://static.vecteezy.com/system/resources/previews/000/439/863/original/vector-users-icon.jpg"
                     alt=""
                 />
-            </a>
+            </router-link>
             <div class="reports__milestones">
                 <h3 class="reports__name">{{ report.sender.name }}</h3>
                 <span class="reports__line">|</span>
-                <span class="reports__created">{{ report.created_at }}</span>
+                <span class="reports__created">{{ formatDetailDateTime(new Date(report.created_at)) }}</span>
             </div>
         </div>
         <p class="reports__content">
@@ -19,7 +20,7 @@
                 Bài viết vi phạm
             </router-link>)
         </p>
-        <a class="reports__cover" href="">
+        <router-link class="reports__cover" :to="{ name: 'Profile', params: { id: report.violator.route.user.params.id }}">
             <div class="reports__violators">
                 <div class="reports__avartar" href="#">
                     <img
@@ -30,15 +31,23 @@
                 </div>
                 <h3 class="reports__name">{{ report.violator.name }}</h3>
             </div>
-        </a>
+        </router-link>
     </div>
 </template>
 
 <script setup>
+import { defineEmits } from "vue";
+import {
+    formatDetailDateTime,
+    formatDateTimeFB,
+} from "@/assets/js/app.js";
 const props = defineProps({
     report: Object,
 });
-
+const emits = defineEmits(['click-item'])
+const removeI = () => {
+    emits('click-item', props.report.id)
+}
 </script>
 
 <style scoped>
@@ -47,6 +56,17 @@ const props = defineProps({
     margin-bottom: 20px;
     background-color: #fff;
     border-radius: 10px;
+    position: relative;
+}
+.reports__item .btn-delete{
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 5px;
+}
+.reports__item .btn-delete i{
+    color: #000;
+    font-size: 24px;
 }
 .reports__item .reports__avartar {
     display: block;
@@ -82,6 +102,7 @@ const props = defineProps({
 }
 .reports__item .reports__cover {
     display: inline-block;
+    padding: 0 10px;
 }
 .reports__item .reports__sender {
     padding: 0 10px;
@@ -106,5 +127,6 @@ const props = defineProps({
 }
 .reports__item .reports__content {
     color: #000;
+    padding: 20px 10px 0;
 }
 </style>

@@ -275,7 +275,17 @@ const fetchData = () => {
 const sendCmt = async (payload) => {
     if (payload.user_id) {
         await axios.post('/api/comments', payload)
-        payload.content = ""
+            .then((res) => {
+                if (res.data.status == 1) {
+                    payload.content = ""
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: res.data.message,
+                    })                    
+                }
+            })
     } else {
         console.error("Lỗi");
     }
@@ -283,7 +293,15 @@ const sendCmt = async (payload) => {
 const deleteComment = (id) => {
     axios.delete(`api/comments/${id}`)
         .then(res => {
-            comments.value = comments.value.filter((comment) => comment.id !== id)
+            if (res.data.status == 1) {
+                comments.value = comments.value.filter((comment) => comment.id !== id)
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: res.data.message,
+                })                    
+            }
         })
         .catch(err => {
             console.log(err);
@@ -295,9 +313,17 @@ const editComment = (id, content) => {
         $(`#default-comment-${id}`).removeAttr()
         axios.put(`api/comments/${id}`, { content: content })
         .then(res => {
-            $('.tool-comment').each(function () {
-                $(this).removeClass('hidden')
-            })
+            if (res.data.status == 1) {
+                $('.tool-comment').each(function () {
+                    $(this).removeClass('hidden')
+                })  
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: res.data.message,
+                })                    
+            }
         })
         .catch(err => {
             console.log(err);
@@ -313,13 +339,16 @@ const handleLiked = () => {
                 question_id: questionId,
             })
             .then((response) => {
-                console.log(response.data);
                 if (response.data.status == 1) {
                     liked.value = response.data.liked;
                     question.value.likes_count = response.data.likes_count;
                     question.value.views_count = response.data.views_count;
                 } else {
-                    console.error("Lỗi");
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: response.data.message,
+                    })                    
                 }
             })
             .catch((e) => {

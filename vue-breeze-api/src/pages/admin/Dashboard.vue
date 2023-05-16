@@ -1,114 +1,114 @@
 <script setup>
 import axios from "axios";
 import { ref, onMounted } from "vue";
-var ctx1 = ref(null),
-    gradientStroke1 = ref(null);
+// var ctx1 = ref(null),
+//     gradientStroke1 = ref(null);
 const statistical = ref({});
 
 
 onMounted(() => {
     fetchData();
 
-    ctx1.value = document.getElementById("chart-line").getContext("2d");
-    gradientStroke1.value = ctx1.value.createLinearGradient(0, 230, 0, 50);
-    gradientStroke1.value.addColorStop(1, "rgba(94, 114, 228, 0.2)");
-    gradientStroke1.value.addColorStop(0.2, "rgba(94, 114, 228, 0.0)");
-    gradientStroke1.value.addColorStop(0, "rgba(94, 114, 228, 0)");
-    new Chart(ctx1.value, {
-        type: "line",
-        data: {
-            labels: [
-                "Tháng 1",
-                "Tháng 2",
-                "Tháng 3",
-                "Tháng 4",
-                "Tháng 5",
-                "Tháng 6",
-                "Tháng 7",
-                "Tháng 8",
-                "Tháng 9",
-                "Tháng 10",
-                "Tháng 11",
-                "Tháng 12",
-            ],
-            datasets: [
-                {
-                    label: "Mobile apps",
-                    tension: 0.4,
-                    borderWidth: 0,
-                    pointRadius: 0,
-                    borderColor: "#5e72e4",
-                    backgroundColor: gradientStroke1.value,
-                    borderWidth: 3,
-                    fill: true,
-                    data: statistical.value.chart,
-                    maxBarThickness: 6,
-                },
-            ],
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false,
-                },
-            },
-            interaction: {
-                intersect: false,
-                mode: "index",
-            },
-            scales: {
-                y: {
-                    grid: {
-                        drawBorder: false,
-                        display: true,
-                        drawOnChartArea: true,
-                        drawTicks: false,
-                        borderDash: [5, 5],
-                    },
-                    ticks: {
-                        display: true,
-                        padding: 10,
-                        color: "#fbfbfb",
-                        font: {
-                            size: 11,
-                            family: "Open Sans",
-                            style: "normal",
-                            lineHeight: 2,
-                        },
-                    },
-                },
-                x: {
-                    grid: {
-                        drawBorder: false,
-                        display: false,
-                        drawOnChartArea: false,
-                        drawTicks: false,
-                        borderDash: [5, 5],
-                    },
-                    ticks: {
-                        display: true,
-                        color: "#ccc",
-                        padding: 20,
-                        font: {
-                            size: 11,
-                            family: "Open Sans",
-                            style: "normal",
-                            lineHeight: 2,
-                        },
-                    },
-                },
-            },
-        },
-    });
-    var win = navigator.platform.indexOf("Win") > -1;
-    if (win && document.querySelector("#sidenav-scrollbar")) {
-        var options = {
-            damping: "0.5",
-        };
-        Scrollbar.init(document.querySelector("#sidenav-scrollbar"), options);
-    }
+    // ctx1.value = document.getElementById("chart-line").getContext("2d");
+    // gradientStroke1.value = ctx1.value.createLinearGradient(0, 230, 0, 50);
+    // gradientStroke1.value.addColorStop(1, "rgba(94, 114, 228, 0.2)");
+    // gradientStroke1.value.addColorStop(0.2, "rgba(94, 114, 228, 0.0)");
+    // gradientStroke1.value.addColorStop(0, "rgba(94, 114, 228, 0)");
+    // new Chart(ctx1.value, {
+    //     type: "line",
+    //     data: {
+    //         labels: [
+    //             "Tháng 1",
+    //             "Tháng 2",
+    //             "Tháng 3",
+    //             "Tháng 4",
+    //             "Tháng 5",
+    //             "Tháng 6",
+    //             "Tháng 7",
+    //             "Tháng 8",
+    //             "Tháng 9",
+    //             "Tháng 10",
+    //             "Tháng 11",
+    //             "Tháng 12",
+    //         ],
+    //         datasets: [
+    //             {
+    //                 label: "Mobile apps",
+    //                 tension: 0.4,
+    //                 borderWidth: 0,
+    //                 pointRadius: 0,
+    //                 borderColor: "#5e72e4",
+    //                 backgroundColor: gradientStroke1.value,
+    //                 borderWidth: 3,
+    //                 fill: true,
+    //                 data: statistical.value.chart,
+    //                 maxBarThickness: 6,
+    //             },
+    //         ],
+    //     },
+    //     options: {
+    //         responsive: true,
+    //         maintainAspectRatio: false,
+    //         plugins: {
+    //             legend: {
+    //                 display: false,
+    //             },
+    //         },
+    //         interaction: {
+    //             intersect: false,
+    //             mode: "index",
+    //         },
+    //         scales: {
+    //             y: {
+    //                 grid: {
+    //                     drawBorder: false,
+    //                     display: true,
+    //                     drawOnChartArea: true,
+    //                     drawTicks: false,
+    //                     borderDash: [5, 5],
+    //                 },
+    //                 ticks: {
+    //                     display: true,
+    //                     padding: 10,
+    //                     color: "#fbfbfb",
+    //                     font: {
+    //                         size: 11,
+    //                         family: "Open Sans",
+    //                         style: "normal",
+    //                         lineHeight: 2,
+    //                     },
+    //                 },
+    //             },
+    //             x: {
+    //                 grid: {
+    //                     drawBorder: false,
+    //                     display: false,
+    //                     drawOnChartArea: false,
+    //                     drawTicks: false,
+    //                     borderDash: [5, 5],
+    //                 },
+    //                 ticks: {
+    //                     display: true,
+    //                     color: "#ccc",
+    //                     padding: 20,
+    //                     font: {
+    //                         size: 11,
+    //                         family: "Open Sans",
+    //                         style: "normal",
+    //                         lineHeight: 2,
+    //                     },
+    //                 },
+    //             },
+    //         },
+    //     },
+    // });
+    // var win = navigator.platform.indexOf("Win") > -1;
+    // if (win && document.querySelector("#sidenav-scrollbar")) {
+    //     var options = {
+    //         damping: "0.5",
+    //     };
+    //     Scrollbar.init(document.querySelector("#sidenav-scrollbar"), options);
+    // }
 });
 
 const fetchData = () => {
@@ -255,7 +255,7 @@ const fetchData = () => {
                 </div>
             </div>
         </div>
-        <div class="row mt-4">
+        <!-- <div class="row mt-4">
             <div class="col-lg-7 mb-lg-0 mb-4">
                 <div class="card z-index-2 h-100">
                     <div class="card-header pb-0 pt-3 bg-transparent">
@@ -376,7 +376,7 @@ const fetchData = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
         <div class="row mt-4">
             <div class="col-lg-7 mb-lg-0 mb-4">
                 <div class="card">
@@ -464,9 +464,9 @@ const fetchData = () => {
                                             {{ category.name }}
                                         </h6>
                                         <span class="text-xs"
-                                            >250 in stock,
+                                            >
                                             <span class="font-weight-bold"
-                                                >{{ category.total }} sold</span
+                                                >{{ category.total }}</span
                                             ></span
                                         >
                                     </div>

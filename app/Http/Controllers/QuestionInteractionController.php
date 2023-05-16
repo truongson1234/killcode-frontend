@@ -12,8 +12,7 @@ class QuestionInteractionController extends Controller
 {
     public function liked(Request $request)
     {
-        if(auth()->user()) {
-
+        if (auth()->user()->hasPermissionTo('liked-question')) {
             $interaction = QuestionInteraction::firstOrCreate([
                 // 'user_id' => 1,
                 'user_id' => auth()->user()->id,
@@ -36,7 +35,14 @@ class QuestionInteractionController extends Controller
                 'views_count' => $interaction_counts->views_count,
                 'status' => 1,
             ]);
+        } else {
+            return response()->json([
+                'data' => [],
+                'status' => 0,
+                'message' => 'Bạn không có quyền like câu hỏi!'
+            ]);
         }
+        
     }
 
     public function incrementViews(Request $request)

@@ -137,11 +137,18 @@ const handleCreated = (payload) => {
     } else {
         axios.post("/api/questions", payload)
         .then((response) => {
-            statusSaveDraft.value = false
-            // console.log(response.data)
-            router.push({ name: 'QuestionDetail', params: { id: response.data.data.id } })
-            .then(() => { router.go() })
-
+            if (response.data.status == 1) {
+                statusSaveDraft.value = false
+                // console.log(response.data)
+                router.push({ name: 'QuestionDetail', params: { id: response.data.data.id } })
+                .then(() => { router.go() })
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: response.data.message,
+                })                    
+            }
         });
     }
 };
@@ -165,9 +172,9 @@ router.beforeEach((to, from, next) => {
                 return;
             } else {
                 axios.post("/api/questions/draft", payload.value)
-                // .then((response) => {
-                //      console.log(response.data)
-                // });
+                    .then((response) => {
+                        console.log(response.data.message)
+                    });
             }
         }
         payload.value.title = ''

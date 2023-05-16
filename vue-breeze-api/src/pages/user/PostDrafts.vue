@@ -936,26 +936,35 @@ export default {
                 if (res.isConfirmed) {
                     axios.delete(`api/posts/${id}`)
                         .then(res => {
-                            if (type == 'draft') {
-                                this.draftPost = this.draftPost.filter((post) => post.id !== id);
-                                if (this.displayDraftPost.length <= 1) {
-                                    this.currentPagePost = this.totalPagesPost
-                                    this.pagePost = this.totalPagesPost
+                            console.log(res);
+                            if (res.data.status == 1) {
+                                if (type == 'draft') {
+                                    this.draftPost = this.draftPost.filter((post) => post.id !== id);
+                                    if (this.displayDraftPost.length <= 1) {
+                                        this.currentPagePost = this.totalPagesPost
+                                        this.pagePost = this.totalPagesPost
+                                    }
                                 }
-                            }
-                            if (type == 'offending') {
-                                this.offendingPost = this.offendingPost.filter((post) => post.id !== id);
-                                if (this.displayOffendingPost.length <= 1) {
-                                    this.currentOffendingPagePost = this.totalPagesOffendingPost
-                                    this.pageOffendingPost = this.totalPagesOffendingPost
+                                if (type == 'offending') {
+                                    this.offendingPost = this.offendingPost.filter((post) => post.id !== id);
+                                    if (this.displayOffendingPost.length <= 1) {
+                                        this.currentOffendingPagePost = this.totalPagesOffendingPost
+                                        this.pageOffendingPost = this.totalPagesOffendingPost
+                                    }
                                 }
-                            }
-                            if (type == 'public') {
-                                this.publicPost = this.publicPost.filter((post) => post.id !== id);
-                                if (this.displayPublicPost.length <= 1) {
-                                    this.currentPublicPagePost = this.totalPagesPublicPost
-                                    this.pagePublicPost = this.totalPagesPublicPost
+                                if (type == 'public') {
+                                    this.publicPost = this.publicPost.filter((post) => post.id !== id);
+                                    if (this.displayPublicPost.length <= 1) {
+                                        this.currentPublicPagePost = this.totalPagesPublicPost
+                                        this.pagePublicPost = this.totalPagesPublicPost
+                                    }
                                 }
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: res.data.message,
+                                })                    
                             }
                         })
                         .catch(err => {
@@ -978,26 +987,34 @@ export default {
                 if (res.isConfirmed) {
                     axios.delete(`api/questions/${id}`)
                         .then(res => {
-                            if (type == 'draft') {
-                                this.draftQuestion = this.draftQuestion.filter((question) => question.id !== id);
-                                if (this.displayDraftQuestion.length <= 1) {
-                                    this.currentPageQuestion = this.totalPagesQuestion
-                                    this.pageQuestion = this.totalPagesQuestion
+                            if (res.data.status == 1) {
+                                if (type == 'draft') {
+                                    this.draftQuestion = this.draftQuestion.filter((question) => question.id !== id);
+                                    if (this.displayDraftQuestion.length <= 1) {
+                                        this.currentPageQuestion = this.totalPagesQuestion
+                                        this.pageQuestion = this.totalPagesQuestion
+                                    }
                                 }
-                            }
-                            if (type == 'offending') {
-                                this.offendingQuestion = this.offendingQuestion.filter((question) => question.id !== id);
-                                if (this.displayOffendingQuestion.length <= 1) {
-                                    this.currentOffendingPageQuestion = this.totalPagesOffendingQuestion
-                                    this.pageOffendingQuestion = this.totalPagesOffendingQuestion
+                                if (type == 'offending') {
+                                    this.offendingQuestion = this.offendingQuestion.filter((question) => question.id !== id);
+                                    if (this.displayOffendingQuestion.length <= 1) {
+                                        this.currentOffendingPageQuestion = this.totalPagesOffendingQuestion
+                                        this.pageOffendingQuestion = this.totalPagesOffendingQuestion
+                                    }
                                 }
-                            }
-                            if (type == 'public') {
-                                this.publicQuestion = this.publicQuestion.filter((question) => question.id !== id);
-                                if (this.displayPublicQuestion.length <= 1) {
-                                    this.currentPublicPageQuestion = this.totalPagesPublicQuestion
-                                    this.pagePuclicQuestion = this.totalPagesPublicQuestion
+                                if (type == 'public') {
+                                    this.publicQuestion = this.publicQuestion.filter((question) => question.id !== id);
+                                    if (this.displayPublicQuestion.length <= 1) {
+                                        this.currentPublicPageQuestion = this.totalPagesPublicQuestion
+                                        this.pagePuclicQuestion = this.totalPagesPublicQuestion
+                                    }
                                 }
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: res.data.message,
+                                })                    
                             }
                         })
                         .catch(err => {

@@ -12,28 +12,36 @@ class InteractionController extends Controller
 {
     public function liked(Request $request)
     {
-        $interaction = Interaction::firstOrCreate([
-            // 'user_id' => 1,
-            'user_id' => auth()->user()->id,
-            'post_id' => $request->input('post_id')
-        ]);
-
-        $interaction->liked = $interaction->liked ? false : true;
-        $interaction->save();
-        
-        $interaction_counts = Post::withCount(['interactions as likes_count' => function($query) {
-                                $query->select(\DB::raw("SUM(liked) as likes_count"));
-                            }])
-                            ->withCount(['interactions as views_count' => function($query) {
-                                $query->select(\DB::raw("SUM(views) as views_count"));
-                            }])->findOrFail($request->input('post_id'));
-        
-        return response()->json([
-            'liked' => $interaction->liked,
-            'likes_count' => $interaction_counts->likes_count,
-            'views_count' => $interaction_counts->views_count,
-            'status' => 1,
-        ]);
+        if (auth()->user()->hasPermissionTo('liked-articles')) {
+            $interaction = Interaction::firstOrCreate([
+                // 'user_id' => 1,
+                'user_id' => auth()->user()->id,
+                'post_id' => $request->input('post_id')
+            ]);
+    
+            $interaction->liked = $interaction->liked ? false : true;
+            $interaction->save();
+            
+            $interaction_counts = Post::withCount(['interactions as likes_count' => function($query) {
+                                    $query->select(\DB::raw("SUM(liked) as likes_count"));
+                                }])
+                                ->withCount(['interactions as views_count' => function($query) {
+                                    $query->select(\DB::raw("SUM(views) as views_count"));
+                                }])->findOrFail($request->input('post_id'));
+            
+            return response()->json([
+                'liked' => $interaction->liked,
+                'likes_count' => $interaction_counts->likes_count,
+                'views_count' => $interaction_counts->views_count,
+                'status' => 1,
+            ]);
+        } else {
+            return response()->json([
+                'data' => [],
+                'status' => 0,
+                'message' => 'Bạn không có quyền like bài viết!'
+            ]);
+        }
     }
 
     public function incrementViews(Request $request)

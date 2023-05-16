@@ -104,161 +104,178 @@ class QuestionController extends Controller
 
     public function store(Request $request)
     {
-        // tạo bài viết
-        $question = new Question();
-        // $question->user_id = 1;
-        $question->user_id = auth()->user()->id;
-        $question->title = $request->input('title');
-        $question->body = $request->input('body');
-        $question->status_id = 1;
-        $question->save();
+        if (auth()->user()->hasPermissionTo('write-question')) {
+            // tạo bài viết
+            $question = new Question();
+            // $question->user_id = 1;
+            $question->user_id = auth()->user()->id;
+            $question->title = $request->input('title');
+            $question->body = $request->input('body');
+            $question->status_id = 1;
+            $question->save();
 
-        // tạo followed tag
-        $tagIds = $request->input('tag_ids');
+            // tạo followed tag
+            $tagIds = $request->input('tag_ids');
 
-        $question->tags()->attach($tagIds);
+            $question->tags()->attach($tagIds);
 
-        // Tạo thông báo
-        $data_notification = [
-            'sender_id' => $question->user_id,
-            'title' => 'Thông báo có câu hỏi mới',
-            'type_notification' => 'new question',
-            'route' => [
-                'name' => 'QuestionDetail',
-                'params' => [
-                    'id' => $question->id
+            // Tạo thông báo
+            $data_notification = [
+                'sender_id' => $question->user_id,
+                'title' => 'Thông báo có câu hỏi mới',
+                'type_notification' => 'new question',
+                'route' => [
+                    'name' => 'QuestionDetail',
+                    'params' => [
+                        'id' => $question->id
+                    ]
                 ]
-            ]
-        ];
+            ];
 
-        $pusher = new Pusher(
-            env('PUSHER_APP_KEY'),
-            env('PUSHER_APP_SECRET'),
-            env('PUSHER_APP_ID'),
-            [
-                'cluster' => env('PUSHER_APP_CLUSTER'),
-                'encrypted' => true
-            ]
-        );
+            $pusher = new Pusher(
+                env('PUSHER_APP_KEY'),
+                env('PUSHER_APP_SECRET'),
+                env('PUSHER_APP_ID'),
+                [
+                    'cluster' => env('PUSHER_APP_CLUSTER'),
+                    'encrypted' => true
+                ]
+            );
 
-        // lấy tất cả các user đã follow các tag trong post
-        $users = User::whereIn('id', function($query) use($tagIds) {
-            $query->select('user_id')
-                ->from('followed_tags')
-                ->whereIn('tag_id', $tagIds);
-        })->with('tags')->get();
+            // lấy tất cả các user đã follow các tag trong post
+            $users = User::whereIn('id', function($query) use($tagIds) {
+                $query->select('user_id')
+                    ->from('followed_tags')
+                    ->whereIn('tag_id', $tagIds);
+            })->with('tags')->get();
 
-        if ($users->count()) {
-            // gửi thông báo tới user đang follow tag trong post
-            foreach ($users as $user) {
-                $tagNames = $user->tags->whereIn('id', $tagIds)
-                    ->take(3)
-                    ->pluck('name')
-                    ->implode(', ');
+            if ($users->count()) {
+                // gửi thông báo tới user đang follow tag trong post
+                foreach ($users as $user) {
+                    $tagNames = $user->tags->whereIn('id', $tagIds)
+                        ->take(3)
+                        ->pluck('name')
+                        ->implode(', ');
 
-                $notification = new Notification([
-                    'user_id' => $user->id,
-                    'sender_id' => $data_notification['sender_id'],
-                    'title' => $data_notification['title'],
-                    // 'content' => 'Có câu hỏi mới từ ' . $tagNames . '. Tựa đề: ' . $question->title,
-                    'content' => 'Có câu hỏi mới từ chủ đề <span class="font-bold">' . $tagNames .'.</span>',
-                    'type_notification' => $data_notification['type_notification'],
-                    'route' => $data_notification['route'],
-                    'read' => false,
-                ]);
-    
-                $notification->save();
+                    $notification = new Notification([
+                        'user_id' => $user->id,
+                        'sender_id' => $data_notification['sender_id'],
+                        'title' => $data_notification['title'],
+                        // 'content' => 'Có câu hỏi mới từ ' . $tagNames . '. Tựa đề: ' . $question->title,
+                        'content' => 'Có câu hỏi mới từ chủ đề <span class="font-bold">' . $tagNames .'.</span>',
+                        'type_notification' => $data_notification['type_notification'],
+                        'route' => $data_notification['route'],
+                        'read' => false,
+                    ]);
+        
+                    $notification->save();
 
-                $notification['user'] = $notification->user;
-                $notification['sender'] = $notification->sender;
+                    $notification['user'] = $notification->user;
+                    $notification['sender'] = $notification->sender;
 
-                $pusher->trigger('chanel-notification', 'event-notification-' . $user->id, $notification);
-            }
-        }            
+                    $pusher->trigger('chanel-notification', 'event-notification-' . $user->id, $notification);
+                }
+            }            
 
-        return response()->json([
-            'data' => $question,
-            'message' => 'Question created successfully.',
-        ], 201);
+            return response()->json([
+                'data' => $question,
+                'status' => 1,
+                'message' => 'Tạo câu hỏi thành công.',
+            ], 201);
+        } else {
+            return response()->json([
+                'data' => [],
+                'status' => 0,
+                'message' => 'Bạn không có quyền tạo câu hỏi!'
+            ], 201);
+        }
     }
     public function draftQuestion(Request $request)
     {
-        // tạo bài viết
-        $question = new Question();
-        // $question->user_id = 1;
-        $question->user_id = auth()->user()->id;
-        $question->title = $request->input('title');
-        $question->body = $request->input('body');
-        $question->status_id = 2;
-        $question->save();
+        if (auth()->user()->hasPermissionTo('write-draft-question')) {
+            // tạo bài viết
+            $question = new Question();
+            // $question->user_id = 1;
+            $question->user_id = auth()->user()->id;
+            $question->title = $request->input('title');
+            $question->body = $request->input('body');
+            $question->status_id = 2;
+            $question->save();
 
-        // tạo followed tag
-        $tagIds = $request->input('tag_ids');
+            // tạo followed tag
+            $tagIds = $request->input('tag_ids');
 
-        $question->tags()->attach($tagIds);
+            $question->tags()->attach($tagIds);
 
-        // Tạo thông báo
-        $data_notification = [
-            'sender_id' => $question->user_id,
-            'title' => 'Thông báo có câu hỏi mới',
-            'type_notification' => 'new question',
-            'route' => [
-                'name' => 'QuestionDetail',
-                'params' => [
-                    'id' => $question->id
+            // Tạo thông báo
+            $data_notification = [
+                'sender_id' => $question->user_id,
+                'title' => 'Thông báo có câu hỏi mới',
+                'type_notification' => 'new question',
+                'route' => [
+                    'name' => 'QuestionDetail',
+                    'params' => [
+                        'id' => $question->id
+                    ]
                 ]
-            ]
-        ];
+            ];
 
-        $pusher = new Pusher(
-            env('PUSHER_APP_KEY'),
-            env('PUSHER_APP_SECRET'),
-            env('PUSHER_APP_ID'),
-            [
-                'cluster' => env('PUSHER_APP_CLUSTER'),
-                'encrypted' => true
-            ]
-        );
+            $pusher = new Pusher(
+                env('PUSHER_APP_KEY'),
+                env('PUSHER_APP_SECRET'),
+                env('PUSHER_APP_ID'),
+                [
+                    'cluster' => env('PUSHER_APP_CLUSTER'),
+                    'encrypted' => true
+                ]
+            );
 
-        // lấy tất cả các user đã follow các tag trong post
-        $users = User::whereIn('id', function($query) use($tagIds) {
-            $query->select('user_id')
-                ->from('followed_tags')
-                ->whereIn('tag_id', $tagIds);
-        })->with('tags')->get();
+            // lấy tất cả các user đã follow các tag trong post
+            $users = User::whereIn('id', function($query) use($tagIds) {
+                $query->select('user_id')
+                    ->from('followed_tags')
+                    ->whereIn('tag_id', $tagIds);
+            })->with('tags')->get();
 
-        if ($users->count()) {
-            // gửi thông báo tới user đang follow tag trong post
-            foreach ($users as $user) {
-                $tagNames = $user->tags->whereIn('id', $tagIds)
-                    ->take(3)
-                    ->pluck('name')
-                    ->implode(', ');
+            if ($users->count()) {
+                // gửi thông báo tới user đang follow tag trong post
+                foreach ($users as $user) {
+                    $tagNames = $user->tags->whereIn('id', $tagIds)
+                        ->take(3)
+                        ->pluck('name')
+                        ->implode(', ');
 
-                $notification = new Notification([
-                    'user_id' => $user->id,
-                    'sender_id' => $data_notification['sender_id'],
-                    'title' => $data_notification['title'],
-                    // 'content' => 'Có câu hỏi mới từ ' . $tagNames . '. Tựa đề: ' . $question->title,
-                    'content' => 'Có câu hỏi mới từ chủ đề <span class="font-bold">' . $tagNames .'.</span>',
-                    'type_notification' => $data_notification['type_notification'],
-                    'route' => $data_notification['route'],
-                    'read' => false,
-                ]);
-    
-                $notification->save();
+                    $notification = new Notification([
+                        'user_id' => $user->id,
+                        'sender_id' => $data_notification['sender_id'],
+                        'title' => $data_notification['title'],
+                        // 'content' => 'Có câu hỏi mới từ ' . $tagNames . '. Tựa đề: ' . $question->title,
+                        'content' => 'Có câu hỏi mới từ chủ đề <span class="font-bold">' . $tagNames .'.</span>',
+                        'type_notification' => $data_notification['type_notification'],
+                        'route' => $data_notification['route'],
+                        'read' => false,
+                    ]);
+        
+                    $notification->save();
 
-                $notification['user'] = $notification->user;
-                $notification['sender'] = $notification->sender;
+                    $notification['user'] = $notification->user;
+                    $notification['sender'] = $notification->sender;
 
-                $pusher->trigger('chanel-notification', 'event-notification-' . $user->id, $notification);
-            }
-        }            
+                    $pusher->trigger('chanel-notification', 'event-notification-' . $user->id, $notification);
+                }
+            }            
 
-        return response()->json([
-            'data' => $question,
-            'message' => 'Question created successfully.',
-        ], 201);
+            return response()->json([
+                'data' => $question,
+                'message' => 'Tạo câu hỏi thành công.',
+            ], 201);
+        } else {
+            return response()->json([
+                'data' => [],
+                'status' => 0,
+                'message' => 'Bạn không có quyền tạo bản nháp câu hỏi!'
+            ], 201);
+        }
     }
 
     public function getQuestionByUser($id) {
@@ -292,21 +309,29 @@ class QuestionController extends Controller
 
     public function updateDraftQuestion(Request $request, $id)
     {
-        $question = Question::findOrFail($id);
-        $question->update([
-            'title' => $request->input('title'),
-            'body' => $request->input('body'),
-            'updated_at' => now()
-        ]);
+        if (auth()->user()->hasPermissionTo('edit-draft-question')) {
+            $question = Question::findOrFail($id);
+            $question->update([
+                'title' => $request->input('title'),
+                'body' => $request->input('body'),
+                'updated_at' => now()
+            ]);
 
-        $tagIds = $request->input('tag_ids');
-        $question->tags()->detach();
-        $question->tags()->attach($tagIds);
-        return response()->json([
-            'data' => $question,
-            'status' => 1,
-            'message' => 'Cập nhật bản nháp thành công.'
-        ]);
+            $tagIds = $request->input('tag_ids');
+            $question->tags()->detach();
+            $question->tags()->attach($tagIds);
+            return response()->json([
+                'data' => $question,
+                'status' => 1,
+                'message' => 'Cập nhật bản nháp thành công.'
+            ]);
+        } else {
+            return response()->json([
+                'data' => [],
+                'status' => 0,
+                'message' => 'Bạn không có quyền sửa bản nháp câu hỏi!'
+            ], 201);
+        }
     }
 
     public function show($id)
@@ -415,30 +440,38 @@ class QuestionController extends Controller
 
     public function update(Request $request, $id)
     {
-        $question = Question::findOrFail($id);
+        if (auth()->user()->hasPermissionTo('edit-question')) {
+            $question = Question::findOrFail($id);
 
-        if($question->status_id == 2) {
-            $question->update([
-                'title' => $request->input('title'),
-                'body' => $request->input('body'),
-                'updated_at' => now(),
-                'status_id' => 1,
+            if($question->status_id == 2) {
+                $question->update([
+                    'title' => $request->input('title'),
+                    'body' => $request->input('body'),
+                    'updated_at' => now(),
+                    'status_id' => 1,
+                ]);
+            }else {
+                $question->update([
+                    'title' => $request->input('title'),
+                    'body' => $request->input('body'),
+                    'updated_at' => now()
+                ]);
+            }
+            $tagIds = $request->input('tag_ids');
+            $question->tags()->detach();
+            $question->tags()->attach($tagIds);
+            return response()->json([
+                'data' => $question,
+                'status' => 1,
+                'message' => 'Question updated successfully.',
             ]);
-        }else {
-            $question->update([
-                'title' => $request->input('title'),
-                'body' => $request->input('body'),
-                'updated_at' => now()
-            ]);
+        } else {
+            return response()->json([
+                'data' => [],
+                'status' => 0,
+                'message' => 'Bạn không có quyền sửa câu hỏi!'
+            ], 201);
         }
-        $tagIds = $request->input('tag_ids');
-        $question->tags()->detach();
-        $question->tags()->attach($tagIds);
-        return response()->json([
-            'data' => $question,
-            'status' => 1,
-            'message' => 'Question updated successfully.',
-        ]);
     }
 
     public function searchManageQuestion(Request $request, $id) {
@@ -466,14 +499,22 @@ class QuestionController extends Controller
 
     public function destroy($id)
     {
-        $question = Question::findOrFail($id);
-        $question->tags()->detach();
-        $question->comments()->delete();
-        $question->delete();
+        if (auth()->user()->hasPermissionTo('delete-question')) {
+            $question = Question::findOrFail($id);
+            $question->tags()->detach();
+            $question->comments()->delete();
+            $question->delete();
 
-        return response()->json([
-            'status' => 1,
-            'message' => 'Xóa thành công câu hỏi id ' . $id,
-        ]);
+            return response()->json([
+                'status' => 1,
+                'message' => 'Xóa thành công câu hỏi id ' . $id,
+            ]);
+        } else {
+            return response()->json([
+                'data' => [],
+                'status' => 0,
+                'message' => 'Bạn không có quyền xóa câu hỏi!'
+            ]);
+        }
     }
 }

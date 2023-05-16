@@ -167,9 +167,17 @@ const handleUpdated = (payload) => {
         axios.put(`/api/posts/${postId}`, payload)
             .then(res => {
                 // console.log(res);
-                statusSaveDraft.value = false
-                router.push({ name: 'PostDetail', params: { id: postId } })
-                .then(() => {router.go()})
+                if (res.data.status == 1) {
+                    statusSaveDraft.value = false
+                    router.push({ name: 'PostDetail', params: { id: postId } })
+                    .then(() => {router.go()})
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: res.data.message,
+                    })                    
+                }
             })
             .catch(err => {
                 console.log(err);
@@ -196,9 +204,9 @@ router.beforeEach((to, from, next) => {
                 return;
             } else {
                 axios.put(`/api/posts/draft/${postId}`, payload.value.post)
-                // .then((response) => {
-                //      console.log(response.data)
-                // });
+                .then((response) => {
+                    console.log(response.data.message);
+                });
             }
 
         }

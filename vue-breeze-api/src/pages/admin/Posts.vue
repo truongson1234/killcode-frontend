@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-white p-3.5 rounded-lg">
+    <div class="bg-[#596cff] shadow-lg p-3.5 rounded-lg">
         <form
             @submit.prevent="submitInputSearch"
             class="flex items-center mb-5"
@@ -11,15 +11,14 @@
                     type="text"
                     id="voice-search"
                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder="Search Mockups, Logos, Design Templates..."
-                    required
+                    placeholder="Tìm kiếm tiêu đề, nội dung, id, ..."
                 />
             </div>
             <button
                 type="submit"
                 class="inline-flex items-center py-2.5 px-3 ml-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
             >
-                Search
+                Tìm
             </button>
         </form>
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -32,9 +31,6 @@
                     <tr>
                         <th scope="col" class="px-6 py-3">Tiều đề</th>
                         <th scope="col" class="px-6 py-3">Trạng thái</th>
-                        <th scope="col" class="px-6 py-3">Bình luận</th>
-                        <th scope="col" class="px-6 py-3">Lượt thích</th>
-                        <th scope="col" class="px-6 py-3">Lượt xem</th>
                         <th scope="col" class="px-6 py-3">Tác giả</th>
                         <th scope="col" class="px-6 py-3">Thẻ</th>
                         <th scope="col" class="px-6 py-3"></th>
@@ -55,13 +51,6 @@
                             {{ post.title }}
                         </th>
                         <td class="px-6 py-4">{{ post.status.name }}</td>
-                        <td class="px-6 py-4">{{ post.comments_count }}</td>
-                        <td class="px-6 py-4">
-                            {{ post.likes_count ? post.likes_count : 0 }}
-                        </td>
-                        <td class="px-6 py-4">
-                            {{ post.views_count ? post.views_count : 0 }}
-                        </td>
                         <td class="px-6 py-4">{{ post.user.name }}</td>
                         <td class="px-6 py-4">
                             {{ post.tags.map((tag) => tag.name).join(", ") }}
