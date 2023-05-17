@@ -203,9 +203,6 @@
                 </div>
             </div>
         </header>
-        <div class="banner">
-            <img class="banner-img" src="http://localhost:8000/images/banner-1.gif" alt=""/>
-        </div>
     </div>
 </template>
 
@@ -395,14 +392,8 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-.topbar .banner{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: rgba(17, 17, 26, 0.1) 0px 1px 0px;
-    box-shadow: rgba(33, 35, 38, 0.1) 0px 10px 10px -10px;
-    margin-bottom: 35px;
-}
+
+
 .navbar .navbar-navigation-mobile {
     box-shadow: 0px 8px 16px 0px rgba(146, 146, 146, 0.2);
 }
