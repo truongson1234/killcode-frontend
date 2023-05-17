@@ -1,8 +1,9 @@
 
 <template>
     <div id="user">
-        <main class="relative" >
+        <main class="relative">
             <Navbar v-if="showNavBar"/>
+            <Banner v-if="showBanner"/>
             <router-view />
             <Footer v-if="showFooter"/>
         </main>
@@ -11,6 +12,7 @@
 <script>
 import Navbar from "@/components/layout/Navbar.vue";
 import Footer from "@/components/layout/Footer.vue";
+import Banner from "@/components/layout/Banner.vue";
 // css
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
@@ -19,7 +21,8 @@ import '@/assets/css/style.css';
 export default {
     components: {
         Navbar,
-        Footer
+        Footer,
+        Banner
     },
     computed: {
         showNavBar() {
@@ -27,6 +30,9 @@ export default {
         },
         showFooter() {
             return this.$route.meta.showFooter
+        },
+        showBanner() {
+            return this.$route.meta.showBanner
         },
     }
 }
