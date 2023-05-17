@@ -1,6 +1,8 @@
 <template>
-    <div class="user-item flex items-center px-3">
-        <img :src="data.avatar" alt="" class="user-image rounded-full">
+    <div class="user-item px-3 text-center">
+        <div class="user-image">
+            <img :src="data.avatar" alt="" class="">
+        </div>
         <router-link :to="{ name: 'Profile', params: {id: data.id} }"
             class="font-bold text-md text-gray-800 pl-2">{{ data.name
                         }}</router-link>
@@ -16,6 +18,15 @@ const data = props.data
 .user-image {
     width: 50px;
     height: 50px;
-    object-fit: contain;
+    object-fit: cover;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    border-radius: 50%;
+    margin: auto;
+}
+.user-image img {
+    max-width: 100%;
+    height: auto;
 }
 </style>
