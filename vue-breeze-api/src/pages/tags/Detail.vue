@@ -6,7 +6,7 @@
         <div class="grid grid-cols-4 gap-x-2 gap-y-5 mx-auto">
             <div
                 class="col-span-4 row-span-1 md:col-span-2 lg:col-span-3 lg:row-span-3">
-                <div class="border-b border-gray-200 dark:border-gray-700 mb-4">
+                <div class="border-b border-gray-200 dark:border-gray-700 mb-2">
                     <ul class="flex flex-wrap -mb-px" id="myTab"
                         data-tabs-toggle="#myTabContent" role="tablist">
                         <li class="mr-2" role="presentation">
@@ -36,6 +36,25 @@
                 <div id="myTabContent">
                     <div class="pt-2 rounded-lg dark:bg-gray-800 hidden" id="post"
                         role="tabpanel" aria-labelledby="post-tab">
+                        <div class="flex items-center sort-data mb-1.5" v-if="posts && posts.length != 0">
+                            <label for="">Sắp xếp theo:</label>
+                            <select id="countries"
+                                class="bg-gray-50 border-0 text-gray-900 text-sm rounded-lg focus:ring-transparent p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                                @change="sortPost($event)">
+                                <option selected value="new"
+                                    class="form-select-option py-2">Mới
+                                    nhất</option>
+                                <option value="view"
+                                    class="form-select-option py-2">Lượt xem nhiều
+                                    nhất</option>
+                                <option value="like"
+                                    class="form-select-option py-2">Đánh giá nhiều
+                                    nhất</option>
+                                <option value="comment"
+                                    class="form-select-option py-2">Bình luận
+                                    nhiều nhất</option>
+                            </select>
+                        </div>
                         <div v-if="posts && posts.length != 0">
                             <div v-for="post in displayItemPost" :key="post.id">
                                 <PostItem :data="post" :deletePost="deletePost" />
@@ -55,6 +74,25 @@
                     <div class="pt-2 rounded-lg dark:bg-gray-800 hidden"
                         id="question" role="tabpanel"
                         aria-labelledby="question-tab">
+                        <div class="flex items-center sort-data mb-1.5" v-if="questions && questions.length != 0">
+                            <label for="">Sắp xếp theo:</label>
+                            <select id="countries"
+                                class="bg-gray-50 border-0 text-gray-900 text-sm rounded-lg focus:ring-transparent p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                                @change="sortQuestion($event)">
+                                <option selected value="new"
+                                    class="form-select-option py-2">Mới
+                                    nhất</option>
+                                <option value="view"
+                                    class="form-select-option py-2">Lượt xem nhiều
+                                    nhất</option>
+                                <option value="like"
+                                    class="form-select-option py-2">Đánh giá nhiều
+                                    nhất</option>
+                                <option value="comment"
+                                    class="form-select-option py-2">Bình luận
+                                    nhiều nhất</option>
+                            </select>
+                        </div>
                         <div v-if="questions && questions.length != 0">
                             <div v-for="question in displayItemQuestion"
                                 :key="question.id">
@@ -80,10 +118,10 @@
                     <div class="pt-2 rounded-lg dark:bg-gray-800 hidden"
                         id="followed" role="tabpanel"
                         aria-labelledby="followed-tab">
-                        <div class="flex "
+                        <div class="grid grid-cols-4 gap-y-5"
                             v-if="followeds && followeds.length != 0">
                             <div v-for="followed in displayItemUser"
-                                :key="followed.id">
+                                :key="followed.id" class="col-span-1 ">
                                 <UserItem :data="followed" />
                             </div>
                         </div>
@@ -114,7 +152,8 @@
                             tag.name }} </span>
                         <span
                             class="px-2 bg-blue-500 text-white rounded-r text-center text-sm flex items-center">{{
-                                tag.posts_count }}</span>
+                                tag.posts_count > tag.questions_count ? tag.posts_count
+                                : tag.questions_count }}</span>
                     </router-link>
                 </ul>
 
@@ -217,7 +256,7 @@ const fetchData = async (id = tagId) => {
             countPost.value = res.data.post_count
             countQuestion.value = res.data.question_count
             countFollower.value = res.data.followers
-            // console.log(res.data);
+            console.log(popularTags.value);
         })
         .catch((err) => {
             console.log(err);
@@ -276,7 +315,37 @@ const deleteQuestion = (id_question) => {
         }
     })
 }
-onMounted( async() => {
+const sortQuestion = (event) => {
+    var key = event.target.value
+    if (key == 'view') {
+        return questions.value.sort((a, b) => b.views_count - a.views_count)
+    }
+    if (key == 'new') {
+        return questions.value.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+    }
+    if (key == 'like') {
+        return questions.value.sort((a, b) => b.likes_count - a.likes_count)
+    }
+    if (key == 'comment') {
+        return questions.value.sort((a, b) => b.comments_count - a.comments_count)
+    }
+}
+const sortPost = (event) => {
+    var key = event.target.value
+    if (key == 'view') {
+        return posts.value.sort((a, b) => b.views_count - a.views_count)
+    }
+    if (key == 'new') {
+        return posts.value.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+    }
+    if (key == 'like') {
+        return posts.value.sort((a, b) => b.likes_count - a.likes_count)
+    }
+    if (key == 'comment') {
+        return posts.value.sort((a, b) => b.comments_count - a.comments_count)
+    }
+}
+onMounted(async () => {
     pageLoading()
     initFlowbite()
     await fetchData()
@@ -301,5 +370,4 @@ onMounted( async() => {
 
 .list-tag .item-tag {
     box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-}
-</style>
+}</style>

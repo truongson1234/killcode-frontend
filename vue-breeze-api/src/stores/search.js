@@ -32,6 +32,10 @@ export const useSearchStore = defineStore("search", {
                 .then((response) => {
                     this.dataSearch = response.data;
                     console.log(payload, this.dataSearch);
+                    this.dataSearch.tags.forEach(function (item) {
+                        item.thumbnail =
+                            "http://localhost:8000/images/tags/" + item.thumbnail;
+                    });
                     this.dataSearch.posts.forEach(function (item) {
                         item.author.avatar =
                             "http://localhost:8000/images/" + item.author.avatar;

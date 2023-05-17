@@ -49,7 +49,7 @@ class TagController extends Controller
         });
 
         //Tag phổ biến
-        $popular_tags = Tag::withCount('posts')->orderBy('posts_count', 'desc')->take(10)->get();
+        $popular_tags = Tag::withCount('posts','questions')->orderBy('posts_count', 'desc')->take(10)->get();
 
         $questions = $tag->questions()->withCount('comments')->withCount(['interactions as likes_count' => function($query) {
                             $query->select(\DB::raw("SUM(liked) as likes_count"));
