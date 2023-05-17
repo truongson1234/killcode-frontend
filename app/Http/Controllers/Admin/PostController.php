@@ -45,8 +45,9 @@ class PostController extends Controller
         $keyword = $request->input('keyword');
 
         $posts = Post::where(function ($query) use ($keyword) {
-                $query->where('title', 'like', "%$keyword%")
-                        ->orWhere('body', 'like', "%$keyword%");
+                $query->where('id', 'like', "%$keyword%")
+                    ->orWhere('title', 'like', "%$keyword%")
+                    ->orWhere('body', 'like', "%$keyword%");
             })
             ->with('user', 'tags', 'status')
             ->withCount('comments')
@@ -78,6 +79,12 @@ class PostController extends Controller
             'reason' => $request->input('reason'),
             'post_id' => $id
         ]);
+
+        if($offending_post->post->status_id !== 3) {
+            $offending_post->post->update([
+                'status_id' => 3,
+            ]);
+        }
 
         // Tạo thông báo
         $data_notification = [
@@ -130,6 +137,11 @@ class PostController extends Controller
     public function unban(Request $request, $id)
     {
         $offending_post = OffendingPost::where('post_id', $id)->first();
+        if($offending_post->post->status_id === 3) {
+            $offending_post->post->update([
+                'status_id' => 1,
+            ]);
+        }
         // Tạo thông báo
         $data_notification = [
             'sender_id' => auth()->user()->id,

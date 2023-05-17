@@ -93,6 +93,7 @@ Route::group(['prefix' => 'posts'], function () {
     Route::delete('{id}', 'App\Http\Controllers\PostController@destroy');
     Route::post('draft', 'App\Http\Controllers\PostController@draftPost');
     Route::get('draft/{id_user}', 'App\Http\Controllers\PostController@getDraftPostByUser');
+    Route::get('draft/{id_user}/ban', 'App\Http\Controllers\PostController@getDraftPostBanByUser');
     Route::put('draft/{id_post}', 'App\Http\Controllers\PostController@updateDraftPost');
     Route::get('offending/{id_user}', 'App\Http\Controllers\PostController@getOffendingPostByUser');
     Route::get('search/{id_user}', 'App\Http\Controllers\PostController@searchManagePost');
