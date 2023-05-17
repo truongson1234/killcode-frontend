@@ -445,7 +445,7 @@ const fetchData = () => {
                         <h6 class="mb-0">Danh mục</h6>
                     </div>
                     <div class="card-body p-3">
-                        <ul class="list-group">
+                        <ul class="list-group" style="padding-left: 0!important;">
                             <li
                                 v-for="category in statistical.categorys"
                                 :key="category.id"

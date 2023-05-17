@@ -29,7 +29,7 @@
                     </li>
                     <li class="nav-item pr-2.5">
                         <router-link :to="{ name: 'AdminReports' }"
-                            class="pe-0 text-muted" target="_blank">Đơn tố cáo</router-link>
+                            class="pe-0 text-muted" target="_blank">Báo cáo</router-link>
                     </li>
                 </ul>
             </div>

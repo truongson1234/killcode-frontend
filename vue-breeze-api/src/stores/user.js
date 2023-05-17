@@ -26,6 +26,7 @@ export const useUserStore = defineStore("user", {
                 const data = await axios.get("/api/user");
                 if (data.data) {
                     this.authUser = data.data.user;
+                    
                     this.authRoles = data.data.roles;
                     this.authPermissions = data.data.permissions;
                     // console.log(data.data);

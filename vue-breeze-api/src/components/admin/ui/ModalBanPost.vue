@@ -3,7 +3,8 @@
         <button
             @click="openModal"
             type="button"
-            class="mx-2 focus:outline-none text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-3 py-2.5 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-900"
+            class="mx-1 focus:outline-none text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:ring-gray-300 font-medium text-sm px-2 py-1.5 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-900"
+            style="border-radius: 3px;"
         >
             <i class='bx bx-bug'></i>
         </button>
@@ -121,8 +122,8 @@ export default {
                         this.$emit('update-posts', response.data.posts);
 
                         Swal.fire(
-                            'Đã ban lệnh cấm với bài viết này!',
-                            'You clicked the button!',
+                            'Đã cấm bài viết này!',
+                            '',
                             'success'
                         )
                     }

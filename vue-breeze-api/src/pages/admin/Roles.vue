@@ -50,7 +50,7 @@
                                         <td>
                                             <div class="d-flex px-2 py-1">
                                                 <div>
-                                                    <img src="@/assets/admin/img/team-2.jpg"
+                                                    <img :src="item.avatar"
                                                         class="avatar avatar-sm me-3"
                                                         alt="user1" />
                                                 </div>
@@ -242,11 +242,9 @@
                                     <tr v-for="item in displayedItemsRole"
                                         :key="item.name">
                                         <td>
-                                            <div class="d-flex px-2">
-                                                <div>
-                                                    <img src="@/assets/admin/img/small-logos/logo-spotify.svg"
-                                                        class="avatar avatar-sm rounded-circle me-2"
-                                                        alt="spotify" />
+                                            <div class="flex items-center px-2">
+                                                <div class="flex items-center pr-1">
+                                                        <i class='bx bxs-shield text-lg text-sky-500' ></i>
                                                 </div>
                                                 <div class="my-auto">
                                                     <h6 class="mb-0 text-sm">
@@ -463,11 +461,10 @@
                                     <tr v-for="item in displayedItemsPermission"
                                         :key="item.name">
                                         <td>
-                                            <div class="d-flex px-2">
-                                                <div>
-                                                    <img src="@/assets/admin/img/small-logos/logo-spotify.svg"
-                                                        class="avatar avatar-sm rounded-circle me-2"
-                                                        alt="spotify" />
+                                            <div class="flex items-center px-2">
+                                                <div class="flex items-center pr-1">
+                                                    <i class='bx bx-star text-lg text-amber-600'></i>
+
                                                 </div>
                                                 <div class="my-auto">
                                                     <h6 class="mb-0 text-sm">

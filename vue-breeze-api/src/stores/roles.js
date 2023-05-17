@@ -58,6 +58,9 @@ export const useRolesStore = defineStore("roles", {
                 const response = await axios.get("/api/users");
                 if (response.data) {
                     this.users = response.data.data;
+                    this.users.map((item) => {
+                        item.avatar = 'http://localhost:8000/images/' + item.avatar
+                    })
                 }
             } catch (error) {
                 console.log(error)

@@ -10,7 +10,7 @@
                     v-model="keyword"
                     type="text"
                     id="voice-search"
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="Tìm kiếm tiêu đề, nội dung, id, ..."
                 />
             </div>
@@ -45,7 +45,7 @@
                     >
                         <th
                             scope="row"
-                            class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                            class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white title-post-ban"
                             :class="{ 'text-red-500': post.is_banned }"
                         >
                             {{ post.title }}
@@ -55,7 +55,7 @@
                         <td class="px-4 py-4">
                             {{ post.tags.map((tag) => tag.name).join(", ") }}
                         </td>
-                        <td class="flex items-center px-4 py-4 space-x-3">
+                        <td class="flex items-center px-2 py-4 space-x-3">
                             <ModalBanPost
                                 v-if="!post.is_banned"
                                 :post_id="post.id"
@@ -65,14 +65,16 @@
                                 v-else
                                 @click="unbanPost(post.id)"
                                 type="button"
-                                class="mx-2 focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900"
+                                class="mx-1 focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium text-sm px-2 py-1.5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900"
+                                style="border-radius: 3px;"
                             >
                                 <i class="bx bx-wrench"></i>
                             </button>
                             <button
                                 @click="removePost(post.id)"
                                 type="button"
-                                class="mx-2 focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2.5 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+                                class="mx-1 focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium text-sm px-2 py-1.5 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+                                style="border-radius: 3px;"
                             >
                                 <i class="bx bx-trash"></i>
                             </button>
@@ -120,8 +122,8 @@ const unbanPost = async (id) => {
             if (response.data.status == 1) {
                 posts.value = response.data.posts;
                 Swal.fire(
-                    "Đã unban lệnh cấm với bài viết này!",
-                    "You clicked the button!",
+                    "Đã hủy cấm bài viết này!",
+                    "",
                     "success"
                 );
             }
@@ -180,6 +182,12 @@ const submitInputSearch = async () => {
 </script>
 
 <style scoped>
+.title-post-ban {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
 .btn-search{
     padding: 9px 20px;
     margin-left: 10px!important;
