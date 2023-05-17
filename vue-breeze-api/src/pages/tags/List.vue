@@ -9,9 +9,12 @@
                     @change="sortTag($event)">
                     <option selected value="new" class="form-select-option py-2">Mới
                         nhất</option>
-                    <option value="question" class="form-select-option py-2">Nhều câu hỏi nhất</option>
-                    <option value="post" class="form-select-option py-2">Nhiều bài viết nhất</option>
-                    <option value="follower" class="form-select-option py-2">Nhiều người theo dõi nhất</option>
+                    <option value="question" class="form-select-option py-2">Nhều
+                        câu hỏi nhất</option>
+                    <option value="post" class="form-select-option py-2">Nhiều bài
+                        viết nhất</option>
+                    <option value="follower" class="form-select-option py-2">Nhiều
+                        người theo dõi nhất</option>
                 </select>
             </div>
         </div>
@@ -37,6 +40,7 @@ import VPagination from "@hennge/vue3-pagination";
 import "@hennge/vue3-pagination/dist/vue3-pagination.css";
 import "@/assets/admin/css/pagination-styles.css";
 import { pageLoading, pageLoaded } from '@/assets/js/app.js'
+import { useAuthStore } from '@/stores/auth'
 export default {
     components: {
         TagItem,
@@ -47,7 +51,8 @@ export default {
             tags: [],
             currentPage: 1,
             pageTag: 1,
-            itemsPerPageTag: 8
+            itemsPerPageTag: 8,
+            authStore: useAuthStore()
         };
     },
     created() {
@@ -125,8 +130,7 @@ export default {
     },
 };
 </script>
-<style scoped>
-.list-tag .item-tag {
+<style scoped>.list-tag .item-tag {
     box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
 }</style>
 
