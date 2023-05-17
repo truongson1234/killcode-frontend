@@ -599,8 +599,7 @@
                 <div class="pt-2 rounded-lg dark:bg-gray-800 hidden"
                     id="public-question" role="tabpanel"
                     aria-labelledby="public-question-tab">
-                    <h2 class="text-gray-800 font-medium text-lg border-b pb-2">Bản
-                        nháp</h2>
+                    <h2 class="text-gray-800 font-medium text-lg border-b pb-2">Công khai</h2>
                     <div v-if="publicQuestion && publicQuestion.length > 0"
                         class="mt-3">
                         <div class="mb-2">

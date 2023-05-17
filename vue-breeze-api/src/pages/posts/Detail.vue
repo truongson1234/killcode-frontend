@@ -516,6 +516,12 @@ const sendReport = async (event,report_obj) => {
 }
 </style>
 <style>
+.detail-unique-post h3 {
+    font-size: 1.55rem!important
+}
+.detail-unique-post h2 {
+    font-size: 1.75rem!important
+}
 .detail-unique-post .prose ul,
 .detail-unique-post .prose ol {
     list-style: inherit;
@@ -541,6 +547,8 @@ const sendReport = async (event,report_obj) => {
 .detail-unique-post .userimage {
     width: 50px;
     height: 50px;
+    display: flex;
+    align-items: center;
     border-radius: 40px;
     overflow: hidden;
 }

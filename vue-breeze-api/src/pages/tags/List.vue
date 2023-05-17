@@ -95,6 +95,10 @@ export default {
                 .get("/api/followed-tags")
                 .then((response) => {
                     this.tags = response.data.data;
+                    this.tags.map((tag) => {
+                        tag.thumbnail = 'http://localhost:8000/images/tags/' + tag.thumbnail
+                    })
+                    console.log(this.tags);
                 })
                 .catch((error) => {
                     console.log(error);

@@ -1,21 +1,25 @@
 <template>
-    <div>
+    <div class="topbar">
         <div class="upper-space"></div>
         <header class="navbar relative" :class="{ open: navbarEl }">
             <div
                 class="navbar-navigation-mobile hidden absolute left-0 top-16 p-4 bg-white w-full">
                 <ul class="text-center text-gray-900">
-                    <li class="py-2 hover:bg-gray-600 hover:text-white">
+                    <li class="py-2 hover:bg-gray-600 hover:text-white" :class="[$route.path == '/home' ? 'active' : '']">
+                        <router-link :to="{ name: 'Home' }"
+                            class="hover:text-inherit">Trang chủ</router-link>
+                    </li>
+                    <li class="py-2 hover:bg-gray-600 hover:text-white" :class="[$route.path == '/tags' ? 'active' : '']">
                         <router-link :to="{ name: 'TagsList' }"
                             class="hover:text-inherit">Chủ
                             đề</router-link>
                     </li>
-                    <li class="py-2 hover:bg-gray-600 hover:text-white">
+                    <li class="py-2 hover:bg-gray-600 hover:text-white" :class="[$route.path == '/questions' ? 'active' : '']">
                         <router-link :to="{ name: 'QuestionsList' }"
                             class="hover:text-inherit">Câu
                             hỏi</router-link>
                     </li>
-                    <li class="py-2 hover:bg-gray-600 hover:text-white">
+                    <li class="py-2 hover:bg-gray-600 hover:text-white" :class="[$route.path == '/posts' ? 'active' : '']">
                         <router-link :to="{ name: 'PostsList' }"
                             class="hover:text-inherit">Bài
                             viết</router-link>
@@ -27,18 +31,21 @@
                     :to="{ name: 'Home' }">Killcode</router-link>
                 <div class="navbar__group">
                     <ul class="navbar__navigation flex items-center">
-                        <li>
+                        <li :class="[$route.path == '/home' ? 'active' : '']">
+                            <router-link :to="{ name: 'Home' }">Trang chủ</router-link>
+                        </li>
+                        <li :class="[$route.path == '/tags' ? 'active' : '']">
                             <router-link :to="{ name: 'TagsList' }">Chủ
                                 đề</router-link>
                         </li>
-                        <li>
+                        <li :class="[$route.path == '/questions' ? 'active' : '']">
                             <router-link :to="{ name: 'QuestionsList' }">Câu
                                 hỏi</router-link>
                         </li>
                         <!-- <li>
                             <router-link :to="{ name: 'Test' }">Test</router-link>
                         </li> -->
-                        <li>
+                        <li :class="[$route.path == '/posts' ? 'active' : '']">
                             <router-link :to="{ name: 'PostsList' }">Bài
                                 viết</router-link>
                         </li>
@@ -196,6 +203,9 @@
                 </div>
             </div>
         </header>
+        <div class="banner">
+            <img class="banner-img" src="http://localhost:8000/images/banner-1.gif" alt=""/>
+        </div>
     </div>
 </template>
 
@@ -385,6 +395,14 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
+.topbar .banner{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: rgba(17, 17, 26, 0.1) 0px 1px 0px;
+    box-shadow: rgba(33, 35, 38, 0.1) 0px 10px 10px -10px;
+    margin-bottom: 35px;
+}
 .navbar .navbar-navigation-mobile {
     box-shadow: 0px 8px 16px 0px rgba(146, 146, 146, 0.2);
 }
@@ -454,7 +472,9 @@ onBeforeUnmount(() => {
     letter-spacing: 0.2em;
 }
 
-.navbar .navbar__navigation li a::before {
+.navbar .navbar__navigation li a::before,
+.navbar .navbar__navigation li.active a::before
+ {
     content: "";
     position: absolute;
     bottom: -2px;
@@ -466,11 +486,17 @@ onBeforeUnmount(() => {
     transform-origin: right;
 }
 
-.navbar .navbar__navigation li a:hover::before {
+.navbar .navbar__navigation li a:hover::before,
+.navbar .navbar__navigation li.active a::before
+ {
     transform: scale(1);
     transform-origin: left;
 }
 
+.navbar-navigation-mobile ul li.active {
+    color: #fff;
+    background-color: rgb(75 85 99 / 1);
+}
 .navbar .navbar__group-icon {
     display: flex;
     align-items: center;
@@ -498,9 +524,9 @@ onBeforeUnmount(() => {
 }
 
 .navbar .navbar__logo-user img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
 }
 
 .navbar .navbar__logo-user {
@@ -510,6 +536,7 @@ onBeforeUnmount(() => {
     justify-content: center;
     align-items: center;
     border-radius: 50%;
+    overflow: hidden
 }
 
 .navbar .navbar__toggle-menu {

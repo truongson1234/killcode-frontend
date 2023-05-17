@@ -15,6 +15,9 @@ export const useTagStore = defineStore("tag", {
             await axios.get('api/admin/tags')
             .then(response => {
                 this.tags = response.data.data
+                this.tags.map((tag) => {
+                    tag.thumbnail = 'http://localhost:8000/images/tags/' + tag.thumbnail
+                })
             })
             .catch(error => {
                 console.log(error)
@@ -35,12 +38,13 @@ export const useTagStore = defineStore("tag", {
             .then(res => {
                 this.getTags()
                 this.tagErrors = 'success!'
+                console.log(res);
             })
             .catch(err => {
                 if(err.response.status == 422) {
                     this.tagErrors = err.response.data.error
                 }
-                console.log('duma',err)
+                console.log(err)
             })
         },
         async handleEditTag(id, form) {

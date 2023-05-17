@@ -130,7 +130,9 @@ onMounted(() => {
   height: 34px;
   border-radius: 40px;
   overflow: hidden;
-  margin: -2px 10px -2px 0
+  margin: -2px 10px -2px 0;
+  display: flex;
+  align-items: center;
 }
 
 .box-post-header .username {

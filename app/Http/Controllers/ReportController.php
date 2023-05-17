@@ -74,16 +74,24 @@ class ReportController extends Controller
      */
     public function store(Request $request, Report $report)
     {
-        $report->create([
-            'user_id' => $request->input('user_id'),
-            'post_id' => $request->input('post_id'),
-            'reason' => $request->input('reason')
-        ]);
-        
-        return response()->json([
-            'status' => 1,
-            'message' => 'Đã gửi báo cáo.'
-        ], 201);
+        if (auth()->user()->hasPermissionTo('write-report')) {
+            $report->create([
+                'user_id' => $request->input('user_id'),
+                'post_id' => $request->input('post_id'),
+                'reason' => $request->input('reason')
+            ]);
+            
+            return response()->json([
+                'status' => 1,
+                'message' => 'Đã gửi báo cáo.'
+            ], 201);
+        } else {
+            return response()->json([
+                'data' => [],
+                'status' => 0,
+                'message' => 'Bạn không có quyền viết tố cáo!'
+            ]);
+        }
     }
 
     /**
@@ -128,11 +136,19 @@ class ReportController extends Controller
      */
     public function destroy(Report $report, $id)
     {
-        $report->find($id)->delete();
+        if (auth()->user()->hasPermissionTo('delete-report')) {
+            $report->find($id)->delete();
 
-        return response()->json([
-            'status' => 1,
-            'message' => 'Xóa thành công báo cáo.'
-        ], 200);
+            return response()->json([
+                'status' => 1,
+                'message' => 'Xóa thành công báo cáo.'
+            ]);
+        } else {
+            return response()->json([
+                'data' => [],
+                'status' => 0,
+                'message' => 'Bạn không có quyền tạo bài viết!'
+            ]);
+        }
     }
 }

@@ -1,6 +1,6 @@
 <template>
     <!-- Button trigger modal -->
-    <router-link :to="{ name: 'Login' }" class="link-login btn btn-primary">
+    <router-link :to="{ name: 'Login' }" class="link-login btn btn-primary ml-2.5">
         Đăng nhập
     </router-link>
 </template>

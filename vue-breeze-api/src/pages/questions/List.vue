@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <div class="flex items-center sort-data">
+        <div class="flex items-center sort-data mb-2.5">
             <label for="">Sắp xếp theo:</label>
             <select id="countries"
                 class="bg-gray-50 border-0 text-gray-900 text-sm rounded-lg focus:ring-transparent p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"

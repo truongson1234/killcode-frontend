@@ -202,6 +202,8 @@ const fetchData = async (id = tagId) => {
     await axios.get(`api/followed-tags/${id}`)
         .then(res => {
             detailTag.value = res.data.data[0]
+            // console.log(detailTag.value);
+            detailTag.value.thumbnail = 'http://localhost:8000/images/tags/' + detailTag.value.thumbnail
         })
         .catch(err => {
             console.log(err);

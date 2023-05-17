@@ -1,27 +1,34 @@
 <template>
-    <div class="p-3">
-        <router-link :to="{ name: 'TagDetail', params: { id: data.id } }"
-            class="text-xl font-bold mb-2 text-gray-800">{{ data.name }}</router-link>
-        <p></p>
-        <div class="" style="max-width: 25rem;">
-            <p class="text-gray-500 text-sm"><span class="text-gray-900 text-lg">{{ data.posts_count }}</span> Bài viết
-            </p>
-            <p class="text-gray-500 text-sm"><span class="text-gray-900 text-lg">{{ data.questions_count }}</span>  Câu hỏi
-            </p>
-            <p class="text-gray-500 text-sm"><span class="text-gray-900 text-lg">{{ data.followers_count }}</span> Người theo dõi</p> 
+    <div class="p-3 flex items-start">
+        <div class="pt-1 pr-3 ">
+            <router-link :to="{ name: 'TagDetail', params: { id: data.id } }">
+                <img :src="data.thumbnail" alt="" class="thumbnail-tag">
+            </router-link>
         </div>
-        <button @click="toggleFollow(data)"
-            class="mt-1 text-sm rounded-sm py-0.5 px-2 text-blue-500 font-semibold hover:bg-blue-700 hover:text-white focus:outline-none focus:ring-none focus:ring-blue-400 focus:ring-opacity-75 transition ease-in-out border-x border-y border-blue-500"
-            :class="[data.is_following ? 'bg-blue-700 text-white' : '']">
-            <div class="flex items-center justify-between space-x-1">
-                <span class="text-lg" v-if="data.is_following"><i
-                        class='bx bx-check'></i></span>
-                <span class="text-lg" v-else><i class='bx bx-plus'></i></span>
-                <span>
-                    {{ data.is_following ? 'Đang theo dõi' : 'Theo dõi' }}
-                </span>
+        <div  class=""> 
+            <router-link :to="{ name: 'TagDetail', params: { id: data.id } }"
+                class="text-xl font-bold mb-2 text-gray-800">{{ data.name }}</router-link>
+            <p></p>
+            <div class="" style="max-width: 25rem;">
+                <p class="text-gray-500 text-sm"><span class="text-gray-900 text-lg">{{ data.posts_count }}</span> Bài viết
+                </p>
+                <p class="text-gray-500 text-sm"><span class="text-gray-900 text-lg">{{ data.questions_count }}</span>  Câu hỏi
+                </p>
+                <p class="text-gray-500 text-sm"><span class="text-gray-900 text-lg">{{ data.followers_count }}</span> Người theo dõi</p> 
             </div>
-        </button>
+            <button @click="toggleFollow(data)"
+                class="mt-1 text-sm rounded-sm py-0.5 px-2 text-blue-500 font-semibold hover:bg-blue-700 hover:text-white focus:outline-none focus:ring-none focus:ring-blue-400 focus:ring-opacity-75 transition ease-in-out border-x border-y border-blue-500"
+                :class="[data.is_following ? 'bg-blue-700 text-white' : '']">
+                <div class="flex items-center justify-between space-x-1">
+                    <span class="text-lg" v-if="data.is_following"><i
+                            class='bx bx-check'></i></span>
+                    <span class="text-lg" v-else><i class='bx bx-plus'></i></span>
+                    <span>
+                        {{ data.is_following ? 'Đang theo dõi' : 'Theo dõi' }}
+                    </span>
+                </div>
+            </button>
+        </div>
     </div>
 </template>
 
@@ -78,4 +85,9 @@ const toggleFollow = async (tag) => {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.thumbnail-tag {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+}</style>

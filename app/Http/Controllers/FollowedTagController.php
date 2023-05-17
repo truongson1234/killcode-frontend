@@ -88,41 +88,57 @@ class FollowedTagController extends Controller
     // Theo dõi một thẻ mới
     public function store(Request $request)
     {
-        $userId = auth()->user()->id;
-        $tagId = $request->input('tag_id');
+        if (auth()->user()->hasPermissionTo('follow-tag')) {
+            $userId = auth()->user()->id;
+            $tagId = $request->input('tag_id');
+            
+            if (!FollowedTag::where('user_id', $userId)->where('tag_id', $tagId)->exists()) {
+                $followedTag = new FollowedTag;
+                $followedTag->user_id = $userId;
+                $followedTag->tag_id = $tagId;
+                $followedTag->save();
         
-        if (!FollowedTag::where('user_id', $userId)->where('tag_id', $tagId)->exists()) {
-            $followedTag = new FollowedTag;
-            $followedTag->user_id = $userId;
-            $followedTag->tag_id = $tagId;
-            $followedTag->save();
-    
-            return response()->json([
-                'data' => $followedTag,
-                'status' => 1,
-                'message' => 'Follow thành công.'
-            ],200);
-        }
+                return response()->json([
+                    'data' => $followedTag,
+                    'status' => 1,
+                    'message' => 'Follow thành công.'
+                ],200);
+            }
 
-        return response()->json([
-            'status' => 0,
-            'message' => 'Bạn đã follow trước đó rồi.'
-        ],404);
+            return response()->json([
+                'status' => 0,
+                'message' => 'Bạn đã follow trước đó rồi.'
+            ],404);
+        } else {
+            return response()->json([
+                'data' => [],
+                'status' => 0,
+                'message' => 'Bạn không có quyền theo dõi chủ đề!'
+            ]);
+        }
     }
 
     // Bỏ theo dõi một thẻ
     public function destroy(Request $request)
     {
-        $userId = auth()->user()->id;
-        $tagId = $request->input('tag_id');
+        if (auth()->user()->hasPermissionTo('unfollow-tag')) {
+            $userId = auth()->user()->id;
+            $tagId = $request->input('tag_id');
 
-        $followedTag = FollowedTag::where('user_id', $userId)->where('tag_id', $tagId)->firstOrFail();
-        $followedTag->delete();
+            $followedTag = FollowedTag::where('user_id', $userId)->where('tag_id', $tagId)->firstOrFail();
+            $followedTag->delete();
 
-        return response()->json([
-            'status' => 1,
-            'message' => 'Bỏ theo dõi thành công.'
-        ]);
+            return response()->json([
+                'status' => 1,
+                'message' => 'Bỏ theo dõi thành công.'
+            ]);
+        } else {
+            return response()->json([
+                'data' => [],
+                'status' => 0,
+                'message' => 'Bạn không có quyền hủy theo dõi chủ đề!'
+            ]);
+        }
     }
 
     // Kiểm tra một thẻ đã được theo dõi hay chưa

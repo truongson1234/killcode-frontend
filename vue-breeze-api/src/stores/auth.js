@@ -94,7 +94,7 @@ export const useAuthStore = defineStore("auth", {
             await axios.post("/logout");
             localStorage.removeItem('isAuthenticated')
             this.authUser = null;
-            // this.router.push("/home");
+            this.router.push("/home").then(() => { router.go() })
         },
         async handleForgotPassword(email) {
             pageLoading()
