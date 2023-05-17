@@ -12,8 +12,24 @@
                 <ul
                     class="nav nav-footer justify-content-center justify-content-lg-end">
                     <li class="nav-item pr-2.5">
-                        <a href="#"
-                            class="pe-0 text-muted" target="_blank">link</a>
+                        <router-link :to="{ name: 'Dashboard' }"
+                            class="pe-0 text-muted" target="_blank">Tổng quan</router-link>
+                    </li>
+                    <li class="nav-item pr-2.5">
+                        <router-link :to="{ name: 'AdminRoles' }"
+                            class="pe-0 text-muted" target="_blank">Quyền hạn</router-link>
+                    </li>
+                    <li class="nav-item pr-2.5">
+                        <router-link :to="{ name: 'AdminTags' }"
+                            class="pe-0 text-muted" target="_blank">Chủ đề</router-link>
+                    </li>
+                    <li class="nav-item pr-2.5">
+                        <router-link :to="{ name: 'AdminPosts' }"
+                            class="pe-0 text-muted" target="_blank">Bài viết</router-link>
+                    </li>
+                    <li class="nav-item pr-2.5">
+                        <router-link :to="{ name: 'AdminReports' }"
+                            class="pe-0 text-muted" target="_blank">Đơn tố cáo</router-link>
                     </li>
                 </ul>
             </div>

@@ -49,7 +49,7 @@
                                 <i class="bx bx-like pr-1"></i>
                                 {{ question.likes_count ? question.likes_count : 0 }}
                             </li>
-                            <li class="text-gray-500 text-sm">
+                            <!-- <li class="text-gray-500 text-sm">
                                 <button @click="showModalReport($event)"
                                     class="bg-red-600 hover:bg-red-700 text-gray-100 px-2 py-1 flex items-center"
                                     style="border-radius: 3px;">
@@ -100,7 +100,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </li>
+                            </li> -->
                         </ul>
                     </div>
                 </div>

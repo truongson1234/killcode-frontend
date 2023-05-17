@@ -22,6 +22,13 @@ class UserSeeder extends Seeder
                 'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             ],
             [
+                'name' => 'gues',
+                'email' => 'gues@gmail.com',
+                'avatar' => 'gues.png',
+                'email_verified_at' => now(),
+                'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            ],
+            [
                 'name' => 'Nguyễn Phú Khải',
                 'email' => 'khainguyenx@gmail.com',
                 'avatar' => 'user2.png',
@@ -104,6 +111,9 @@ class UserSeeder extends Seeder
             $newRole = User::create($user);
             if($user['email'] == 'admin@gmail.com') {
                 $newRole->assignRole('admin');
+            }
+            if($user['email'] == 'gues@gmail.com') {
+                $newRole->assignRole('gues');
             } else {
                 $newRole->assignRole('user');
             }

@@ -39,9 +39,11 @@
         }
     }) 
     const namePage = computed(() => {
-        if (routeName.value === 'Dashboard') return 'Dashboard';
+        if (routeName.value === 'Dashboard') return 'Tổng quan';
         else if (routeName.value === 'AdminRoles') return 'Quyền hạn'
-        else if (routeName.value === 'AdminTags') return 'Thẻ'
+        else if (routeName.value === 'AdminTags') return 'Chủ đề'
+        else if (routeName.value === 'AdminPosts') return 'Bài viết'
+        else if (routeName.value === 'AdminReports') return 'Báo cáo'
         else return ''
     });
 </script>

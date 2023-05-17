@@ -135,7 +135,7 @@ const fetchData = () => {
                                     <p
                                         class="text-sm mb-0 text-uppercase font-weight-bold"
                                     >
-                                        Tương tác
+                                        Tương tác / Ngày
                                     </p>
                                     <h5 class="font-weight-bolder">{{ statistical.total_interactions }}</h5>
                                     <!-- <p class="mb-0">
@@ -167,7 +167,7 @@ const fetchData = () => {
                                     <p
                                         class="text-sm mb-0 text-uppercase font-weight-bold"
                                     >
-                                        Bài viết
+                                        Bài viết / Ngày
                                     </p>
                                     <h5 class="font-weight-bolder">{{ statistical.total_posts }}</h5>
                                     <!-- <p class="mb-0">
@@ -199,7 +199,7 @@ const fetchData = () => {
                                     <p
                                         class="text-sm mb-0 text-uppercase font-weight-bold"
                                     >
-                                        Câu hỏi
+                                        Câu hỏi / Ngày
                                     </p>
                                     <h5 class="font-weight-bolder">{{ statistical.total_questions }}</h5>
                                     <!-- <p class="mb-0">
@@ -231,7 +231,7 @@ const fetchData = () => {
                                     <p
                                         class="text-sm mb-0 text-uppercase font-weight-bold"
                                     >
-                                        Thẻ
+                                        Chủ đề / Ngày
                                     </p>
                                     <h5 class="font-weight-bolder">{{ statistical.total_tags }}</h5>
                                     <!-- <p class="mb-0">
@@ -382,7 +382,7 @@ const fetchData = () => {
                 <div class="card">
                     <div class="card-header pb-0 p-3">
                         <div class="d-flex justify-content-between">
-                            <h6 class="mb-2">Thẻ</h6>
+                            <h6 class="mb-2">Chủ đề</h6>
                         </div>
                     </div>
                     <div class="table-responsive">
@@ -410,7 +410,7 @@ const fetchData = () => {
                                             >
                                                 Bài viết:
                                             </p>
-                                            <h6 class="text-sm mb-0">{{ tag.total_posts }}</h6>
+                                            <h6 class="text-sm mb-0">{{ tag.posts_count }}</h6>
                                         </div>
                                     </td>
                                     <td>
@@ -420,7 +420,7 @@ const fetchData = () => {
                                             >
                                                 Câu hỏi:
                                             </p>
-                                            <h6 class="text-sm mb-0">{{ tag.total_questions }}</h6>
+                                            <h6 class="text-sm mb-0">{{ tag.questions_count }}</h6>
                                         </div>
                                     </td>
                                     <td class="align-middle text-sm">
@@ -430,7 +430,7 @@ const fetchData = () => {
                                             >
                                                 Theo dõi:
                                             </p>
-                                            <h6 class="text-sm mb-0">{{ tag.total_followers }}</h6>
+                                            <h6 class="text-sm mb-0">{{ tag.followers_count }}</h6>
                                         </div>
                                     </td>
                                 </tr>
@@ -456,6 +456,7 @@ const fetchData = () => {
                                         class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center"
                                     >
                                         <i
+                                            class="mb-1"
                                             v-html="category.icon"
                                         ></i>
                                     </div>

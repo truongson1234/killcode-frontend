@@ -427,7 +427,7 @@
   display: inline-block;
 }
 #admin button {
-  border-radius: 0;
+  /* border-radius: 0; */
 }
 #admin button:focus:not(:focus-visible) {
   outline: 0;
@@ -16626,7 +16626,7 @@
   height: 32px;
 }
 #admin .icon-sm i {
-  top: 3px;
+  top: 1px;
   font-size: 0.65rem;
 }
 #admin .icon-md {
@@ -17215,7 +17215,7 @@
 #admin .navbar-vertical.navbar-expand-xs .navbar-collapse {
   display: block;
   overflow: auto;
-  height: calc(100vh - 360px);
+  /* height: calc(100vh - 360px); */
 }
 #admin .navbar-vertical.navbar-expand-xs > [class*=container] {
   flex-direction: column;

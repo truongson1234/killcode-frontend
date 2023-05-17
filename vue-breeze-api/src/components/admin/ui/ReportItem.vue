@@ -5,7 +5,7 @@
             <router-link class="reports__avartar" :to="{ name: 'Profile', params: { id: report.sender.route.params.id }}">
                 <img
                     class="reports__image"
-                    src="https://static.vecteezy.com/system/resources/previews/000/439/863/original/vector-users-icon.jpg"
+                    :src="report.sender.avatar"
                     alt=""
                 />
             </router-link>
@@ -25,7 +25,7 @@
                 <div class="reports__avartar" href="#">
                     <img
                         class="reports__image"
-                        src="https://static.vecteezy.com/system/resources/previews/000/439/863/original/vector-users-icon.jpg"
+                        :src="report.violator.avatar"
                         alt=""
                     />
                 </div>

@@ -16,7 +16,7 @@
             </div>
             <button
                 type="submit"
-                class="inline-flex items-center py-2.5 px-3 ml-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                class="btn-search"
             >
                 Tìm
             </button>
@@ -29,11 +29,11 @@
                     class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
                 >
                     <tr>
-                        <th scope="col" class="px-6 py-3">Tiều đề</th>
-                        <th scope="col" class="px-6 py-3">Trạng thái</th>
-                        <th scope="col" class="px-6 py-3">Tác giả</th>
-                        <th scope="col" class="px-6 py-3">Thẻ</th>
-                        <th scope="col" class="px-6 py-3"></th>
+                        <th scope="col" class="px-4 py-3">Tiều đề</th>
+                        <th scope="col" class="px-4 py-3">Trạng thái</th>
+                        <th scope="col" class="px-4 py-3">Tác giả</th>
+                        <th scope="col" class="px-4 py-3">Thẻ</th>
+                        <th scope="col" class="px-4 py-3"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -45,17 +45,17 @@
                     >
                         <th
                             scope="row"
-                            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                            class="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                             :class="{ 'text-red-500': post.is_banned }"
                         >
                             {{ post.title }}
                         </th>
-                        <td class="px-6 py-4">{{ post.status.name }}</td>
-                        <td class="px-6 py-4">{{ post.user.name }}</td>
-                        <td class="px-6 py-4">
+                        <td class="px-4 py-4">{{ post.status.name }}</td>
+                        <td class="px-4 py-4">{{ post.user.name }}</td>
+                        <td class="px-4 py-4">
                             {{ post.tags.map((tag) => tag.name).join(", ") }}
                         </td>
-                        <td class="flex items-center px-6 py-4 space-x-3">
+                        <td class="flex items-center px-4 py-4 space-x-3">
                             <ModalBanPost
                                 v-if="!post.is_banned"
                                 :post_id="post.id"
@@ -132,16 +132,34 @@ const unbanPost = async (id) => {
         });
 };
 
-const removePost = async (id) => {
-    await axios
-        .delete(`/api/dashboard/posts/${id}`)
-        .then((response) => {
-            posts.value = response.data.posts;
-            // console.log(postStatuses);
-        })
-        .catch((error) => {
-            console.log(error);
-        });
+const removePost = (id) => {
+    Swal.fire({
+        title: 'Bạn có chắc không?',
+        text: "Sẽ không thể khôi phục lại!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Có, xóa đi!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            axios
+                .delete(`/api/dashboard/posts/${id}`)
+                .then((response) => {
+                    posts.value = response.data.posts;
+                    // console.log(postStatuses);
+                    Swal.fire(
+                        'Deleted!',
+                        'Your file has been deleted.',
+                        'success'
+                    )
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        }
+    })
+    
 };
 
 const submitInputSearch = async () => {
@@ -161,4 +179,13 @@ const submitInputSearch = async () => {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style scoped>
+.btn-search{
+    padding: 9px 20px;
+    margin-left: 10px!important;
+    background: #fff;
+    border: none!important;
+    outline: none!important;
+    border-radius: 5px!important;
+}
+</style>

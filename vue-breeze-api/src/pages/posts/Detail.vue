@@ -474,6 +474,13 @@ const showModalReport = (event) => {
     }
 };
 const sendReport = async (event,report_obj) => {
+    if (report_obj.user_id == null) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Ố...',
+            text: 'Hãy đăng nhập trước khi báo cáo!',
+        })
+    }
     if (report_obj.reason == "") {
         Swal.fire({
             icon: 'error',

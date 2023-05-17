@@ -19,7 +19,7 @@ class ReportController extends Controller
         $reports = Report::with('user', 'post')->get()->map(function ($report) {
             $report->sender = [
                 'name' => $report->user->name,
-                'avatar' => $report->user->avatar,
+                'avatar' => 'http://localhost:8000/images/' . $report->user->avatar,
                 'route' => [
                     'name' => 'InfoUser',
                     'params' => [
@@ -30,7 +30,7 @@ class ReportController extends Controller
 
             $report->violator = [
                 'name' => $report->post->user->name,
-                'avatar' => $report->post->user->avatar,
+                'avatar' => 'http://localhost:8000/images/' . $report->post->user->avatar,
                 'route' => [
                     'user' => [
                         'name' => 'InfoUser',

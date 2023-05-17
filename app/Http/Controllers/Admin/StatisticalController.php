@@ -28,17 +28,7 @@ class StatisticalController extends Controller
         $totalQuestions = Question::whereDate('created_at', today())->count();
         $totalTags = Tag::whereDate('created_at', today())->count();
 
-        $tags = Tag::select('name')->get()->map(function ($tag) {
-            $tag->total_posts = $tag->posts->count();
-            $tag->total_questions = $tag->questions->count();
-            $tag->total_followers = $tag->followers->count();
-
-            unset($tag->posts);
-            unset($tag->questions);
-            unset($tag->followers);
-
-            return $tag;
-        });
+        $tags = Tag::select('name')->withCount('posts', 'questions', 'followers')->get();
 
         $categorys = [
             'posts' => [
@@ -52,7 +42,7 @@ class StatisticalController extends Controller
                 'total' => Question::count(),
             ],
             'tags' => [
-                'name' => 'Thẻ',
+                'name' => 'Chủ đề',
                 'icon' => "<i class='bx bxs-purchase-tag-alt text-white opacity-10'></i>",
                 'total' => Tag::count(),
             ]
