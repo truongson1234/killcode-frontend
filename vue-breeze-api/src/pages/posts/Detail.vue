@@ -26,10 +26,11 @@
                         </span>
                     </div>
                     <div v-else-if="post.status_id == 3">
-                        <span class="text-gray-500">
+                        <span class="text-red-500">
                             <span><i class="bx bx-block"></i></span>
-                            Bài viết đã vi phạm khoảng
-                            {{ formatDateTimeFB(new Date(post.created_at)) }}
+                            Bài viết đã bị vi phạm 
+                            <!-- khoảng
+                            {{ formatDateTimeFB(new Date(post.created_at)) }} -->
                         </span>
                     </div>
                     <div v-else>
